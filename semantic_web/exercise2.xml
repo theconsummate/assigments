@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:ns0="http://example.org/#">
+
+  <rdf:Description rdf:about="http://example.org/#Reader">
+    <rdfs:subClassOf rdf:resource="http://example.org/#Person"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.org/#likesBook">
+    <rdfs:domain rdf:resource="http://example.org/#Person"/>
+    <rdfs:range rdf:resource="http://example.org/#Textbook"/>
+  </rdf:Description>
+
+  <rdf:Description rdf:about="http://example.org/#john">
+    <rdf:type rdf:resource="http://example.org/#Reader"/>
+    <ns0:likesBook>
+      <ns0:Textbook rdf:about="http://example.org/#semanticweb">
+      </ns0:Textbook>
+    </ns0:likesBook>
+
+  </rdf:Description>
+
+</rdf:RDF>
