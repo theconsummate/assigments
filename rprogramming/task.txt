@@ -1,0 +1,35 @@
+Introduction and Application of Programming in R: Project Task Description
+1 Idea
+PD Dr. Sabine Schulte im Walde Institut fu ̈r Maschinelle Sprachverarbeitung Universita ̈t Stuttgart
+May 26, 2017
+You are given a dataset of compositionality ratings for 90 English noun compounds, as well as various other datasets that provide lexical, empirical, co-occurrence and grounded information for the compounds and their constituents. Overall, your task is to explore the properties of the compounds and their constituents as predictors of the compounds’ compositionality ratings.
+2 Data
+You are provided the following files, accompanied by the following references.
+• The file comp-ratings.txt contains mean compositionality ratings for 90 English noun compounds. The selection of the compounds and the collection of the ratings are described in Reddy et al. (2011).
+• The file comp-properties.txt contains information about corpus frequencies of the same compounds, their modifiers, and their heads, and about the productivity and ambigu- ity of the modifiers and the heads. This additional information is described in (Schulte im Walde et al., 2016, section 3).
+• Thefilesco-occ-compounds.txtandco-occ-constituents.txtcontainco- occurrence frequencies for the compounds and their constituents, based on their contexts in the English web corpus ENCOW14A (Scha ̈fer and Bildhauer, 2012).
+1
+• The file abstract-concrete.txt contains abstractness/concreteness ratings for ca. 40,000 English word lemmas. The collection of the ratings is described in Brysbaert et al. (2014).
+The files are provided in /mount/studenten/R-project. The references are available from ILIAS.
+3 Tasks
+1. Provide descriptive statistics and plots for the datasets.
+2. Use the datasets to explore the following hypotheses:
+(a) The degree of compositionality of the English noun compounds is related to
+i. the frequencies of the compounds, modifiers and/or heads; ii. the productivities of the modifiers and/or heads;
+iii. the ambiguities of the modifiers and/or heads.
+(b) Choose one of the following hypotheses (or go for both, if you want to):
+i. The degree of compositionality of the English compound–constituent ratings is related to the distributional similarity between the compounds and the con- stituents, as measured by the cosine between the respective compound–constituent co-occurrence vectors.
+ii. The degree of compositionality of the English compound ratings is related to their degree of concreteness/abstractness.
+(c) Optional task: The degree of compositionality of the English compound ratings is related to a combination of the above compound and constituent properties.
+4 Submission
+Your report should be 5–8 pages long.
+Upload your report ⟨name⟩ report.pdf to ILIAS by June 20 (hard deadline).
+2
+ 
+References
+Marc Brysbaert, Amy Beth Warriner, and Victor Kuperman. Concreteness Ratings for 40 Thou- sand generally known English Word Lemmas. Behavior Research Methods, 64:904–911, 2014.
+Siva Reddy, Diana McCarthy, and Suresh Manandhar. An Empirical Study on Compositionality in Compound Nouns. In Proceedings of the 5th International Joint Conference on Natural Language Processing, pages 210–218, Chiang Mai, Thailand, 2011.
+Roland Scha ̈fer and Felix Bildhauer. Building Large Corpora from the Web Using a New Effi- cient Tool Chain. In Proceedings of the 8th International Conference on Language Resources and Evaluation, pages 486–493, Istanbul, Turkey, 2012.
+Sabine Schulte im Walde, Anna Ha ̈tty, and Stefan Bott. The Role of Modifier and Head Properties in Predicting the Compositionality of English and German Noun-Noun Compounds: A Vector- Space Perspective. In Proceedings of the 5th Joint Conference on Lexical and Computational Semantics (*SEM), pages 148–158, Berlin, Germany, 2016.
+3
+
