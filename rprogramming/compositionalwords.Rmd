@@ -22,6 +22,8 @@ comp.properties <- read.csv("data/comp-properties.txt", sep = "\t", row.names=NU
 co.occ.compounts <- read.table("data/co-occ-compounds1.txt", header=FALSE, sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
 
 co.occ.constituents <- read.table("data/co-occ-constituents1.txt", header=FALSE, sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
+
+abstract.concrete <- read.csv("data/abstract-concrete.txt", sep = "\t")
 ```
 
 ## Descriptive Statistics and Plots
@@ -97,12 +99,10 @@ test
 ```
 As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `AmbHead` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to ambiguity of Heads**.
 
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
+## The degree of compositionality of the English compound ratings is related to their degree of concreteness/abstractness.
+```{r}
+ac <- inner_join(comp.ratings, abstract.concrete, by=c("Compound" = "Word"))
+test <- t.test(ac$Cpd_mean, ac$Conc.M)
+test
 ```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `Conc.M` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to the corresponding degree of concreteness/abstractness**.
