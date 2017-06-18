@@ -1,0 +1,229 @@
+---
+title: "Simulation"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Customer-Service Station Simulation
+The goal of this report is to analyze a system having customers and system stations. The system is modelled and analyzed in 6 different configurations.
+The constants which are common for all cases are defined below.
+```{r init, warning=FALSE, results='hide'}
+library('simmer')
+library(dplyr)
+library(ggplot2)
+ctime.lag <- (10/0.5)/60
+service.time <- function() runif(1, 260/60, 420/60)
+simulation.time <- 240
+trajectory <- create_trajectory() %>%
+  timeout(ctime.lag) %>%
+  seize("station", amount=1) %>%
+  timeout(service.time) %>%
+  release("station", amount=1)
+
+# average throughput time of customers
+avg.throughput.customer.time <- ctime.lag + (260 + 420)/60
+```
+As can be seen, the trajectory a customer follows remains the same. The amount of time required to process his request is also constant. Therefore the average throughput time of the customers for all cases as computed above is *avg.throughput.customer.time = `r avg.throughput.customer.time`*.
+
+## 1-a
+```{r 1a}
+fixed.arrival <- 120/60
+s1a.env <- simmer() %>%
+  add_resource("station", capacity=1, queue_size=Inf) %>%
+  add_generator("arrival", trajectory, function() 3*fixed.arrival) %>%
+  run(until=simulation.time)
+
+# number of customers served per hour
+n.customer.served <- 3*nrow(get_mon_arrivals(s1a.env))/4
+
+usage <- plot_resource_usage(s1a.env, "station")$data
+# average queue length
+avg.queue <- usage %>% filter(as.integer( item) == 1)
+avg.queue.mean <- mean(avg.queue$mean)
+
+# average utilzation
+avg.util <- usage %>% filter(as.integer( item) == 2)
+avg.util.mean <- mean(avg.util$mean)
+```
+
+##### Summary
+* The number of customers served is **`r n.customer.served`**
+* average queue length is **`r avg.queue.mean`**
+* average utilization is **`r avg.util.mean`**.
+
+## 1-b
+```{r 1b}
+s1b.env <- simmer() %>%
+  add_resource("station", capacity=1, queue_size=Inf) %>%
+  add_generator("arrival", trajectory, function() 3*runif(1, 80/60, 160/60)) %>%
+  run(until=simulation.time)
+
+# number of customers served per hour
+n.customer.served <- 3*nrow(get_mon_arrivals(s1b.env))/4
+
+usage <- plot_resource_usage(s1b.env, "station")$data
+# average queue length
+avg.queue <- usage %>% filter(as.integer( item) == 1)
+avg.queue.mean <- mean(avg.queue$mean)
+
+# average utilzation
+avg.util <- usage %>% filter(as.integer( item) == 2)
+avg.util.mean <- mean(avg.util$mean)
+```
+
+##### Summary
+* The number of customers served is **`r n.customer.served`**
+* average queue length is **`r avg.queue.mean`**
+* average utilization is **`r avg.util.mean`**.
+
+## 1-c
+```{r 1c}
+s1c.env <- simmer() %>%
+  add_resource("station", capacity=1, queue_size=Inf) %>%
+  add_generator("arrival", trajectory, function() 3*rnorm(1, 90/60, 40/60)) %>%
+  run(until=simulation.time)
+
+# number of customers served per hour
+n.customer.served <- 3*nrow(get_mon_arrivals(s1c.env))/4
+
+usage <- plot_resource_usage(s1c.env, "station")$data
+# average queue length
+avg.queue <- usage %>% filter(as.integer( item) == 1)
+avg.queue.mean <- mean(avg.queue$mean)
+
+# average utilzation
+avg.util <- usage %>% filter(as.integer( item) == 2)
+avg.util.mean <- mean(avg.util$mean)
+```
+
+##### Summary
+* The number of customers served is **`r n.customer.served`**
+* average queue length is **`r avg.queue.mean`**
+* average utilization is **`r avg.util.mean`**.
+
+## 2-a
+```{r 2a}
+s2a.env <- simmer() %>%
+  add_resource("station", capacity=3, queue_size=Inf) %>%
+  add_generator("arrival", trajectory, function() fixed.arrival) %>%
+  run(until=simulation.time)
+
+# number of customers served per hour
+n.customer.served <- nrow(get_mon_arrivals(s2a.env))/4
+
+usage <- plot_resource_usage(s2a.env, "station")$data
+# average queue length
+avg.queue <- usage %>% filter(as.integer( item) == 1)
+avg.queue.mean <- mean(avg.queue$mean)
+
+# average utilzation
+avg.util <- usage %>% filter(as.integer( item) == 2)
+avg.util.mean <- mean(avg.util$mean)
+```
+
+##### Summary
+* The number of customers served is **`r n.customer.served`**
+* average queue length is **`r avg.queue.mean`**
+* average utilization is **`r avg.util.mean`**.
+
+## 2-b
+```{r 2b}
+s2b.env <- simmer() %>%
+  add_resource("station", capacity=3, queue_size=Inf) %>%
+  add_generator("arrival", trajectory, function() runif(1, 80/60, 160/60)) %>%
+  run(until=simulation.time)
+
+# number of customers served per hour
+n.customer.served <- nrow(get_mon_arrivals(s2b.env))/4
+
+usage <- plot_resource_usage(s2b.env, "station")$data
+# average queue length
+avg.queue <- usage %>% filter(as.integer( item) == 1)
+avg.queue.mean <- mean(avg.queue$mean)
+
+# average utilzation
+avg.util <- usage %>% filter(as.integer( item) == 2)
+avg.util.mean <- mean(avg.util$mean)
+```
+
+##### Summary
+* The number of customers served is **`r n.customer.served`**
+* average queue length is **`r avg.queue.mean`**
+* average utilization is **`r avg.util.mean`**.
+
+## 2-c
+```{r 2c}
+s2c.env <- simmer() %>%
+  add_resource("station", capacity=3, queue_size=Inf) %>%
+  add_generator("arrival", trajectory, function() rnorm(1, 90/60, 40/60)) %>%
+  run(until=simulation.time)
+
+# number of customers served per hour
+n.customer.served <- nrow(get_mon_arrivals(s2c.env))/4
+
+usage <- plot_resource_usage(s2c.env, "station")$data
+# average queue length
+avg.queue <- usage %>% filter(as.integer( item) == 1)
+avg.queue.mean <- mean(avg.queue$mean)
+
+# average utilzation
+avg.util <- usage %>% filter(as.integer( item) == 2)
+avg.util.mean <- mean(avg.util$mean)
+```
+
+##### Summary
+* The number of customers served is **`r n.customer.served`**
+* average queue length is **`r avg.queue.mean`**
+* average utilization is **`r avg.util.mean`**.
+
+## Plots
+#### 1a
+```{r}
+plot_resource_usage(s1a.env, "station")
+plot_resource_utilization(s1a.env, "station")
+plot_evolution_arrival_times(s1a.env, type = "flow_time")
+plot_evolution_arrival_times(s1a.env, type = "waiting_time")
+```
+
+#### 1b
+```{r}
+plot_resource_usage(s1b.env, "station")
+plot_resource_utilization(s1b.env, "station")
+plot_evolution_arrival_times(s1b.env, type = "flow_time")
+plot_evolution_arrival_times(s1b.env, type = "waiting_time")
+```
+
+#### 1c
+```{r}
+plot_resource_usage(s1c.env, "station")
+plot_resource_utilization(s1c.env, "station")
+plot_evolution_arrival_times(s1c.env, type = "flow_time")
+plot_evolution_arrival_times(s1c.env, type = "waiting_time")
+```
+
+#### 2a
+```{r}
+plot_resource_usage(s2a.env, "station")
+plot_resource_utilization(s2a.env, "station")
+plot_evolution_arrival_times(s2a.env, type = "flow_time")
+plot_evolution_arrival_times(s2a.env, type = "waiting_time")
+```
+
+#### 2b
+```{r}
+plot_resource_usage(s2b.env, "station")
+plot_resource_utilization(s2b.env, "station")
+plot_evolution_arrival_times(s2b.env, type = "flow_time")
+plot_evolution_arrival_times(s2b.env, type = "waiting_time")
+```
+
+#### 2c
+```{r}
+plot_resource_usage(s2c.env, "station")
+plot_resource_utilization(s2c.env, "station")
+plot_evolution_arrival_times(s2c.env, type = "flow_time")
+plot_evolution_arrival_times(s2c.env, type = "waiting_time")
+```

@@ -1,0 +1,601 @@
+source('./WHR_BMI_Standards.R')
+library(ggplot2)
+library(reshape2)
+ 
+## Accessing Data, Visualization and Summarization
+### Construct a histogram of glyhb, as well as a box-plot and qq-plot against a standard normal. Comment on the properties you observe.
+#### Histogram
+  
+ggplot(diabetes2, aes(scale(glyhb, center = TRUE, scale = TRUE))) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=.25) +
+  geom_line(aes(y = ..density.., colour = 'glyhb'), stat = 'density') + 
+  stat_function(fun = dnorm, aes(colour = 'Normal')) +
+  geom_vline(xintercept=0, colour="red", linetype="longdash") +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("glyhb") + ggtitle("Histogram of glyhb") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+#### Box plot
+  
+set.seed(120)
+norm <- data.frame("normal" = rnorm(359), "glyhb" = scale(diabetes2$glyhb, center = TRUE, scale = TRUE))
+norm.long <- melt(norm)
+ggplot(norm.long, aes(y = value, x = variable)) + geom_boxplot() +
+  ylab("Values") + xlab("variable") + ggtitle("Boxplot of glyhb vs normal distribution") + theme_bw()
+ 
+
+#### QQ Plot
+  
+ggplot(norm, aes(sample = glyhb)) + stat_qq() +
+  ylab("glyhb") + xlab("normal") + ggtitle("QQ plot of glyhb vs normal distribution") + theme_bw()
+ 
+
+### Do the same for chol. Which feature is better approximated with a Gaussian distribution?
+#### Histogram
+  
+ggplot(diabetes2, aes(scale(chol, center = TRUE, scale = TRUE))) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=0.25) +
+  geom_line(aes(y = ..density.., colour = 'chol'), stat = 'density') + 
+  stat_function(fun = dnorm, aes(colour = 'Normal')) +
+  geom_vline(xintercept=0, colour="red", linetype="longdash") +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("glyhb") + ggtitle("Histogram of chol") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+#### Box plot
+  
+norm <- data.frame("normal" = rnorm(359), "chol" = scale(diabetes2$chol, center = TRUE, scale = TRUE))
+norm.long <- melt(norm)
+ggplot(norm.long, aes(y = value, x = variable)) + geom_boxplot() +
+  ylab("Values") + xlab("variable") + ggtitle("Boxplot of chol vs normal distribution") + theme_bw()
+ 
+
+#### QQ Plot
+  
+ggplot(norm, aes(sample = chol)) + stat_qq() +
+  ylab("chol") + xlab("normal") + ggtitle("QQ plot of chol vs normal distribution") + theme_bw()
+ 
+
+### Construct a scatter-plot of bp.1s with bp.1d, and another of age versus height. Would you say the features are approximately independent?
+  
+ggplot(diabetes2, aes(y = bp.1s, x= bp.1d)) + geom_point() +
+  ylab("bp.1s") + xlab("bp.1d") + ggtitle("bp.1s vs bp.1d") + theme_bw()
+
+ggplot(diabetes2, aes(y = age, x= height)) + geom_point() +
+  ylab("age") + xlab("height") + ggtitle("age vs height") + theme_bw()
+ 
+
+### As discussed earlier, diabetes is diagnosed according to glyhb < 7 or glyhb < 7. In order to identify potentially relevant features, compare for each available feature two box plots, conditional on whether glyhb > 7 or glyhb< 7.
+  
+cut.glyhb <- diabetes2[,c(3, 4, 5,6,7,9, 11, 12, 13, 14, 15, 16, 17, 18)]
+cut.glyhb <- cut.glyhb %>% mutate(isDiabetic = cut(glyhb, breaks = c(0,6.99,20)))
+levels(cut.glyhb$isDiabetic)  <- c("glyhb< 7", "glyhb>= 7")
+## drop glyhb column
+cut.glyhb$glyhb <- NULL
+y <- melt(cut.glyhb[,-8], id="isDiabetic") ## remove factor variable
+ggplot(y, aes(y = value, x = isDiabetic)) + geom_boxplot() + facet_wrap(~ variable, ncol=3, scales = "free") + ylab("value") + xlab("glyhb") + ggtitle("Boxplot of features based on glyhb") + theme_bw()
+ 
+
+### Besides the available features, we can also include the BMI (Body Mass Index), defined as 703 weight/(height)2 , and the waist-to-hip ratio, defined as WHR = waist/hip. Compute their empirical distributions and produce the conditional box-plots.
+  
+# cut.glyhb <- diabetes2[,c(7, 19,20)]
+# cut.glyhb <- cut.glyhb %>% mutate(isDiabetic = cut(glyhb, breaks = c(0,6.99,20)))
+# levels(cut.glyhb$isDiabetic)  <- c("glyhb< 7", "glyhb>= 7")
+# ## drop glyhb column
+# cut.glyhb$glyhb <- NULL
+ 
+
+### In light of these first experiments, which features seem more related (and unrelated) to the presence of type II diabetes?
+# Strongly -> stab.glu, age, bp1.s Weakly-> chol, ratio, weight, waist etc
+
+## Parametric Inference
+### Use the method of moments to fit a Gamma distribution to the BMI. Use non-parametric bootstrap to construct 95% confidence intervals around the estimated parameters. Plot the fitted density over the observed histogram to examine visually goodness of fit.
+  
+bmi.mean <- mean(diabetes2$BMI)
+bmi.var <- var(diabetes2$BMI)
+bmi.shape = bmi.mean^2/bmi.var   ## 0.056
+bmi.scale = bmi.var/bmi.mean     ## 22231
+
+library(boot)
+
+# function to obtain moments
+bs <- function(data, indices) {
+  d <- data[indices,] # allows boot to select sample 
+  mean <- mean(d$BMI)
+  var <- var(d$BMI)
+  shape = mean^2/var   ## 0.056
+  scale = var/mean     ## 22231
+  return(c(scale, shape)) 
+} 
+# bootstrapping with 1000 replications 
+results <- boot(data=diabetes2, statistic=bs, R=1000)
+
+# get 95% confidence intervals 
+scale.ci <- boot.ci(results, type="bca", index=1)$bca[1,4:5] # scale
+shape.ci <- boot.ci(results, type="bca", index=2)$bca[1,4:5] # shape
+
+ggplot(diabetes2, aes(BMI)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth = 3) +
+  geom_line(aes(y = ..density.., colour = 'BMI'), stat = 'density') + 
+  stat_function(fun = dgamma, args=list(shape = bmi.shape, scale =bmi.scale), aes(colour = 'Gamma')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("BMI") + ggtitle("Histogram of BMI") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are shape=**`r bmi.shape`** and scale=**`r bmi.scale`**. The corresponding Confidence intervals are **`r shape.ci`** and 8*`r scale.ci`**.
+
+### The WHR has empirical histogram closer to a Gaussian distribution. Fit a Normal distribution using Maximum Likelihood and provide 95% confidence intervals for their parameters. Plot the fitted density over the observed histogram to examine visually goodness of fit.
+  
+library(stats4)
+data <- diabetes2$WHR
+LL <- function(mu, sigma) {
+    R = suppressWarnings(dnorm(data, mu, sigma))
+     #
+     -sum(log(R))
+ }
+mle <- mle(LL, start = list(mu = 1, sigma=1))
+whr.mu <- coef(mle)[1]
+whr.sigma <- coef(mle)[2]
+
+# Confidence Inverval
+mu.ci <- t.test(data, mu = whr.mu)$conf.int
+df <- length(data) -1
+sigma.ci <- c(sd(data) * sqrt(df / qchisq(1-0.025,df)), sd(data) *sqrt( df / qchisq(0.025,df)))
+
+ggplot(diabetes2, aes(WHR)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=.01) +
+  geom_line(aes(y = ..density.., colour = 'WHR'), stat = 'density') + 
+  stat_function(fun = dnorm, args=list(mean=whr.mu, sd=whr.sigma), aes(colour = 'Normal')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("WHR") + ggtitle("Histogram of WHR") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+#The model parameters are mu=**`r whr.mu`** and sigma=**`r whr.sigma`**. The corresponding Confidence intervals are **`r mu.ci`** and **`r sigma.ci`**.
+
+### The former ratios are known to behave differently according to gender, and our goal is to understand also their effect on the glyhb levels. For that purpose, repeat the parametric fits of BMI and WHR, but this time do a different fit for each population male and (glyhb > 7), female and (glyhb > 7), male and (glyhb < 7) and female and (glyhb < 7). Construct confidence intervals around each mean and variance parameter. What do you conclude? 
+
+#### male and (glyhb > 7)
+##### BMI
+  
+subset <- diabetes2%>% filter(glyhb > 7 & gender == "male")
+
+mg7.bmi.mean <- mean(diabetes2$BMI)
+mg7.bmi.var <- var(diabetes2$BMI)
+mg7.bmi.shape = mg7.bmi.mean^2/mg7.bmi.var
+mg7.bmi.scale = mg7.bmi.var/mg7.bmi.mean
+
+# bootstrapping with 1000 replications 
+results <- boot(data=subset, statistic=bs, R=1000)
+
+# get 95% confidence intervals 
+mg7.scale.ci <- boot.ci(results, type="bca", index=1)$bca[1,4:5] # scale
+mg7.shape.ci <- boot.ci(results, type="bca", index=2)$bca[1,4:5] # shape
+
+ggplot(subset, aes(BMI)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth = 3) +
+  geom_line(aes(y = ..density.., colour = 'BMI'), stat = 'density') + 
+  stat_function(fun = dgamma, args=list(shape = mg7.bmi.shape, scale =mg7.bmi.scale), aes(colour = 'Gamma')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("BMI") + ggtitle("Histogram of BMI for Males and glyhb >7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are shape=**`r mg7.bmi.shape`** and scale=**`r mg7.bmi.scale`**. The corresponding Confidence intervals are **`r mg7.shape.ci`** and 8*`r mg7.scale.ci`**.
+
+##### WHR
+  
+library(stats4)
+data <- subset$WHR
+mle <- mle(LL, start = list(mu = 1, sigma=1))
+mg7.whr.mu <- coef(mle)[1]
+mg7.whr.sigma <- coef(mle)[2]
+
+# Confidence Inverval
+mg7.mu.ci <- t.test(data, mu = whr.mu)$conf.int
+df <- length(data) -1
+mg7.sigma.ci <- c(sd(data) * sqrt(df / qchisq(1-0.025,df)), sd(data) *sqrt( df / qchisq(0.025,df)))
+
+ggplot(subset, aes(WHR)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=.01) +
+  geom_line(aes(y = ..density.., colour = 'WHR'), stat = 'density') + 
+  stat_function(fun = dnorm, args=list(mean=mg7.whr.mu, sd=mg7.whr.sigma), aes(colour = 'Normal')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("WHR") + ggtitle("Histogram of WHR for Males and glyhb >7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are mu=**`r mg7.whr.mu`** and sigma=**`r mg7.whr.sigma`**. The corresponding Confidence intervals are **`r mg7.mu.ci`** and **`r mg7.sigma.ci`**.
+
+#### female and (glyhb > 7)
+##### BMI
+  
+subset <- diabetes2%>% filter(glyhb > 7 & gender == "female")
+
+fg7.bmi.mean <- mean(diabetes2$BMI)
+fg7.bmi.var <- var(diabetes2$BMI)
+fg7.bmi.shape = fg7.bmi.mean^2/fg7.bmi.var
+fg7.bmi.scale = fg7.bmi.var/fg7.bmi.mean
+
+# bootstrapping with 1000 replications 
+results <- boot(data=subset, statistic=bs, R=1000)
+
+# get 95% confidence intervals 
+fg7.scale.ci <- boot.ci(results, type="bca", index=1)$bca[1,4:5] # scale
+fg7.shape.ci <- boot.ci(results, type="bca", index=2)$bca[1,4:5] # shape
+
+ggplot(subset, aes(BMI)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth = 3) +
+  geom_line(aes(y = ..density.., colour = 'BMI'), stat = 'density') + 
+  stat_function(fun = dgamma, args=list(shape = fg7.bmi.shape, scale =fg7.bmi.scale), aes(colour = 'Gamma')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("BMI") + ggtitle("Histogram of BMI for Females and glyhb >7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are shape=**`r fg7.bmi.shape`** and scale=**`r fg7.bmi.scale`**. The corresponding Confidence intervals are **`r fg7.shape.ci`** and 8*`r fg7.scale.ci`**.
+
+##### WHR
+  
+library(stats4)
+data <- subset$WHR
+mle <- mle(LL, start = list(mu = 1, sigma=1))
+fg7.whr.mu <- coef(mle)[1]
+fg7.whr.sigma <- coef(mle)[2]
+
+# Confidence Inverval
+fg7.mu.ci <- t.test(data, mu = whr.mu)$conf.int
+df <- length(data) -1
+fg7.sigma.ci <- c(sd(data) * sqrt(df / qchisq(1-0.025,df)), sd(data) *sqrt( df / qchisq(0.025,df)))
+
+ggplot(subset, aes(WHR)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=.01) +
+  geom_line(aes(y = ..density.., colour = 'WHR'), stat = 'density') + 
+  stat_function(fun = dnorm, args=list(mean=fg7.whr.mu, sd=fg7.whr.sigma), aes(colour = 'Normal')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("WHR") + ggtitle("Histogram of WHR for Females and glyhb >7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+ #The model parameters are mu=**`r fg7.whr.mu`** and sigma=**`r fg7.whr.sigma`**. The corresponding Confidence intervals are **`r fg7.mu.ci`** and **`r fg7.sigma.ci`**.
+
+#### male and (glyhb < 7)
+##### BMI
+  
+subset <- diabetes2%>% filter(glyhb < 7 & gender == "male")
+
+ml7.bmi.mean <- mean(diabetes2$BMI)
+ml7.bmi.var <- var(diabetes2$BMI)
+ml7.bmi.shape = ml7.bmi.mean^2/ml7.bmi.var
+ml7.bmi.scale = ml7.bmi.var/ml7.bmi.mean
+
+# bootstrapping with 1000 replications 
+results <- boot(data=subset, statistic=bs, R=1000)
+
+# get 95% confidence intervals 
+ml7.scale.ci <- boot.ci(results, type="bca", index=1)$bca[1,4:5] # scale
+ml7.shape.ci <- boot.ci(results, type="bca", index=2)$bca[1,4:5] # shape
+
+ggplot(subset, aes(BMI)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth = 3) +
+  geom_line(aes(y = ..density.., colour = 'BMI'), stat = 'density') + 
+  stat_function(fun = dgamma, args=list(shape = ml7.bmi.shape, scale =ml7.bmi.scale), aes(colour = 'Gamma')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("BMI") + ggtitle("Histogram of BMI for Males and glyhb <7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are shape=**`r ml7.bmi.shape`** and scale=**`r ml7.bmi.scale`**. The corresponding Confidence intervals are **`r ml7.shape.ci`** and 8*`r ml7.scale.ci`**.
+
+##### WHR
+  
+library(stats4)
+data <- subset$WHR
+mle <- mle(LL, start = list(mu = 1, sigma=1))
+ml7.whr.mu <- coef(mle)[1]
+ml7.whr.sigma <- coef(mle)[2]
+
+# Confidence Inverval
+ml7.mu.ci <- t.test(data, mu = whr.mu)$conf.int
+df <- length(data) -1
+ml7.sigma.ci <- c(sd(data) * sqrt(df / qchisq(1-0.025,df)), sd(data) *sqrt( df / qchisq(0.025,df)))
+
+ggplot(subset, aes(WHR)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=.01) +
+  geom_line(aes(y = ..density.., colour = 'WHR'), stat = 'density') + 
+  stat_function(fun = dnorm, args=list(mean=ml7.whr.mu, sd=ml7.whr.sigma), aes(colour = 'Normal')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("WHR") + ggtitle("Histogram of WHR for Males and glyhb <7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are mu=**`r ml7.whr.mu`** and sigma=**`r ml7.whr.sigma`**. The corresponding Confidence intervals are **`r ml7.mu.ci`** and **`r ml7.sigma.ci`**.
+
+#### female and (glyhb < 7)
+##### BMI
+  
+subset <- diabetes2%>% filter(glyhb < 7 & gender == "female")
+
+fl7.bmi.mean <- mean(diabetes2$BMI)
+fl7.bmi.var <- var(diabetes2$BMI)
+fl7.bmi.shape = fl7.bmi.mean^2/fl7.bmi.var
+fl7.bmi.scale = fl7.bmi.var/fl7.bmi.mean
+
+# bootstrapping with 1000 replications 
+results <- boot(data=subset, statistic=bs, R=1000)
+
+# get 95% confidence intervals 
+fl7.scale.ci <- boot.ci(results, type="bca", index=1)$bca[1,4:5] # scale
+fl7.shape.ci <- boot.ci(results, type="bca", index=2)$bca[1,4:5] # shape
+
+ggplot(subset, aes(BMI)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth = 3) +
+  geom_line(aes(y = ..density.., colour = 'BMI'), stat = 'density') + 
+  stat_function(fun = dgamma, args=list(shape = fl7.bmi.shape, scale =fl7.bmi.scale), aes(colour = 'Gamma')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("BMI") + ggtitle("Histogram of BMI for Females and glyhb <7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are shape=**`r fl7.bmi.shape`** and scale=**`r fl7.bmi.scale`**. The corresponding Confidence intervals are **`r fl7.shape.ci`** and 8*`r fl7.scale.ci`**.
+
+##### WHR
+  
+library(stats4)
+data <- subset$WHR
+mle <- mle(LL, start = list(mu = 1, sigma=1))
+fl7.whr.mu <- coef(mle)[1]
+fl7.whr.sigma <- coef(mle)[2]
+
+# Confidence Inverval
+fl7.mu.ci <- t.test(data, mu = whr.mu)$conf.int
+df <- length(data) -1
+fl7.sigma.ci <- c(sd(data) * sqrt(df / qchisq(1-0.025,df)), sd(data) *sqrt( df / qchisq(0.025,df)))
+
+ggplot(subset, aes(WHR)) +
+  geom_histogram(aes(y = ..density..), , alpha = 0.3, binwidth=.01) +
+  geom_line(aes(y = ..density.., colour = 'WHR'), stat = 'density') + 
+  stat_function(fun = dnorm, args=list(mean=fl7.whr.mu, sd=fl7.whr.sigma), aes(colour = 'Normal')) +
+  scale_colour_manual(name = 'Density', values = c('red', 'blue')) +
+  ylab("Density") + xlab("WHR") + ggtitle("Histogram of WHR for Females and glyhb <7") +
+  theme_bw() + theme(legend.position = c(0.85, 0.85))
+ 
+
+# The model parameters are mu=**`r fl7.whr.mu`** and sigma=**`r fl7.whr.sigma`**. The corresponding Confidence intervals are **`r fl7.mu.ci`** and **`r fl7.sigma.ci`**.
+
+## Testing
+### 1. Are male and females equally exposed to type-II diabetes?
+# Type -II diabetes is measured by glyhb levels.
+  
+x <- diabetes2%>% filter(gender == "male") %>% select(contains("glyhb"))
+y <- diabetes2%>% filter(gender == "female") %>% select(contains("glyhb"))
+test <- t.test(x,y)
+test
+ 
+# As can be seen, the confidence Interval of the diffence in mean of glyhb levels between males and females is `r test$conf.int`. Since the interval contains zero, we accept the hypothesis that the diffence in mean is indeed zero. Therefore, **male and females equally exposed to type-II diabetes**.
+
+### 2. Pick your 5 favorite features (you may include the ratios if you want) and for each feature, test equality of means for those with type-II diabetes and those without. (use 5% significance level). Justify the test statistic (parametric or non-parametric) with arguments.
+
+# As seen from the feature box plot created for question 2.4, the most relevant features seem to be age, stab.glu, waist, bp.1s and hdl.
+
+# **x is the set of people having type-II diabetes and y is the set of people who do not have diabetes.**
+#### Age
+  
+x <- diabetes2%>% filter(glyhb > 7) %>% select(one_of(c("age")))
+y <- diabetes2%>% filter(glyhb < 7) %>% select(one_of(c("age")))
+test <- t.test(x,y)
+test
+ 
+# As can be seen, the confidence Interval of the diffence in mean of `x` and `y` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Older people are more likely to have diabetes**.
+
+#### Stabilized glucose levels
+  
+x <- diabetes2%>% filter(glyhb > 7) %>% select(contains("stab.glu"))
+y <- diabetes2%>% filter(glyhb < 7) %>% select(contains("stab.glu"))
+test <- t.test(x,y)
+test
+ 
+# As can be seen, the confidence Interval of the diffence in mean of `x` and `y` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **People with higher stabilized glucose levels are more likely to have diabetes**.
+
+#### Waist
+  
+x <- diabetes2%>% filter(glyhb > 7) %>% select(contains("waist"))
+y <- diabetes2%>% filter(glyhb < 7) %>% select(contains("waist"))
+test <- t.test(x,y)
+test
+ 
+# As can be seen, the confidence Interval of the diffence in mean of `x` and `y` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **People with more waist size are more likely to have diabetes**.
+
+#### First systolic blood pressure
+  
+x <- diabetes2%>% filter(glyhb > 7) %>% select(contains("bp.1s"))
+y <- diabetes2%>% filter(glyhb < 7) %>% select(contains("bp.1s"))
+test <- t.test(x,y)
+test
+ 
+# As can be seen, the confidence Interval of the diffence in mean of `x` and `y` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **People with higher first systolic blood pressure are more likely to have diabetes**.
+
+#### High density lipoprotein
+  
+x <- diabetes2%>% filter(glyhb > 7) %>% select(contains("hdl"))
+y <- diabetes2%>% filter(glyhb < 7) %>% select(contains("hdl"))
+test <- t.test(x,y)
+test
+ 
+# As can be seen, the confidence Interval of the diffence in mean of `x` and `y` is `r test$conf.int`. The p-value slighly greater than 0.05 and the confidence interval is below zero. **There is a weak evidence that people with higher `hdl` are less likely to have diabetes**.
+
+### Estimate the probability πBMI that a diabetic male has larger BMI than a non-diabetic male. Do the same for πWHR. Construct 95% confidence intervals for such estimated probability.
+#### BMI
+  
+x <- diabetes2%>% filter(glyhb > 7  & gender == "male") %>% select(one_of(c("BMI")))
+y <- diabetes2%>% filter(glyhb < 7  & gender == "male") %>% select(one_of(c("BMI")))
+test <- t.test(x,y)
+test
+ 
+# The required probability is **`r test$p.value`**. The confidence interval is `r test$conf.int`.
+
+#### BMI
+  
+x <- diabetes2%>% filter(glyhb > 7  & gender == "male") %>% select(one_of(c("WHR")))
+y <- diabetes2%>% filter(glyhb < 7  & gender == "male") %>% select(one_of(c("WHR")))
+test <- t.test(x,y)
+test
+ 
+# The required probability is **`r test$p.value`**. The confidence interval is `r test$conf.int`.
+
+### If you received a new male patient (assuming that it came from the same population) and only had access to his WHR, construct a test for type-II diabetes using the empirical distributions. Use significance alpha ??? 5% and compute its power.
+  
+cut.whr <- diabetes2[,c(7, 10, 20)]
+cut.whr <- cut.whr %>% filter(gender == "male")
+
+## Test for type-II diabetes
+t.test(cut.whr$WHR, diabetes2$WHR)
+
+## power
+delta <- mean(diabetes2$WHR) - mean(cut.whr$WHR)
+
+power <- power.t.test(n = length(cut.whr$WHR), delta = delta, sd = sd(cut.whr$WHR), type="one.sample")$power
+ 
+
+# **The power is `r power`.**
+
+### Using the categories of BMI given in Table 1, would you say that the male and female population sample has homogeneous distribution of such categories? What if you use the categories of WHR given by Table 2 instead?
+  
+bmi.dist <- diabetes2 %>% group_by(gender, BMI.standards) %>% summarise(no.rows = length(BMI.standards))
+ggplot(bmi.dist, aes(x=BMI.standards, y=no.rows)) + geom_point(shape=8) +
+  facet_wrap(~gender, ncol=1) + ylab("Frequency") + xlab("BMI Standards") + ggtitle("Frequency of BMI Standards") +  theme_bw()
+
+whr.dist <- diabetes2 %>% group_by(gender, WHR.standards) %>% summarise(no.rows = length(WHR.standards))
+ggplot(whr.dist, aes(x=WHR.standards, y=no.rows)) + geom_point(shape=8) +
+  facet_wrap(~gender) + ylab("Frequency") + xlab("WHR Standards") + ggtitle("Frequency of WHR Standards") +  theme_bw()
+ 
+
+# **As can be seen from the above plots, both the male and female populations sample have non-homogeneous distribution of BMI and WHR categories **
+
+### Use Tables 1 and 2 to test whether these features interact when it comes to detecting glybh. Use significance level 5%. Which of the two ratios is more sensitive to glybh in light of this analysis?
+  
+mean.bmi.cat <- diabetes2 %>% group_by(BMI.standards) %>% summarise(mean.glyhb = mean(glyhb))
+
+mean.whr.cat <- diabetes2 %>% group_by(WHR.standards) %>% summarise(mean.glyhb = mean(glyhb))
+
+test <- t.test(mean.bmi.cat$mean.glyhb, mean.whr.cat$mean.glyhb)
+ 
+
+# Since the p value = `r test$p.value`, we infer that there is no difference in the mean of `glyhb` levels across various BMI and WHR categories. 
+
+#### Adding an interaction term to see if there is a difference
+#Let's fit a linear regression model with `glyhb` as the output and `BMI`, `WHR` and `BMI:WHR` as the predictors
+  
+mod <- lm(glyhb ~ BMI + WHR + BMI*WHR, data = diabetes2)
+summary(mod)
+ 
+
+# The interaction term coefficient `r coef(mod)[4]`is very insignificant.**Thus there is no errect of the interaction term.**
+
+#### Sensitivity
+# The WHR coefficient = `r coef(mod)[3]` is far greater than the BMI coefficient `r coef(mod)[2]` implying that **glyhb is more sensitive to WHR**.
+  
+# Test for BMI Standards
+# t.test(mean.bmi.cat$mean.glyhb, mu = 7)
+
+# Test for WHR Standards
+# t.test(mean.whr.cat$mean.glyhb, mu = 7)
+ 
+
+# Since the `p-value` is smaller in the first case, we infer that the BMI Standrards is more sensitive to glybh.
+
+## Regression
+### Perform linear regression on glybh using the features that you consider most relevant for predicting type-II diabetes (you can of course include the ratios). Denote by yi the glybh level of patient i and by yˆi the predicted value from the linear regression.
+
+library(caret)
+
+fit <- lm(glyhb ~ age + stab.glu + waist + hdl + bp.1s, data = diabetes2)
+summary(fit)
+
+pred <- predict(fit, newdata = diabetes2)
+compare <- data.frame("glyhb" = diabetes2$glyhb, "pred.glyhb" = pred)
+
+compare <- compare %>% mutate(isDiabetic = cut(glyhb, breaks = c(0,6.99,20)), isDiabetic.pred = cut(pred.glyhb, breaks = c(0,6.99,20)))
+levels(compare$isDiabetic)  <- c("Non Diabetic", "Diabetic")
+levels(compare$isDiabetic.pred)  <- c("Non Diabetic", "Diabetic")
+
+confusion <- confusionMatrix(compare$isDiabetic.pred, compare$isDiabetic)
+compare <- compare %>% mutate(error = (glyhb<7 & pred.glyhb >7) | (glyhb>7 & pred.glyhb <7) )
+
+error <- (1- confusion$overall[1])*100
+ 
+
+# **The error rate using this model is `r error`%**.
+
+### Using the same threshold lambda = 7, compute the False Positives Rate (incorrectly reporting a non-diabetic subject as being diabetic) and the False Negatives Rate (incorrectly reporting a diabetic subject as being non-diabetic). Now, suppose that a False Negatives Rate larger than 10% is unacceptable. How would you modify λ to meet with the specifications? What False Positive Rate do you achieve in that case?
+  
+false.positive.rate <- (1-confusion$byClass[2])*100
+false.negative.rate <- (1-confusion$byClass[1])*100
+ 
+# **The false positive rate is `r false.positive.rate` and the false negative rate is `r false.negative.rate`. Since the false negative rate is less than 10%, our model is good and we need not change lambda to meet with the specifications.**
+
+### What are the features with the largest influence? Test whether hdl, bp 1s and bp 1d have any predictive value at 5% significance.
+
+# To be able to identify the features with the largest influence, we will have to create a model which explains the maximum variance. We build an initial model with all the variables as predictors and use both forward selection and backward elimination to arrive at the best model.
+
+
+fit.all <- lm(glyhb ~ ., data = diabetes2[,-c(1,2,8 )])
+fit.best <- step(fit.all, direction = "both")
+
+# The features with the largest influence can be obtained from the formula `r summary(fit.best)$call`.
+summary(fit.best)
+ 
+
+# The `fit.best` model explains about **`r summary(fit.best)$r.squared*100`%** of the variability.
+
+# **Since hdl, bp 1s and bp 1d are not part of the best model, they are not highly significant at 5% levels.**
+
+### If in Section 4, part 5 you concluded that both ratios interact, how would you use this information to improve your regression?
+# We concluded no such thing. The information is of no use in improving the regression.
+
+### Plot the residuals as a function of stab.glu and the ratios BMI, WHR. Can you come up with a transformation of the variables that stabilizes the variance of the residual errors?
+  
+residuals  <- diabetes2 %>% select(one_of(c("stab.glu", "BMI", "BMI.standards", "WHR", "WHR.standards"))) %>% mutate(residuals = residuals(fit.best))
+
+ggplot(residuals, aes(x=stab.glu, y=residuals)) + geom_point() + geom_hline(yintercept=0, colour="red") + ylab("Residuals") + xlab("stab.glu") + ggtitle("Residuals as a function of stab.glu") + theme_bw()
+
+ggplot(residuals, aes(x=BMI, y=residuals)) + geom_point() + geom_hline(yintercept=0, colour="red") + ylab("Residuals") + xlab("BMI") + ggtitle("Residuals as a function of BMI") + theme_bw()
+
+ggplot(residuals, aes(x=stab.glu, y=residuals)) + geom_point() + geom_hline(yintercept=0, colour="red") + ylab("Residuals") + xlab("WHR") + ggtitle("Residuals as a function of WHR") + theme_bw()
+ 
+
+# *Normalising the predicting variables can help in decreasing the variance in the residual errors.*
+
+### Perform Logistic Regression using the normalized input features and compare the performance with what you obtained in Section 5, part 2
+
+levels(cut.glyhb$isDiabetic)  <- c("Non Diabetic", "Diabetic")
+
+log.mod <- train(isDiabetic ~ ., data=cut.glyhb, method="glm",family=binomial, preProcess = c("center", "scale"))
+
+pred <- predict(log.mod, newdata = cut.glyhb)
+confusion <- confusionMatrix(pred, cut.glyhb$isDiabetic) 
+
+### Testing the two predictors on the held-out data from diabetes-test.csv. Do you obtain similar performance as in the training set? Can you justify why?
+testing <- read.csv("diabetes_test.csv", header=T)
+
+testing <- testing[,c(3, 4, 5,6,7,9, 11, 12, 13, 14, 15, 16, 17, 18)]
+testing <- testing %>% mutate(isDiabetic = cut(glyhb, breaks = c(0,6.99,20)))
+levels(testing$isDiabetic)  <- c("Non Diabetic", "Diabetic")
+## drop glyhb column
+testing$glyhb <- NULL
+
+pred.test <- predict(log.mod, newdata = testing)
+confusion.test <- confusionMatrix(pred.test, testing$isDiabetic)
+ 
+# **The logistic model performs better in the test set.**
+
+# The boxplot of various features for Testing data set is as follows:
+
+y <- melt(testing[,-8], id="isDiabetic") ## remove factor variable
+ggplot(y, aes(y = value, x = isDiabetic)) + geom_boxplot() + facet_wrap(~ variable, ncol=3, scales = "free") + ylab("value") + xlab("glyhb") + ggtitle("Boxplot of features based on glyhb") + theme_bw()
+ 
+
+# **As can be seen, the predicting variables form two disctinct groups (especially for `stab.glu`) resulting in better model performance.**
