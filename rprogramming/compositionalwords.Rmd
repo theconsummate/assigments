@@ -1,7 +1,9 @@
 ---
 title: "CompositionalWords"
 author: "Dhruv Mishra"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -13,15 +15,23 @@ setwd("/Users/dhruv/code/uni/assigments/rprogramming")
 
 ## Read the data
 ```{r}
-comp.ratings <- readLines("data/comp-ratings.txt") %>% lapply(function(l) {parts = unlist(strsplit(l, "\t")); paste(gsub("-n", "", parts[1]), gsub(" ", "\t", parts[2]), sep="\t")}) %>% unlist() %>% textConnection() %>% read.table(sep="\t", header=FALSE, row.names=NULL)
+comp.ratings <- readLines("data/comp-ratings.txt") %>%
+  lapply(function(l) {parts = unlist(strsplit(l, "\t")); 
+  paste(gsub("-n", "", parts[1]), gsub(" ", "\t", parts[2]), sep="\t")}) %>%
+  unlist() %>% textConnection() %>% read.table(sep="\t", header=FALSE, row.names=NULL)
 
-colnames(comp.ratings) <- c("Compound","Word1_mean","Word1_std","Word2_mean","Word2_std","Cpd_mean","Cpd_std","mean1*mean2")
+colnames(comp.ratings) <- c("Compound","Word1_mean","Word1_std","Word2_mean",
+                            "Word2_std","Cpd_mean","Cpd_std","mean1*mean2")
 
-comp.properties <- read.csv("data/comp-properties.txt", sep = "\t", row.names=NULL, na.strings=c("NA", "-", "?", "None"))
+comp.properties <- read.csv("data/comp-properties.txt", sep = "\t", 
+                            row.names=NULL, na.strings=c("NA", "-", "?", "None"))
 
-co.occ.compounts <- read.table("data/co-occ-compounds1.txt", header=FALSE, sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
+co.occ.compounts <- read.table("data/co-occ-compounds1.txt", header=FALSE, 
+                               sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
 
-co.occ.constituents <- read.table("data/co-occ-constituents1.txt", header=FALSE, sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
+co.occ.constituents <- read.table("data/co-occ-constituents1.txt", header=FALSE,
+                                  sep = "\t", stringsAsFactors=FALSE,
+                                  row.names=NULL)
 
 abstract.concrete <- read.csv("data/abstract-concrete.txt", sep = "\t")
 ```
@@ -51,21 +61,21 @@ comp <- inner_join(comp.ratings, comp.properties, by="Compound")
 test <- t.test(comp$Cpd_mean, comp$FreqComp)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `FreqComp` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to Compound frequency**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `FreqComp` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to Compound frequency**.
 
 ### 1.2 The frequencies of the modifiers
 ```{r}
 test <- t.test(comp$Cpd_mean, comp$FreqMod)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `FreqMod` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to Modifier frequency**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `FreqMod` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to Modifier frequency**.
 
 ### 1.3 The frequencies of the modifiers
 ```{r}
 test <- t.test(comp$Cpd_mean, comp$FreqHead)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `FreqHead` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to Head frequency**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `FreqHead` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to Head frequency**.
 
 **Therefore Compositionality is related to frequencies of compounds, modifiers and heads.**
 
@@ -74,14 +84,14 @@ As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` an
 test <- t.test(comp$Cpd_mean, comp$ProdMod)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `ProdMod` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to productivity of Modifier**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `ProdMod` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to productivity of Modifier**.
 
 ### 2.2 The productivities of heads
 ```{r}
 test <- t.test(comp$Cpd_mean, comp$ProdHead)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `ProdHead` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to productivity of Head**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `ProdHead` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to productivity of Head**.
 
 
 ### 3.1 The ambiguities of modifiers
@@ -89,7 +99,7 @@ As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` an
 test <- t.test(comp$Cpd_mean, comp$AmbMod)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `AmbMod` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to ambiguity of Modifier**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `AmbMod` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to ambiguity of Modifier**.
 
 
 ### 3.2 The ambiguities of heads
@@ -97,7 +107,7 @@ As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` an
 test <- t.test(comp$Cpd_mean, comp$AmbHead)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `AmbHead` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to ambiguity of Heads**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `AmbHead` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to ambiguity of Heads**.
 
 ## The degree of compositionality of the English compound ratings is related to their degree of concreteness/abstractness.
 ```{r}
@@ -105,4 +115,4 @@ ac <- inner_join(comp.ratings, abstract.concrete, by=c("Compound" = "Word"))
 test <- t.test(ac$Cpd_mean, ac$Conc.M)
 test
 ```
-As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `Conc.M` is `r test$conf.int`. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to the corresponding degree of concreteness/abstractness**.
+As can be seen, the confidence Interval of the diffence in mean of `Cpd_mean` and `Conc.M` is $`r test$conf.int`$. Since the p-value is very small (<0.05), we reject the null hypothesis. Therefore, **Compositionality is related to the corresponding degree of concreteness/abstractness**.
