@@ -1,5 +1,5 @@
 ---
-title: "CompositionalWords"
+title: "Compositional Words"
 author: "Dhruv Mishra"
 output:
   pdf_document: default
@@ -26,31 +26,66 @@ colnames(comp.ratings) <- c("Compound","Word1_mean","Word1_std","Word2_mean",
 comp.properties <- read.csv("data/comp-properties.txt", sep = "\t", 
                             row.names=NULL, na.strings=c("NA", "-", "?", "None"))
 
-co.occ.compounts <- read.table("data/co-occ-compounds1.txt", header=FALSE, 
-                               sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
-
-co.occ.constituents <- read.table("data/co-occ-constituents1.txt", header=FALSE,
-                                  sep = "\t", stringsAsFactors=FALSE,
-                                  row.names=NULL)
+# co.occ.compounts <- read.table("data/co-occ-compounds.txt", header=FALSE, 
+#                                sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
+# 
+# co.occ.constituents <- read.table("data/co-occ-constituents.txt", header=FALSE,
+#                                   sep = "\t", stringsAsFactors=FALSE,
+#                                   row.names=NULL)
 
 abstract.concrete <- read.csv("data/abstract-concrete.txt", sep = "\t")
 ```
 
 ## Descriptive Statistics and Plots
 ### Compositionality ratings
-```{r}
+```{r, fig.height=2, fig.width=9}
 summary(comp.ratings)
-
-g <- ggplot(comp.ratings, aes(Word1_mean, Cpd_mean))
+```
+```{r, echo=FALSE, fig.height=3, fig.width=9}
+g <- ggplot(comp.ratings, aes(Word1_mean, Cpd_mean)) + ggtitle("Compound mean vs Word1 mean")
 g + geom_jitter() + geom_smooth()
 
-g <- ggplot(comp.ratings, aes(Word2_mean, Cpd_mean))
+g <- ggplot(comp.ratings, aes(Word2_mean, Cpd_mean)) + ggtitle("Compound mean vs Word2 mean")
 g + geom_jitter() + geom_smooth()
 ```
 
 ### Compositionality properties
 ```{r}
 summary(comp.properties)
+```
+```{r, echo=FALSE, fig.height=2, fig.width=9, warning=FALSE}
+g <- ggplot(comp.properties, aes(FreqComp)) + ggtitle("Frequency of Compound")
+g + geom_density()
+
+g <- ggplot(comp.properties, aes(FreqMod)) + ggtitle("Frequency of Modifier")
+g + geom_density()
+
+g <- ggplot(comp.properties, aes(FreqHead)) + ggtitle("Frequency of Head")
+g + geom_density()
+
+g <- ggplot(comp.properties, aes(ProdMod)) + ggtitle("Productivity of Modifier")
+g + geom_density()
+
+g <- ggplot(comp.properties, aes(ProdHead)) + ggtitle("Productivity of Head")
+g + geom_density()
+
+g <- ggplot(comp.properties, aes(AmbMod)) + ggtitle("Ambiguity of Modifier")
+g + geom_density()
+
+g <- ggplot(comp.properties, aes(AmbHead)) + ggtitle("Ambiguity of Head")
+g + geom_density()
+```
+
+### Abstractness/Concreteness
+```{r}
+summary(abstract.concrete)
+```
+```{r, echo=FALSE, fig.height=2, fig.width=9}
+g <- ggplot(abstract.concrete, aes(Conc.M)) + ggtitle("Concreteness Mean")
+g + geom_density()
+
+g <- ggplot(abstract.concrete, aes(Conc.SD)) + ggtitle("Concreteness Standard deviation")
+g + geom_density()
 ```
 
 
