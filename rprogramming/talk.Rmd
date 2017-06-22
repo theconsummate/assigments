@@ -1,0 +1,65 @@
+---
+title: "Compositional Words"
+author: "Dhruv Mishra"
+date: "6/22/2017"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(ggplot2)
+library(dplyr)
+setwd("/Users/dhruv/code/uni/assigments/rprogramming")
+
+comp.ratings <- readLines("data/comp-ratings.txt") %>%
+  lapply(function(l) {parts = unlist(strsplit(l, "\t")); 
+  paste(gsub("-n", "", parts[1]), gsub(" ", "\t", parts[2]), sep="\t")}) %>%
+  unlist() %>% textConnection() %>% read.table(sep="\t", header=FALSE, row.names=NULL)
+
+colnames(comp.ratings) <- c("Compound","Word1_mean","Word1_std","Word2_mean",
+                            "Word2_std","Cpd_mean","Cpd_std","mean1*mean2")
+
+comp.properties <- read.csv("data/comp-properties.txt", sep = "\t", 
+                            row.names=NULL, na.strings=c("NA", "-", "?", "None"))
+
+# co.occ.compounts <- read.table("data/co-occ-compounds.txt", header=FALSE, 
+#                                sep = "\t", stringsAsFactors=FALSE, row.names=NULL)
+# 
+# co.occ.constituents <- read.table("data/co-occ-constituents.txt", header=FALSE,
+#                                   sep = "\t", stringsAsFactors=FALSE,
+#                                   row.names=NULL)
+
+abstract.concrete <- read.csv("data/abstract-concrete.txt", sep = "\t")
+ac <- inner_join(comp.ratings, abstract.concrete, by=c("Compound" = "Word"))
+```
+
+## Abstractness/Concreteness: Summary
+
+```{r, echo=TRUE}
+summary(abstract.concrete$Conc.M)
+summary(abstract.concrete$Conc.SD)
+```
+
+## Abstractness/Concreteness: Plots
+```{r, echo=FALSE, fig.height=2, fig.width=7}
+g <- ggplot(abstract.concrete, aes(Conc.M)) + ggtitle("Concreteness Mean")
+g + geom_density()
+
+g <- ggplot(abstract.concrete, aes(Conc.SD)) + ggtitle("Concreteness Standard deviation")
+g + geom_density()
+```
+
+## Hypothesis Testing procedure
+
+- Perform the t-test.
+- Compute the confidence interval (just for fun!) and p-value
+- Null hypothesis: The two sequences are not related to each other.
+- if p-value < 0.05, we reject the null hypothesis.
+
+## Is Compositionality rating related to Abstractness/Concreteness
+
+```{r, echo=TRUE}
+test <- t.test(ac$Cpd_mean, ac$Conc.M)
+test
+```
+
