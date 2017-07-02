@@ -3,10 +3,12 @@
 ## 1.1 RDFS Formal Models
 #### $I_1$ where *ex:machinelearning ex:likes ex:semanticweb* is true
 Assumptions:
+
 - ex:machinelearning is a ex:Person
 - ex:likes to be equivalent to ex:likesBooks
 
 Set Model:
+
 - D = {semanticweb, john, machinelearning}
 - $(ex:semanticweb)^I = semanticweb$
 - $(ex:john)^I = john$
@@ -21,11 +23,13 @@ The given triple is true because ex:likes is a relationship from ex:Person to ex
 
 #### $I_2$ where *ex:machinelearning ex:likes ex:semanticweb* is false
 Assumptions:
+
 - ex:machinelearning is a ex:Textbook
 - ex:likes is a superclass of ex:likesBooks because the latter can be considered as a specific case of the former.
 - ex:likes has the same constraint as that of ex:likesBook
 
 Set Model:
+
 - D = {semanticweb, john, machinelearning}
 - $(ex:semanticweb)^I = semanticweb$
 - $(ex:john)^I = john$
@@ -48,10 +52,12 @@ The give triple does not hold as the contraint on ex:likes does not hold because
 ## 1.2 Soundness of rules
 #### RDFS range rule
 Assume the following triples:
+
 - ex:p rdfs:domain ex:A
 - ex:X ex:p ex:Y
 
 Let (I, $.^iI$) be an arbitary model, then it follows that
+
 1. $Dom(p^I) \subseteq (ex:A)^I$
 2. $((ex:X)^I, (ex:Y)^I) \in (ex:p)^I$
 
@@ -59,10 +65,12 @@ Therefore from 1 and 2, it follows that $(ex:X)^I \in (ex:A)^I$ which is the tri
 
 #### RDFS domain rule
 Assume the following triples:
+
 - ex:p rdfs:range ex:B
 - ex:X ex:p ex:Y
 
 Let (I, $.^iI$) be an arbitary model, then it follows that
+
 1. $Ran(p^I) \subseteq (ex:A)^I$
 2. $((ex:X)^I, (ex:Y)^I) \in (ex:p)^I$
 
@@ -70,10 +78,12 @@ Therefore from 1 and 2, it follows that $(ex:Y)^I \in (ex:B)^I$ which is the tri
 
 #### RDFS subclass transitivity rule
 Assume the following triples:
+
 - ex:A rdfs:subClassOf ex:B
 - ex:B ex:subClassOf ex:C
 
 Let (I, $.^iI$) be an arbitary model, then it follows that
+
 1. $(ex:A)^I \subseteq (ex:B)^I$
 2. $(ex:B)^I \subseteq (ex:C)^I$
 
@@ -81,10 +91,12 @@ Therefore from 1 and 2, it follows that $(ex:A)^I \subseteq (ex:C)^I$ which is t
 
 #### RDFS subproperty rule
 Assume the following triples:
+
 - ex:subp rdfs:subPropertyOf ex:p
 - ex:X rdfs:subp ex:Y
 
 Let (I, $.^iI$) be an arbitary model, then it follows that
+
 1. $(ex:subp)^I \subseteq (ex:p)^I$
 2. $((ex:X)^I, (ex:Y)^I) \in (ex:subp)^I$
 
