@@ -37,11 +37,13 @@ fully 3,4,2(owl--partially)
 ]
 
 7. Use any element of OWL to say something that makes sense in this domain. Give the OWL statemtent(s) and a short textual description (1-2 sentences).
+- A city can't be a mountain (ex:City, ex:Mountain)
+- ex:City owl:disjointWith ex:Mountain
 
-## 2.1 Descriptive Logic Ontologies
+## 3. Equivalence
+### 3.1 OWL DL Equivalence
 
-## 2.2 Descriptive Logic Reasoning
+### 3.2 SPARQL Equivalence
+1. **Not Equivalent**: The two queries are not equivalent because if there are duplicate records in the database, the second query will return only unique values whereas the first query will return duplicates as well.
 
-## 2.3 Descriptive Logic Semantics
-
-## Protege
+2. **Equivalent**: The order in which the birth year filter is applied does not matter.
