@@ -1,5 +1,6 @@
 # Solutions to Exercise Sheet 3, Semantic Web
 
+
 ## 1. OWL Modelling
 1. The Khumbu is a Nepalese region, a Nepalese region is a region. (ex:Khumbu, ex:NepaleseRegion, ex:Region)
 - ex:Khumbu rdf:type ex:NepaleseRegion
@@ -46,36 +47,36 @@
 - new class Fiction as a subclass of Book which is disjoint from Textbook.
 - new instances which are different from each other.
 
-There is inconsistency.
+There is no inconsistency.
 
 ## 3. Equivalence
 ### 3.1 OWL DL Equivalence
-1. ∃≥1r.A ≡ ∃r.A
-- ∃≥1r.A implies the subset of A having more than at least one item satisfying the restriction. This is equivalent as having some values satisfy the restriction as implied by ∃r.A
+1. $\exists _{\geq 1} r.A \equiv \exists r.A$
+- $\exists _{\geq 1} r.A$ implies the subset of A having more than at least one item satisfying the restriction. This is equivalent as having some values satisfy the restriction as implied by $\exists r.A$
 
-2. ¬(¬A⊓¬B)≡A⊔B
+2. $\neg (\neg A \cap\neg B) \equiv A \cup B$
 For a given set x, the following relations hold:
-- x + ¬x = U (U is the entire universe)
-- x⊓¬x = ⊥
+- $x + \neg x = U$ (U is the entire universe)
+- $x \cap\neg x = \perp$
 
-Therefore it is sufficient to prove the (A⊔B)⊔(¬A⊓¬B) = U and (A⊔B)⊓(¬A⊓¬B) = ⊥
+Therefore it is sufficient to prove the $(A \cup B) \cup (\neg A \cap\neg B) = U$ and $(A \cup B) \cap(\neg A \cap\neg B) =  \perp$
 
-- (A⊔B)⊔(¬A⊓¬B) = ( (A⊔B) ⊔ ¬A ) ⊓ ( (A⊔B) ⊔ ¬B )
-                = (B ⊔ U) ⊓ (A ⊔ U)
-                = U ⊓ U
+- $(A \cup B) \cup (\neg A \cap\neg B)$ = $( (A \cup B)  \cup  \neg A )  \cap ( (A \cup B)  \cup  \neg B )$
+                = $(B  \cup  U)  \cap (A  \cup  U)$
+                = $U  \cap U$
                 = U
 
-- (A⊔B)⊓(¬A⊓¬B) = ( (¬A⊓¬B) ⊓ A) ⊔ ( (¬A⊓¬B) ⊓ B)
-                = ( ¬B ⊓ ⊥) ⊔ ( ¬A ⊓ ⊥)
-                = (⊥) ⊔ (⊥)
-                = ⊥
+- $(A \cup B) \cap(\neg A \cap\neg B) = ( (\neg A \cap\neg B)  \cap A)  \cup  ( (\neg A \cap\neg B)  \cap B)$
+                =$( \neg B  \cap  \perp)  \cup  ( \neg A  \cap  \perp)$
+                =$( \perp)  \cup  ( \perp)$
+                =$\perp$
 
-3. A⊓A≡A
+3. $A \cap A \equiv A$
 This is true because the intersection of a set A with itself will contain all the elements in the original set.
 
-4. A⊓⊥ ≡ ¬(A⊔¬A)
-- A⊓⊥ = ⊥
-- ¬(A⊔¬A) = ¬(U) = ⊥
+4. $A \cap \perp  \equiv  \neg (A \cup \neg A)$
+- $A \cap \perp =  \perp$
+- $\neg(A \cup \neg A) = \neg(U) =  \perp$
 
 ### 3.2 SPARQL Equivalence
 1. **Not Equivalent**:
