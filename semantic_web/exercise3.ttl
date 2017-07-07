@@ -1,0 +1,30 @@
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix schema: <http://schema.org/> .
+@prefix : <http://example.org/#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+
+:Reader rdfs:subClassOf :Person.
+:likesBook rdfs:domain :Person.
+:Textbook rdfs:subClassOf :Book.
+:likesBook rdfs:range :Book.
+:john a :Reader.
+:semanticweb a :Textbook.
+:john :likesBook :semanticweb.
+
+:isLikedBy rdfs:domain :Book.
+:isLikedBy rdfs:range :Person.
+:likesBook owl:inverseOf :isLikedBy.
+
+:steve a :Reader.
+:machinelearning a :Textbook.
+
+:steve owl:differentFrom :john.
+:machinelearning owl:differentFrom :semanticweb.
+
+:Fiction rdfs:subClassOf :Book.
+:Fiction owl:disjointWith :Textbook.
+

@@ -1,5 +1,4 @@
 # Solutions to Exercise Sheet 3, Semantic Web
-fully 3,4,2(owl--partially)
 
 ## 1. OWL Modelling
 1. The Khumbu is a Nepalese region, a Nepalese region is a region. (ex:Khumbu, ex:NepaleseRegion, ex:Region)
@@ -40,10 +39,49 @@ fully 3,4,2(owl--partially)
 - A city can't be a mountain (ex:City, ex:Mountain)
 - ex:City owl:disjointWith ex:Mountain
 
+### 2. Protege
+#### Additions to the ontology
+- rdf:type Book as a superclass of Textbook
+- inverse property isLikeBy of likesBook
+- new class Fiction as a subclass of Book which is disjoint from Textbook.
+- new instances which are different from each other.
+
+There is inconsistency.
+
 ## 3. Equivalence
 ### 3.1 OWL DL Equivalence
+1. ∃≥1r.A ≡ ∃r.A
+- ∃≥1r.A implies the subset of A having more than at least one item satisfying the restriction. This is equivalent as having some values satisfy the restriction as implied by ∃r.A
+
+2. ¬(¬A⊓¬B)≡A⊔B
+For a given set x, the following relations hold:
+- x + ¬x = U (U is the entire universe)
+- x⊓¬x = ⊥
+
+Therefore it is sufficient to prove the (A⊔B)⊔(¬A⊓¬B) = U and (A⊔B)⊓(¬A⊓¬B) = ⊥
+
+- (A⊔B)⊔(¬A⊓¬B) = ( (A⊔B) ⊔ ¬A ) ⊓ ( (A⊔B) ⊔ ¬B )
+                = (B ⊔ U) ⊓ (A ⊔ U)
+                = U ⊓ U
+                = U
+
+- (A⊔B)⊓(¬A⊓¬B) = ( (¬A⊓¬B) ⊓ A) ⊔ ( (¬A⊓¬B) ⊓ B)
+                = ( ¬B ⊓ ⊥) ⊔ ( ¬A ⊓ ⊥)
+                = (⊥) ⊔ (⊥)
+                = ⊥
+
+3. A⊓A≡A
+This is true because the intersection of a set A with itself will contain all the elements in the original set.
+
+4. A⊓⊥ ≡ ¬(A⊔¬A)
+- A⊓⊥ = ⊥
+- ¬(A⊔¬A) = ¬(U) = ⊥
 
 ### 3.2 SPARQL Equivalence
-1. **Not Equivalent**: The two queries are not equivalent because if there are duplicate records in the database, the second query will return only unique values whereas the first query will return duplicates as well.
+1. **Not Equivalent**:
+- The two queries are not equivalent because ordering is different. In the first case, the default ordering is ascending whereas in the second one, it is descending.
+- The main difference is in the Order by part.
 
-2. **Equivalent**: The order in which the birth year filter is applied does not matter.
+2. **Equivalent**:
+- The order in which the birth year filter is applied does not matter.
+- The main difference is the filter part. In first query, the explicit FILTER keyword is used whereas in the second query, equality check is used.
