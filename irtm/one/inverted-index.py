@@ -3,6 +3,7 @@
 import sys
 import logging
 import os.path
+import bisect
 
 
 logging.basicConfig(format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
@@ -17,7 +18,7 @@ def index(filename):
         for token in cols[4].split():
             if token in dictionary:
                 dictionary[token]["size"] += 1
-                posting_list[dictionary[token]["posting_list_index"]].append(cols[1])
+                bisect.insort(posting_list[dictionary[token]["posting_list_index"]], cols[1])
             else:
                 dictionary[token] = {"size": 1, "posting_list_index": len(posting_list)}
                 posting_list.append([])
