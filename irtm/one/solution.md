@@ -1,4 +1,4 @@
-# assignement 1
+# Assignment 1
 
 ## Task1
 ### Subtask a
@@ -15,58 +15,53 @@ nice -> 1-3-9
 ### Subtask b
 using $\sqrt{length}$ formula for optimized skipping
 
-$\sqrt{5}$=2 is the skipping
+$\sqrt{5}$=2 is the skipping step length
 
-rewritting,
-skipped inverted index list
-he   -> 1-4-9
+rewritting, the inverted index with skip pointers will be:
 
-she  -> 2-6-8
+he   -> 1-2-4-5-9 + 1-4-9
+
+she  -> 2-3-6-7-8 + 2-6-8
 
 is   -> 1
 
-nice -> 1-9
+nice -> 1-3-9 + 1-9
 
-@dhruv Example pending
+#### Example query
+For the query "he" AND "nice", the simple inverted index will require 5 steps for the postings list of "he" and 3 steps for the postings list of "nice". With skip pointers, the 4-9 link will be used in the postings list of "he" to avoid going through 5, thus increasing the efficiency.
 
 ## Task 2
-Yes, Because skip pointers are used  if we are intersecting postings (in AND scenarios) thus making it more efficent.
+No because skip pointers are only effective if we are intersecting postings (in AND scenarios) thus making it more efficent. They have no effect on conjunction required in OR queries.
 
 ## Task 3
-@dhruv update the answer
 For car, we are going to store the following in B tree where $ is a special symbol :
 car$,
 ar$c,
 r$ca,
 $car
 
-For X*Y,
-look up
+For X*Y, look up Y$X* query which answers
 
-Y$X*
-query which answers
+- c\*r => r$c*
 
-c*r
-
-=> r$c*
+The string r$ca is finally used for answering this query.
 
 ## Task 4
+For Gates \2 Microsoft, it is required that if the doc id is same, the difference between position index of Microsoft and Gates should be equal to 2.
 
-Doc id : term(occurences list)
+The following comparisions are made:
 
-Doc 1 : Gates(3) Microsoft(1)
-
-Doc 2 : Gates(6) Microsoft(1,21)
-
-Doc 3 : Gates(2,17) IBM(3) Microsoft(3)
-
-Doc 4 : Gates(1)
-
-Doc 5 : Microsoft(16,22,51)
-
-Doc 7 : IBM(14)
-
-/k means positional comparisons are made for querying.
+- The pointers for Gates and Microsoft start from the first document in their respective postings list.
+- Gates, doc 1 with Microsoft, doc 1 -> doc id is same, move inside position list
+- Gates, doc 1, pos 3 with Microsoft, doc 1, pos 1 -> difference is 2, add Doc 1 to result set, move both pointers to next doc as the position list has ended.
+- Gates, doc 2 with Microsoft, doc 2 -> doc id is same, move inside position list
+- Gates, doc 2, pos 6 with Microsoft, doc 2, pos 1-> Difference not equal to 2, move Microsoft pos pointer forward
+- Gates, doc 2, pos 6 with Microsoft, doc 2, pos 21-> Difference not equal to 2, end of list for Gates, move both pointers to next doc
+- Gates, doc 3 with Microsoft, doc 3 -> doc id is same, move inside position index
+- Gates, doc 3, pos 2 with Microsoft, doc 3, pos 2-> Difference not equal to 2, move Gates pos pointer forward
+- Gates, doc 3, pos 17 with Microsoft, doc 3, pos 2-> Difference not equal to 2, end of list for Microsoft, move both pointers forward to next doc
+- Gates, doc 4 with Microsoft, doc 5 -> doc id is not same, move Gates to next doc
+- End of postings list for Gates -> Exit and return result set
 
 The result is Doc 1 because Gates is in 3rd postion and it is 2 spaces far from Microsoft which is in 1st position.
 
@@ -74,13 +69,14 @@ The result is Doc 1 because Gates is in 3rd postion and it is 2 spaces far from 
 Explain more @dhruv
 
 **Permuterm index**
+
 _Advantages_
 
-No postfiltering
+- No postfiltering is required as the result is exact.
 
 _Disadvantages_
 
-Takes lot of space as in wildcard queries, we have to store all combinations of string modification with special symbol in B tree. eg hello ->
+Takes lot of space as in wildcard queries as we have to store all combinations of string modification with special symbol in B tree. eg hello ->
 hello$,
 ello$h,
 llo$he,
@@ -90,6 +86,13 @@ $hello
 
 **K gram index**
 
+_Advantages_
+
+- The postings list is smaller because the number k-grams of a given word is less than all the possible permutations of it. The magnitude of difference is more exemplified in case of bigger words (i.e. having more characters).
+
+_Disadvantages_
+
+- Postfiltering is required to eliminate false positives. For example, while quering red* the boolean query $re AND red can also return "repaired" as a false postive.
 
 ## Task 6
 
@@ -106,5 +109,8 @@ $hello
  The last cell or bottom right cell is the Levenshtein distance ie in this case it is 2.
 
  ## Task 7
+Querying l$re will work if we check each term returned from this query against re*v*l and only search the inverted index for those terms satisfying re*v*l
 
- @dhruv answer this
+The problem with this method is that the permuterm index is quite large since it contains all rotations of each term obtained from the intersection performed above.
+
+One way to solve this problem is to reduce the number of terms for which we have to store the permuterm index. This can be done by quering "l$re AND v" and perform the intersection with the result of this query. The resulting number of terms satisfying re*v*l will be less in this case.
