@@ -10,12 +10,13 @@ logging.basicConfig(format='%(asctime)s [%(levelname)s]\t%(message)s', level=log
 dictionary = dict()
 posting_list = []
 
+
 def index(filename):
     global dictionary, posting_list
-    f = open(filename)    
+    f = open(filename)
     for line in f.readlines():
         cols = line.strip().split("\t")
-        if len(cols)<5:
+        if len(cols) < 5:
             # insufficient columns, skipping this document
             continue
         for token in cols[4].split():
@@ -36,6 +37,7 @@ def single_query(term):
     else:
         return []
 
+
 def query(term, *args):
     if len(args) == 0:
         return single_query(term)
@@ -50,12 +52,13 @@ def query(term, *args):
                 l.append(ll1)
                 ll1 = l1.next()
                 ll2 = l2.next()
-            elif ll1<ll2:
+            elif ll1 < ll2:
                 ll1 = l1.next()
             else:
                 ll2 = l2.next()
     except StopIteration as ex:
         return l
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 2:
@@ -66,8 +69,8 @@ if __name__ == '__main__':
         logging.debug("input filename is " + sys.argv[1])
         if os.path.isfile(sys.argv[1]):
             index(sys.argv[1])
-            print query("stuttgart")
-            print query("bahn")
-            print query("stuttgart", "bahn")
+            logging.debug(query("stuttgart"))
+            logging.debug(query("bahn"))
+            logging.debug(query("stuttgart", "bahn"))
         else:
             logging.error("input file is not present")
