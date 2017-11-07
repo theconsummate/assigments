@@ -37,7 +37,8 @@ def index(filename):
             # increase it's frequency by 1 and insert the tweet id in the postings list
             if token in dictionary:
                 dictionary[token]["size"] += 1
-                bisect.insort(posting_list[dictionary[token]["posting_list_index"]], cols[1])
+                bisect.insort(posting_list[dictionary[token]["posting_list_index"]],
+                              cols[1])
 
             # new token encountered. Insert it into our data structures
             else:
