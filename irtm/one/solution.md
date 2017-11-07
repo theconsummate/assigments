@@ -40,7 +40,8 @@ ar$c,
 r$ca,
 $car
 
-For X*Y, look up Y$X* query which answers
+For X*
+Y, look up Y$X* query which answers
 
 - c\*r => r$c*
 
@@ -66,7 +67,6 @@ The following comparisions are made:
 The result is Doc 1 because Gates is in 3rd postion and it is 2 spaces far from Microsoft which is in 1st position.
 
 ## Task 5
-Explain more @dhruv
 
 **Permuterm index**
 
@@ -76,7 +76,7 @@ _Advantages_
 
 _Disadvantages_
 
-Takes lot of space as in wildcard queries as we have to store all combinations of string modification with special symbol in B tree. eg hello ->
+- Takes lot of space as in wildcard queries as we have to store all combinations of string modification with special symbol in B tree. eg hello ->
 hello$,
 ello$h,
 llo$he,
@@ -96,6 +96,9 @@ _Disadvantages_
 
 ## Task 6
 
+__Levenshtein distance__
+
+
 |   |   | F | L | O | U | R |
 | --- | --- | --- | --- | --- | --- | ---|
 |  | 0 | 1 | 2 | 3 | 4 | 5|
@@ -106,7 +109,29 @@ _Disadvantages_
 | E | 5 | 4 | 3 | 2 | 2 | 2|
 | R | 6 | 5 | 4 | 3 | 3 | 2 |
 
+
  The last cell or bottom right cell is the Levenshtein distance ie in this case it is 2.
+
+Explanation : 
+
+| Cost | Operation | Input | Output |
+| --- | --- | --- | --- | 
+| 0|(copy) |F |F |
+| 0|(copy)) |L |L |
+| 0|(copy) |O |O |
+| 1|replace |W |U |
+| 2|delete |E | * |
+| 2|(copy) |R|R|
+
+On comparing FLOWER and FLOUR, 
+- since both letters are 'F', we only copy it, cost incurred in this process is 0.
+- similarly for 'L' & 'O', cost incurred is 0.
+- since input and output letter ie 'W' and 'U', cost incurred for replacing is 1.
+- since 'FLOWER' and 'FLOUR' are of different length, so deleting 1 character. Cost incurred is 1.
+- since both letters are same ie 'R', cost incurred is 0. 
+Hence the total cost is 2.
+
+
 
  ## Task 7
 Querying l$re will work if we check each term returned from this query against re*v*l and only search the inverted index for those terms satisfying re*v*l
