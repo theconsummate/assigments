@@ -16,8 +16,55 @@ Authors:
 
 ## Task 5
 
-## Task 6
+### Subtask 5.1
+M = K$T^{b}$
+Taking $log_{10}$ on both sides of the above equation,
 
+=> $log_{10}K$ + b$log_{10}T$  = $log_{10}M$
+
+Substituting values and solving in the above equation, we get 
+
+a)
+M  = $10^5$ 
+ 
+T = $10^7$
+
+$log_{10}(K)$ + 7b = 5
+
+b)
+M  = $30000$ 
+ 
+T = $10^6$
+
+$log_{10}(K)$ + 7b = 5
+
+$log_{10}(K)$ + 6b = 4.477121254719662
+
+Solving equation a) and b), we get 
+K = 21.8699, b = 0.522879 
+
+### Subtask 5.2
+M = K$T^{b}$
+
+Substituting values of K, T and  b in the Eqn
+ 
+ M = 1111111.89571 
+ 
+ => M = 1111112 
+
+
+## Task 6
+Zipf’s law holds exactly for this collection ie (a > b > c > d) 
+Assuming the value of a be x
+then, 
+
+a = $\frac{x}{1}$ , b = $\frac{x}{2}$ , c = $\frac{x}{3}$  , d  = $\frac{x}{4}$
+
+$\frac{25x}{12}$=6000
+
+solving for x, x = 2880.
+
+Hence a = 2880, b = 1440, c = 960, d = 720 
 
 ## Task 7
 
