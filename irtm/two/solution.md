@@ -67,6 +67,17 @@ solving for x, x = 2880.
 Hence a = 2880, b = 1440, c = 960, d = 720 
 
 ## Task 7
+ $217_{10}$
+
+In VB code: 0000 0001 1101 1001
+
+In Gamma Code:
+
+Offset = 101 1001
+
+Length $7_{10}$ = $11111110_1$
+
+Gamma code: 11111110 1011001
 
 ## Task 8
 
