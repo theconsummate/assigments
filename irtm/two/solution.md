@@ -7,8 +7,110 @@ Authors:
 
 
 ## Task1
+Jaccard index, J(A,B) = $\frac{A {\bigcap} B}{A {\bigcup} B}$
+
+q = algorithm intersection
+
+d1  = the intersection algorithm for two documents is efficient
+
+d2 = intersection of two or more objects is another smaller object
+
+d3 = intersection algorithm
+
+Rewriting in set forms
+
+q = {algorithm , intersection}
+
+d1  = { the , intersection , algorithm , for , two,  documents , is , efficient }
+
+d2 = { intersection , of , two , or , more  , objects , is , another , smaller , object }
+
+d3 = { intersection , algorithm}
+Substituting the values in above formula, we get
+
+J(q,d1) = $\frac{1}{4}$ = 0.25
+
+J(q,d2) = $\frac{1}{10}$ = 0.1
+
+J(q,d3) = $1$
 
 ## Task 2
+Normalized Term Frequency(tf)
+
+tf (algorithm) in q = 1/2 = 0.5
+
+tf(algorithm) in d1 = 1/8 = 0.125
+
+tf(algorithm) in d2 = 0/10 = 0.0
+
+tf(algorithm) in d3 = 1/2 = 0.5
+
+tf (intersection) in q = 1/2 = 0.5
+
+tf(intersection) in d1 = 1/8 = 0.125
+
+tf(intersection) in d2 = 1/10 = 0.1
+
+tf(intersection) in d3 = 1/2 = 0.5
+
+
+Inverse Document Frequency (idf)
+
+idf(algorithm)  = 1 + $log(\frac{3}{2}) \equiv$ 1.18
+
+idf(intersection) = 1 + $log(\frac{3}{3})$ = 1
+
+|Document|term|tf|idf|tf*idf|
+|---|---|---|---|---|
+|q|algorithm|0.5|1.18|0.59|
+|d1|algorithm|0.125|1.18|0.1475|
+|d2|algorithm|0.0|1.18|0.0|
+|d3|algorithm|0.5|1.18|0.59|
+|q|intersection|0.5|1.0|0.5|
+|d1|intersection|0.125|1.0|0.125|
+|d2|intersection|0.1|1.0|0.1|
+|d3|intersection|0.5|1.0|0.5|
+
+
+a) Query and Document1
+
+Dot product(Query, Document1)
+     = ((0.59) * (0.1475) + (0.5) * (0.125))
+     = 0.147025
+
+||Query|| = $\sqrt{(0.59)^2 + (0.5)^2}$ = 0.7734
+
+||Document1|| = $\sqrt{(0.1475)^2 + (0.125)^2)}$ =  0.1933
+
+Cosine Similarity(Query, Document1) = 0.147025 / 0.14949822
+                                        = 0.98356
+
+b) Query and Document2
+
+Dot product(Query, Document2)
+     = ((0.59) * (0.0) + (0.5) * (0.125))
+     = 0.0625
+
+||Query|| = $\sqrt{(0.59)^2 + (0.5)2^2}$ = 0.7734
+
+||Document2|| = $\sqrt{(0.0)^2 + (0.1)^2}$ = 0.1
+
+Cosine Similarity(Query, Document2) = 0.0625 / 0.07734
+                                    = 0.8082
+
+c) Query and Document3
+
+Dot product(Query, Document1)
+     = ((0.59) * (0.59) + (0.5) * (0.5))
+     = 0.5981
+
+||Query|| = $\sqrt{(0.59)^2 + (0.5)2^2}$
+
+||Document3|| = $\sqrt{(0.59)^2 + (0.5)2^2}$
+
+Cosine Similarity(Query, Document3) = 0.5981 / 0.5981
+                                    = 1
+
 
 ## Task 3
 
