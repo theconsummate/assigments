@@ -55,12 +55,12 @@ Substituting values of K, T and  b in the Eqn
 
 ## Task 6
 Zipf’s law holds exactly for this collection ie (a > b > c > d) 
-Assuming the value of a be x
-then, 
+
+Assuming the value of 'a' be x then, 
 
 a = $\frac{x}{1}$ , b = $\frac{x}{2}$ , c = $\frac{x}{3}$  , d  = $\frac{x}{4}$
 
-$\frac{25x}{12}$=6000
+=> $\frac{25x}{12}$=6000
 
 solving for x, x = 2880.
 
