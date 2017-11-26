@@ -7,7 +7,7 @@ Authors:
 
 
 ## Task1
-Jaccard index, J(A,B) = $\frac{A {\bigcap} B}{A {\bigcup} B}$
+Jaccard index, J(A,B) = $\frac{A {\cap} B}{A {\cup} B}$
 
 q = algorithm intersection
 
@@ -113,6 +113,24 @@ Cosine Similarity(Query, Document3) = 0.5981 / 0.5981
 
 
 ## Task 3
+### What information does the task description contain that the master gives to a parser?
+
+- Read documents form the given subset of the input corpus one at a time and output (term,docID)-pairs.
+- Write these pairs into j term-partitions. The value of j is provided by the master.
+
+### What information does the parser report back to the master upon completion of the task?
+
+- A set of j term-partitions containing (term,docID)-pairs.
+
+### What information does the task description contain that the master gives to an inverter?
+
+- Collect all (term,docID) pairs for a one term partition.
+- Sort and write all the pairs to postings list.
+
+### What information does the inverter report back to the master upon completion of the task?
+
+- The subset of the postings list pertaining to the input partition
+
 
 ## Task 4
 
