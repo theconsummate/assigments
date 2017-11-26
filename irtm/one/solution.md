@@ -260,3 +260,6 @@ if __name__ == '__main__':
             logging.error("input file is not present")
 
 ```
+
+#### Query output
+The query "stuttgart" and "bahn" returns an empty list.
