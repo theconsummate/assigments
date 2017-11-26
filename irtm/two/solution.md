@@ -205,9 +205,19 @@ Length $7_{10}$ = $11111110_1$
 Gamma code: 11111110 1011001
 
 ## Task 8
+The given $\gamma$ - string: 11110100001111101010111000 can be broken down into the following numbers
+
+- 111101000 -> 11000 -> 24
+
+- 11111010101 -> 110101 -> 53
+
+- 11000 -> 100 -> 4
 
 
-### Programming Task
+Postings list will be 24, 77, 81
+
+
+## Programming Task
 ```python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
