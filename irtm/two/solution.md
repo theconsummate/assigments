@@ -7,7 +7,7 @@ Authors:
 
 
 ## Task1
-Jaccard index, J(A,B) = $\frac{A {\cap} B}{A {\cup} B}$
+Jaccard index, J(A,B) = $\frac{|A {\cap} B|}{|A {\cup} B|}$
 
 q = algorithm intersection
 
@@ -21,44 +21,46 @@ Rewriting in set forms
 
 q = {algorithm , intersection}
 
-d1  = { the , intersection , algorithm , for , two,  documents , is , efficient }
+$d_1$  = { the , intersection , algorithm , for , two,  documents , is , efficient }
 
-d2 = { intersection , of , two , or , more  , objects , is , another , smaller , object }
+$d_2$ = { intersection , of , two , or , more  , objects , is , another , smaller , object }
 
-d3 = { intersection , algorithm}
+$d_3$ = { intersection , algorithm}
+
 Substituting the values in above formula, we get
 
-J(q,d1) = $\frac{1}{4}$ = 0.25
+$J(q,d_1) = \frac{1}{4}$ = 0.25
 
-J(q,d2) = $\frac{1}{10}$ = 0.1
+$J(q,d_2) = \frac{1}{10}$ = 0.1
 
-J(q,d3) = $1$
+$J(q,d_3) = 1$
+
+Since Jaccard index measures similarity, $d_3$ is the most relevant to the given query since it has the maximum Jaccard index.
 
 ## Task 2
-Normalized Term Frequency(tf)
+##### Normalized Term Frequency(tf)
 
-tf (algorithm) in q = 1/2 = 0.5
+- tf(algorithm) in q = 1/2 = 0.5
 
-tf(algorithm) in d1 = 1/8 = 0.125
+- tf(algorithm) in d1 = 1/8 = 0.125
 
-tf(algorithm) in d2 = 0/10 = 0.0
+- tf(algorithm) in d2 = 0/10 = 0.0
 
-tf(algorithm) in d3 = 1/2 = 0.5
+- tf(algorithm) in d3 = 1/2 = 0.5
 
-tf (intersection) in q = 1/2 = 0.5
+- tf(intersection) in q = 1/2 = 0.5
 
-tf(intersection) in d1 = 1/8 = 0.125
+- tf(intersection) in d1 = 1/8 = 0.125
 
-tf(intersection) in d2 = 1/10 = 0.1
+- tf(intersection) in d2 = 1/10 = 0.1
 
-tf(intersection) in d3 = 1/2 = 0.5
+- tf(intersection) in d3 = 1/2 = 0.5
 
+##### Inverse Document Frequency (idf)
 
-Inverse Document Frequency (idf)
+- idf(algorithm)  = 1 + $log(\frac{3}{2}) \equiv$ 1.18
 
-idf(algorithm)  = 1 + $log(\frac{3}{2}) \equiv$ 1.18
-
-idf(intersection) = 1 + $log(\frac{3}{3})$ = 1
+- idf(intersection) = 1 + $log(\frac{3}{3})$ = 1
 
 |Document|term|tf|idf|tf*idf|
 |---|---|---|---|---|
@@ -72,7 +74,7 @@ idf(intersection) = 1 + $log(\frac{3}{3})$ = 1
 |d3|intersection|0.5|1.0|0.5|
 
 
-a) Query and Document1
+##### a) Query and Document1
 
 Dot product(Query, Document1)
      = ((0.59) * (0.1475) + (0.5) * (0.125))
@@ -85,7 +87,7 @@ Dot product(Query, Document1)
 Cosine Similarity(Query, Document1) = 0.147025 / 0.14949822
                                         = 0.98356
 
-b) Query and Document2
+##### b) Query and Document2
 
 Dot product(Query, Document2)
      = ((0.59) * (0.0) + (0.5) * (0.125))
@@ -98,7 +100,7 @@ Dot product(Query, Document2)
 Cosine Similarity(Query, Document2) = 0.0625 / 0.07734
                                     = 0.8082
 
-c) Query and Document3
+#### c) Query and Document3
 
 Dot product(Query, Document1)
      = ((0.59) * (0.59) + (0.5) * (0.5))
@@ -112,22 +114,25 @@ Cosine Similarity(Query, Document3) = 0.5981 / 0.5981
                                     = 1
 
 
+##### Most similar document
+Since document 3 has the highest cosine similarity, it is the most relevant for the given query.
+
 ## Task 3
-### What information does the task description contain that the master gives to a parser?
+#### What information does the task description contain that the master gives to a parser?
 
 - Read documents form the given subset of the input corpus one at a time and output (term,docID)-pairs.
 - Write these pairs into j term-partitions. The value of j is provided by the master.
 
-### What information does the parser report back to the master upon completion of the task?
+#### What information does the parser report back to the master upon completion of the task?
 
 - A set of j term-partitions containing (term,docID)-pairs.
 
-### What information does the task description contain that the master gives to an inverter?
+#### What information does the task description contain that the master gives to an inverter?
 
 - Collect all (term,docID) pairs for a one term partition.
 - Sort and write all the pairs to postings list.
 
-### What information does the inverter report back to the master upon completion of the task?
+#### What information does the inverter report back to the master upon completion of the task?
 
 - The subset of the postings list pertaining to the input partition
 
