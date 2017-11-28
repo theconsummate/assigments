@@ -138,6 +138,10 @@ Since document 3 has the highest cosine similarity, it is the most relevant for 
 
 
 ## Task 4
+Logarithmic merging
+In this method, we maintain series of indexes, each twice as large from the previous one. We start with the $Z_0$ as in the memory and when its size is increased, then we will create $I_0$ and empty the $Z_0$. Always merging is done when both indexes are of same size. As per more and more indexing is being done, index creation and removal is done. 
+In Logarithmic merging, $Z_0 <=n , I_0 <= n , I_1 <= 2n , I_2 <= 2^2n ... I_T<= 2^kn$. At any time, some of the powers of theses indexes are initialized. 
+Overall index construction time is $\Theta(T \log (T/n))$ because each posting is processed only once on each of the $\log (T/n)$ levels. We trade this efficiency gain for a slow down of query processing; we now need to merge results from $\log (T/n)$ indexes as opposed to just two (the main and auxiliary indexes). As in the auxiliary index scheme, we still need to merge very large indexes occasionally (which slows down the search system during the merge), but this happens less frequently and the indexes involved in a merge on average are smaller.
 
 ## Task 5
 
