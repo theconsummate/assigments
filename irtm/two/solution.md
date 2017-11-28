@@ -221,7 +221,43 @@ The given $\gamma$ - string: 11110100001111101010111000 can be broken down into 
 Postings list will be 24, 77, 81
 
 
-## Programming Task
+## Programming Task - Subtask 1
+#### Brief overview of implementation
+We have used the NLTK (Natural Language Toolkit) implementation of Levenshtein distance in python.
+
+The basic algorithm is as follows:
+
+##### Command line parameters
+
+The program takes the input in the format python edit_distance_subtask1.py \<tweets-filename\> \<english-dict-filename\> \<num-threads\> \<starting_edit_distance\>
+- \<tweets-filename\>: path of the tweets file
+- \<english-dict-filename\>: path of the tweets file
+- \<num-threads\>: number of parallel threads to open
+- \<starting_edit_distance\>: the maximum threshold distance under corrections will be considered for an out of dictionary word.
+
+**We executed the code with starting_edit_distance = 5**
+
+##### Preprocessing
+- Written in the first few lines of the method `parse_tweets`
+- Read the english words dictionary into memory. Case has been ignored.
+- Ignore tokens which have characters outside the English letters.
+- Ignore tokens starting with "@" as these are probably usernames and there is no need check for spellings.
+- Read the tweets into a frequency map. The data structure is a dictionary has the structure -> <key> : {"size": <int>, "isCorrect": <Boolean>}. The "size" field is the frequency of that particular token.
+
+##### spelling correction
+- written in the method `process_fmap_subset`
+- iterates the given set of tokens and checks if they are correct or not.
+- A token is correct it is in the dictionary.
+- For other tokens, we find the minimum edit distance from a word in the english dictionary.
+
+##### running parallel threads
+- The function `parse_tweets` breaks the input tweets file into `num_threads` partitions and starts a new thread for each partition. The thread executes the `process_fmap_subset` and writes the output for that particular partition (i.e. min edit distance and correct word) into a `pickle` file on the disk.
+
+- After all threads have finished, `parse_tweets` function combines all the partition results into a single dictionary.
+
+
+#### Code
+
 ```python
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-

@@ -2,23 +2,27 @@
 import sys
 import logging
 import os
-# import bisect
-# import pandas as pd
 from nltk.metrics.distance import edit_distance
-# import string
 from collections import OrderedDict
 from multiprocessing import Process
 from six.moves import cPickle as pickle
 import glob
 
+# init logging
 logging.basicConfig(filename="logs.txt", filemode='a',
                     format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
-# define postings list and dictionary variables
+
+# define our data structures
 dictionary = dict()
 posting_list = []
 fmap = dict()
 eng_dictionary = dict()
 PICKLE_FOLDER_NAME = "pickle"
+
+
+"""
+Check if a word belongs in the English charset or not.
+"""
 
 
 def isEnglish(s):
@@ -30,13 +34,24 @@ def isEnglish(s):
         return True
 
 
+"""
+init the input english dictionary file and load it as global variable
+"""
+
+
 def init_eng_dict(english_words):
     global eng_dictionary
     d = open(english_words)
     for line in d.readlines():
         s = line.strip()
+        # ignore case
         eng_dictionary[s.lower()] = {"size": 0}
     logging.debug("length of english dict is " + str(len(eng_dictionary)))
+
+
+"""
+init the input tweets file and load into a frequency map dictionary
+"""
 
 
 def init_fmap(tweets):
@@ -49,18 +64,25 @@ def init_fmap(tweets):
             continue
         # col[4] contains the tweet. Tokenise it on whitespaces and add to index
         for token in cols[4].split():
-            # token is already present in dictionary.
-            # increase it's frequency by 1 and insert the tweet id in the postings list
+            # ignore if token has non-english chars
             if isEnglish(token) is False:
                 continue
+            # ignore twitter usernames
             if '@' == token[0]:
                 # this token is probably a username, ignore this
                 continue
+            # token is already present in dictionary.
+            # increase it's frequency by 1
             if token not in fmap:
                 fmap[token] = {"size": 1, "isCorrect": False}
             else:
                 fmap[token]["size"] += 1
     # print len(fmap)
+
+
+"""
+Calculate the min edit distance for a given word from a word present in our english dictionary
+"""
 
 
 def minEditDistance(s1, minimum):
@@ -76,44 +98,47 @@ def minEditDistance(s1, minimum):
     return minimum, res
 
 
+"""
+Split the given list into n partitions
+"""
+
+
 def chunks(l, n):
     return [l[i:i + n] for i in range(0, len(l), n)]
+
+
+"""
+process a given partition and write the correspoding output as a pickle file on the disk
+"""
 
 
 def process_fmap_subset(subset, eng_dictionary, partition, starting_min_edit_distance):
     localfmap = dict()
     logging.info(str(partition) + " has started")
-    j = 0
-    # print(subset[0])
     for token in subset:
         word = token[0]
         localfmap[word] = token[1]
-        # if (j % 10 == 0):
-        #     logging.debug(str(partition) + "" + str(j))
+        # word is in the dictionary so it is correct
         if word.lower() in eng_dictionary:
-            # logging.debug("found in dict " + word.lower())
-            # logging.debug(localfmap[word])
             localfmap[word]["isCorrect"] = True
-            # logging.debug(localfmap[word])
         else:
             minimum, res = minEditDistance(word, starting_min_edit_distance)
             # eng_dictionary[res]["size"] +=localfmap[token]['size']
             localfmap[word]["correct_term"] = res
             localfmap[word]["edit_distance"] = minimum
-        j = j + 1
     pickle.dump(localfmap, open(PICKLE_FOLDER_NAME + "/" + str(partition), 'wb'), pickle.HIGHEST_PROTOCOL)
     logging.info(str(partition) + " has ended")
 
 
 def parse_tweets(tweets, english_words, num_threads, starting_min_edit_distance):
-    # df = pd.read_csv("tweets", sep="\t",names=['A','B','C','D','E'])
-    # df = df[['E']]
-    # print len(df)
-    # df.to_csv("onlytweet")
     global fmap, eng_dictionary
+
     init_eng_dict(english_words)
     init_fmap(tweets)
+
     logging.debug("length of fmap: " + str(len(fmap)))
+
+    # split into multiple threads
     chunk_size = len(fmap) / num_threads
     df_s = chunks(fmap.items(), chunk_size)
     logging.debug("number of chunks: " + str(len(df_s)))
@@ -121,13 +146,14 @@ def parse_tweets(tweets, english_words, num_threads, starting_min_edit_distance)
     for i, s in enumerate(df_s):
         logging.debug("length of partition " + str(i) + " is " + str(len(df_s[i])))
         j = Process(target=process_fmap_subset, args=(df_s[i], eng_dictionary, i, starting_min_edit_distance))
-        # print token,fmap[token]
         jobs.append(j)
+
     for j in jobs:
         j.start()
 
     for j in jobs:
         j.join()
+
     # open pickle files and combine dict
     compiledfmap = dict()
     for iis in range(len(df_s)):
@@ -140,7 +166,6 @@ def parse_tweets(tweets, english_words, num_threads, starting_min_edit_distance)
 def output_top_10():
     global fmap
     fmapSorted = OrderedDict(sorted(fmap.iteritems(), key=lambda x: x[1]['size'], reverse=True))
-    # print(fmapSorted)
     i = 0
     for token in fmapSorted:
         if (i == 10):
@@ -156,7 +181,6 @@ def remove_files_pickle_folder():
         os.remove(f)
 
 
-# init_fmap("only")
 """
 The program takes the input in the format python edit_distance_subtask1.py <tweets-filename> <english-dict-filename> <num-threads> <STARTING_EDIT_DISTANCE>
 """
