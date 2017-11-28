@@ -221,6 +221,7 @@ The given $\gamma$ - string: 11110100001111101010111000 can be broken down into 
 Postings list will be 24, 77, 81
 
 
+<<<<<<< HEAD
 ## Programming Task - Subtask 1
 #### Brief overview of implementation
 We have used the NLTK (Natural Language Toolkit) implementation of Levenshtein distance in python.
@@ -257,6 +258,14 @@ The program takes the input in the format python edit_distance_subtask1.py \<twe
 
 
 #### Code
+=======
+## Programming Task
+
+The ideal max size for edit distance must be 5 (atmost) considering the twitter context. Since the allowed limit for a single tweet is 25 characters and in english, a word is made up of 6-8 characters. 
+$log_{2}{8}$ = 3 edits
+if a word is considered of 25 chars
+$log_{2}{25} = 4.64 \equiv$ 5 edits
+>>>>>>> Adding summary1
 
 ```python
 #!/usr/bin/env python
