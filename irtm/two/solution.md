@@ -248,7 +248,10 @@ The basic algorithm is as follows:
 
 ##### Command line parameters
 
-The program takes the input in the format python edit_distance_subtask1.py \<tweets-filename\> \<english-dict-filename\> \<num-threads\> \<starting_edit_distance\>
+The program takes the input in the format
+
+*python edit_distance_subtask1.py \<tweets-filename\> \<english-dict-filename\> \<num-threads\> \<starting_edit_distance\>*
+
 - \<tweets-filename\>: path of the tweets file
 - \<english-dict-filename\>: path of the tweets file
 - \<num-threads\>: number of parallel threads to open
@@ -274,6 +277,10 @@ The program takes the input in the format python edit_distance_subtask1.py \<twe
 
 - After all threads have finished, `parse_tweets` function combines all the partition results into a single dictionary.
 
+
+##### Results
+The code takes a really long time to run because of $O(n^4)$ complexity and due to lack of time and computing resources, we were unable to get the results for the whole tweets data set.
+
 #### Code
 ```python
 # -*- coding: utf-8 -*-
@@ -288,7 +295,8 @@ import glob
 
 # init logging
 logging.basicConfig(filename="logs.txt", filemode='a',
-                    format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
+                    format='%(asctime)s [%(levelname)s]\t%(message)s',
+                    level=logging.DEBUG)
 
 # define our data structures
 dictionary = dict()
@@ -359,7 +367,8 @@ def init_fmap(tweets):
 
 
 """
-Calculate the min edit distance for a given word from a word present in our english dictionary
+Calculate the min edit distance for a given word
+from a word present in our english dictionary
 """
 
 
@@ -404,7 +413,8 @@ def process_fmap_subset(subset, eng_dictionary, partition, starting_min_edit_dis
             # eng_dictionary[res]["size"] +=localfmap[token]['size']
             localfmap[word]["correct_term"] = res
             localfmap[word]["edit_distance"] = minimum
-    pickle.dump(localfmap, open(PICKLE_FOLDER_NAME + "/" + str(partition), 'wb'), pickle.HIGHEST_PROTOCOL)
+    pickle.dump(localfmap, open(PICKLE_FOLDER_NAME + "/" + str(partition), 'wb'),
+                pickle.HIGHEST_PROTOCOL)
     logging.info(str(partition) + " has ended")
 
 
@@ -423,7 +433,8 @@ def parse_tweets(tweets, english_words, num_threads, starting_min_edit_distance)
     jobs = []
     for i, s in enumerate(df_s):
         logging.debug("length of partition " + str(i) + " is " + str(len(df_s[i])))
-        j = Process(target=process_fmap_subset, args=(df_s[i], eng_dictionary, i, starting_min_edit_distance))
+        j = Process(target=process_fmap_subset,
+                    args=(df_s[i], eng_dictionary, i, starting_min_edit_distance))
         jobs.append(j)
 
     for j in jobs:
@@ -443,7 +454,9 @@ def parse_tweets(tweets, english_words, num_threads, starting_min_edit_distance)
 
 def output_top_10():
     global fmap
-    fmapSorted = OrderedDict(sorted(fmap.iteritems(), key=lambda x: x[1]['size'], reverse=True))
+    fmapSorted = OrderedDict(sorted(fmap.iteritems(),
+                                    key=lambda x: x[1]['size'],
+                                    reverse=True))
     i = 0
     for token in fmapSorted:
         if (i == 10):
@@ -460,7 +473,9 @@ def remove_files_pickle_folder():
 
 
 """
-The program takes the input in the format python edit_distance_subtask1.py <tweets-filename> <english-dict-filename> <num-threads> <STARTING_EDIT_DISTANCE>
+The program takes the input in the format
+python edit_distance_subtask1.py <tweets-filename> <english-dict-filename>
+<num-threads> <STARTING_EDIT_DISTANCE>
 """
 if __name__ == '__main__':
     if len(sys.argv) > 5:
