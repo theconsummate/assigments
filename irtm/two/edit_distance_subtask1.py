@@ -19,6 +19,13 @@ fmap = dict()
 eng_dictionary = dict()
 PICKLE_FOLDER_NAME = "pickle"
 
+def isEnglish(s):
+    try:
+        s.encode(encoding='utf-8').decode('ascii')
+    except UnicodeDecodeError:
+        return False
+    else:
+        return True
 
 def init_eng_dict(english_words):
     global eng_dictionary
@@ -41,6 +48,8 @@ def init_fmap(tweets):
         for token in cols[4].split():
             # token is already present in dictionary.
             # increase it's frequency by 1 and insert the tweet id in the postings list
+            if isCorrect(token)==False:
+                continue
             if token not in fmap:
                 fmap[token] = {"size": 1, "isCorrect": False}
             else:
