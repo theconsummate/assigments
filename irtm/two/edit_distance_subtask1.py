@@ -71,6 +71,8 @@ def minEditDistance(s1, minimum):
         if temp < minimum:
             minimum = temp
             res = token
+        if minimum == 1:
+            break
     return minimum, res
 
 
@@ -103,7 +105,7 @@ def process_fmap_subset(subset, eng_dictionary, partition, starting_min_edit_dis
     logging.info(str(partition) + " has ended")
 
 
-def onlytweet(tweets, english_words, num_threads, starting_min_edit_distance):
+def parse_tweets(tweets, english_words, num_threads, starting_min_edit_distance):
     # df = pd.read_csv("tweets", sep="\t",names=['A','B','C','D','E'])
     # df = df[['E']]
     # print len(df)
@@ -171,7 +173,7 @@ if __name__ == '__main__':
             if not os.path.exists(PICKLE_FOLDER_NAME):
                 os.makedirs(PICKLE_FOLDER_NAME)
             remove_files_pickle_folder()
-            onlytweet(sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
+            parse_tweets(sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4]))
             output_top_10()
         else:
             logging.error("input file is not present")
