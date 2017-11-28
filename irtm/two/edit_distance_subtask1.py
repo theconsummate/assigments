@@ -52,6 +52,9 @@ def init_fmap(tweets):
             # increase it's frequency by 1 and insert the tweet id in the postings list
             if isEnglish(token) is False:
                 continue
+            if '@' == token[0]:
+                # this token is probably a username, ignore this
+                continue
             if token not in fmap:
                 fmap[token] = {"size": 1, "isCorrect": False}
             else:
