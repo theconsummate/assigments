@@ -11,7 +11,7 @@ from multiprocessing import Process
 from six.moves import cPickle as pickle
 import glob
 
-logging.basicConfig(format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
+logging.basicConfig(filename="logs.txt", filemode='a', format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
 # define postings list and dictionary variables
 dictionary = dict()
 posting_list = []
