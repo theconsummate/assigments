@@ -11,7 +11,8 @@ from multiprocessing import Process
 from six.moves import cPickle as pickle
 import glob
 
-logging.basicConfig(filename="logs.txt", filemode='a', format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
+logging.basicConfig(filename="logs.txt", filemode='a',
+                    format='%(asctime)s [%(levelname)s]\t%(message)s', level=logging.DEBUG)
 # define postings list and dictionary variables
 dictionary = dict()
 posting_list = []
@@ -144,7 +145,7 @@ def output_top_10():
             break
         if fmap[token]["isCorrect"] is False:
             i = i + 1
-            print(token, fmap[token])
+            logging.info(token + ", " + str(fmap[token]))
 
 
 def remove_files_pickle_folder():
