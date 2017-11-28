@@ -67,7 +67,6 @@ def minEditDistance(s1, minimum):
         if temp < minimum:
             minimum = temp
             res = token
-            break
     return minimum, res
 
 
