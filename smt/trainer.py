@@ -53,16 +53,17 @@ def perform_iteration(corpus, words, total_s, previous_probabilities):
     for word_foreign in words['foreign']:
         total[word_foreign] = 0
 
-    for (es, fs) in [(sentence_pair['english'].split(), sentence_pair['foreign'].split())
-                     for sentence_pair in corpus]:
-        for e in es:
+    for sentence_pair in corpus:
+        e_s = sentence_pair["english"]
+        f_s = sentence_pair["foreign"]
+        for e in e_s.split():
             total_s[e] = 0
 
-            for f in fs:
+            for f in f_s.split():
                 total_s[e] += translation_probabilities[e][f]
 
-        for e in es:
-            for f in fs:
+        for e in e_s.split():
+            for f in f_s.split():
                 count[e][f] += (translation_probabilities[e][f] / total_s[e])
                 total[f] += translation_probabilities[e][f] / total_s[e]
 
