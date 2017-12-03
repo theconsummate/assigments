@@ -41,7 +41,7 @@ def init_probabilities(corpus):
 
 
 def perform_iteration(corpus, words, total_s, previous_probabilities):
-    translation_probabilities = deepcopy(previous_probabilities)
+    probabilities = deepcopy(previous_probabilities)
 
     count = {}
     for word_english in words['english']:
@@ -60,18 +60,18 @@ def perform_iteration(corpus, words, total_s, previous_probabilities):
             total_s[e] = 0
 
             for f in f_s.split():
-                total_s[e] += translation_probabilities[e][f]
+                total_s[e] += probabilities[e][f]
 
         for e in e_s.split():
             for f in f_s.split():
-                count[e][f] += (translation_probabilities[e][f] / total_s[e])
-                total[f] += translation_probabilities[e][f] / total_s[e]
+                count[e][f] += (probabilities[e][f] / total_s[e])
+                total[f] += probabilities[e][f] / total_s[e]
 
     for f in words['foreign']:
         for e in words['english']:
-            translation_probabilities[e][f] = count[e][f] / total[f]
+            probabilities[e][f] = count[e][f] / total[f]
 
-    return translation_probabilities
+    return probabilities
 
 
 def perform_em_algo(corpus):
