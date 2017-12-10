@@ -137,5 +137,46 @@ Now undoing the steps for $b=1$, we can reach to $Game^0_0$ with negligible chan
 Thus following the sequence of games, it can be interpreted that $|Game^1_0 - Game^0_0|$ (which is the advanatege) is negligible and thus the G is a secure block cryptosystem.
 
 ## Problem 4
+#### (a)
+
+###### Padding scheme:
+Add a 1 and then set the remaining bits to 0. For example, consider the string '11000' which has to be padded for a 8 block cipher. The resulting string after padding will be '1100100'.
+
+###### Encryption:
+S' pads the plaintext messages and encyptes using S.
+
+###### Decryption:
+S' decrypts the ciphertext messages using S to get the padded plaintext message. Then it starts from the end of string and keeps going back till it keeps seeing 0's. Once the first 1 bit is encountered, everything to the left of that point is returned as the plaintext message.
+
+This can be demonstrated by the following python code:
+
+```python
+# s is the decrypted string with padding
+def removePadding(s):
+    i = len(s) - 1
+    while i > 0 and not s[i] == 1 :
+        i = i-1
+    # loop ends when first 1 is encounted when iterating
+    # backwards from the end
+    # drop the last 1 bit and return everything to the left.
+    return s[:i-1]
+
+```
+
+#### (b) S' is CPA-secure
+Given an adversary who gives two messages of arbitary length, S' will pad them appropriately and use S to encrypt them, which will then give a challenge ciphertext back. Since S is secure, the adversary will not be able to distinguish between the new padded messages and thus will also not be able to tell which of the original message was encrypted.
+
+Therefore, S' is secure whenever security of S is guaranteed.
+
+
+After Since S' encodes messages using S, a distinguisher can not tell apart two messages if S 
+
+Pad the input with $|x|\ mod\ l(\eta)$ 
+A single set ('1') bit is added to the message and then as many reset ('0') bits as required (possibly none) are added. The number of reset ('0') bits added will depend on the block boundary to which the message needs to be extended. In bit terms this is "1000 ... 0000".
+
+This method can be used to pad messages which are any number of bits long, not necessarily a whole number of bytes long. For example, a message of 23 bits that is padded with 9 bits in order to fill a 32-bit block
+
+
+
 
 ## Problem 5
