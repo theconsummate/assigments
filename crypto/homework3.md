@@ -139,13 +139,13 @@ Thus following the sequence of games, it can be interpreted that $|Game^1_0 - Ga
 ## Problem 4
 #### (a)
 
-###### Padding scheme:
+##### Padding scheme:
 Add a 1 and then set the remaining bits to 0. For example, consider the string '11000' which has to be padded for a 8 block cipher. The resulting string after padding will be '1100100'.
 
-###### Encryption:
+##### Encryption:
 S' pads the plaintext messages and encyptes using S.
 
-###### Decryption:
+##### Decryption:
 S' decrypts the ciphertext messages using S to get the padded plaintext message. Then it starts from the end of string and keeps going back till it keeps seeing 0's. Once the first 1 bit is encountered, everything to the left of that point is returned as the plaintext message.
 
 This can be demonstrated by the following python code:
@@ -164,19 +164,21 @@ def removePadding(s):
 ```
 
 #### (b) S' is CPA-secure
-Given an adversary who gives two messages of arbitary length, S' will pad them appropriately and use S to encrypt them, which will then give a challenge ciphertext back. Since S is secure, the adversary will not be able to distinguish between the new padded messages and thus will also not be able to tell which of the original message was encrypted.
+Since the padding is a constant time method, it can be assumed that the adversary already knows this and it can pad messages of arbitary length itself and use the $E_S$ directly without quering $E'_S$ at all.
 
-Therefore, S' is secure whenever security of S is guaranteed.
+Given an adversary $A = (AF, AG)$ for the encryptioin scheme S, an adversary $A' = (AF', AG')$ for S' can be implemented like such:
 
+AF':
 
-After Since S' encodes messages using S, a distinguisher can not tell apart two messages if S 
+1. Generate two messages $m_1$ and $m_2$ using AF
+2. Pad them using the know padding scheme to get $mp_1$ and $mp_2$
+3. Return $mp_1$ and $mp_2$
 
-Pad the input with $|x|\ mod\ l(\eta)$ 
-A single set ('1') bit is added to the message and then as many reset ('0') bits as required (possibly none) are added. The number of reset ('0') bits added will depend on the block boundary to which the message needs to be extended. In bit terms this is "1000 ... 0000".
+GF':
+1. Given a ciper text c, make a guess using GF.
+2. Compare the guessed plaintext with $mp_1$ and $mp_2$ and return the message index.
 
-This method can be used to pad messages which are any number of bits long, not necessarily a whole number of bytes long. For example, a message of 23 bits that is padded with 9 bits in order to fill a 32-bit block
-
-
+Since message padding and removing the padding are deterministic processes, the A' has the same advantage as A and therefore S' is secure if S is secure.
 
 
 ## Problem 5
