@@ -24,9 +24,9 @@ The adversary can keep on selecting plaintexts for as long as it wants but it wi
 
 For security game,
 SS = Substitution Cryptosystem
-SS => (E,D)	a cipher defined over (K,M,C).
+
 Lets define Exp(b) :
-adversary will output 1 if able to find some potent information regarding the plaintext or ciphertext else 0.
+adversary will output 1 if it is able to find some potent information regarding the plaintext or ciphertext else 0.
 
 for query q  0...i,
 
@@ -38,10 +38,6 @@ Adv_SS = |P(Exp(0)==1)-P(Exp(1)==1)| must be negligble otherwise the system will
 ## Problem 3
 Assuming that the security parameter is implicit,
 
-random $k \leftarrow \{0,1\}^{2\eta}$
-
-The success probability
-##### Game 1
 $Game^1_1:$
 
 $1. Choose\ random\ key$
@@ -147,7 +143,7 @@ $return\ b'$
 
 Now undoing the steps for $b=1$, we can reach to $Game^0_0$ with negligible change in probability.
 
-Thus following the sequence of games, it can be interpreted that $|Game^1_0 - Game^0_0|$ (which is the advanatege) is negligible and thus the G is a secure block cryptosystem.
+Thus following the sequence of games, it can be interpreted that $|Game^1_0 - Game^0_0|$ (which is the advantage) is negligible and thus the G is a secure block cryptosystem.
 
 ## Problem 4
 #### (a)
@@ -227,38 +223,4 @@ $Pr[ RR^{E_K(|.|)}=1 ] = 1/2$
 
 Since, RR only has an advantage in half of the cases, $Adv^{RR} = Adv^{CPA}  /  2$
 
-#### (b)
-Definition of FG^f   0 <= j <= q-1
-
-$AF^{CPA}$
-
-       choose j at random from {0..q-1}
-
-       Run $AG^{RR}$:
-
-         When RR makes it's i'th query, x_i, of g: 
-             * if i <= j, return y_i <- f($^|.|)
-             * if i = j+1, we are done with the find-stage.
-               Output  (M_0, M_1, s) <- ($^|x_i|,  x_i,  current state of RR)
-
-                         real oracle: encrypt M_0     : p_j 
-                         rand oracle: encrypt $^|M|   : p_j+1
-
-       //  C <- E_k(M_b) for some random bit b.   We don't see b or k
-
-    FG^f(guess, C, s)
-    ..........
-
-       Restore RR to state s.  RR just asked some query x_{j+1}.  Return C.
-       Continue running RR.
-
-       When RR makes subsequent oracle queries, x_i, of g: 
-            return f(x_i) 
-
-       When RR outputs a bit, b', output b'.
-
-
-   Analysis of FG^f  
-   ----------------
-        You get the idea...
 
