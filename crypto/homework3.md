@@ -20,8 +20,7 @@ Take two plaintext messages $x_1= m_1,m_2 ...$ and $x_2 = m_2,m_1...$ where $m_1
 - If $c_1 == c^3_1$, output 1 else output 2.
 
 ## Problem 2
-The adversary can keep on selecting plaintexts for as long as it wants but it will never see the same ciphertext again. Therefore, assuming that there is an upper bound on runtime, the distinguisher will simply end up making a guess using coin toss and after it is out of time.
-
+The adversary can keep on selecting plaintexts for as long as it wants but it will never see the same ciphertext again. Because of the PRG, it always generate random output, so the everytime a different cipher is generated. Therefore, assuming that there is an upper bound on runtime, the distinguisher will simply end up making a guess using coin toss and after it is out of time.
 ## Problem 3
 Assuming that the security parameter is implicit,
 
