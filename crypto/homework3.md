@@ -182,3 +182,103 @@ Since message padding and removing the padding are deterministic processes, the 
 
 
 ## Problem 5
+Suppose there was an adversary $(AF^{CPA}, AG^{CPA})$ that attacks S in the CPA sense and $(AF^{RR}, AG^{RR}) which attacks S in the RR sense. Let g(.) denote the game.
+
+#### (a)
+
+Definition of $AG^{RR}$
+
+1. Run $AF^{CPA}$ (find)
+    - When $AF^{CPA}$ makes a query x of f, answer with g(x).
+
+2. When $AF^{CPA}$ outputs (M_0, M_1, s):
+    - b <- {0,1}
+    - C <- g(M_b)
+
+3. Run $AF^{CPA}^$f (guess, C, s)
+    - When $AF^{CPA}$ makes a query x of f, answer with g(x)
+
+4. When $AF^{CPA}$ outputs a bit, b', 
+    - If b=b' then return 1 // guess "real"
+    - else return 0 // guess "fake"
+
+
+Analysis of RR^g  
+
+Suppose that g is instantiated by a "real" encryption oracle. Perfectly simulates FG's "native" environment:
+- $Pr [ RR^{E_K(.)}=1 ] = Pr [ k \leftarrow K; (M_0, M_1, s) \leftarrow A^E_k ; b \leftarrow \{0,1\}; C \leftarrow E_k(M_b): A^E_k (guess, C, s) =b]$
+
+If g is instantiated by a "fake" encryption oracle:
+
+$Pr[ RR^{E_K(|.|)}=1 ] = 1/2$
+
+Since, the RR only has an advantage in half of the cases, $Adv^RR = Adv^CPA  /  2$
+
+#### (b)
+
+2.4. fg -> rr     (but in a weaker way!!)
+
+     If Pi is secure in the fg-sense
+     then Pi is secure in the rr-sense.
+
+       Suppose there is an adversary RR that attacks Pi in the rr-sense.
+       Then there is an adversary FG that attacks fg-sense.
+
+   Idea
+   ....
+        RR makes q queries to g.  Suppose answer all random   p_q    -- gap
+                                                 all real     p_0    __/
+
+
+        real real real real      p_0
+         $$  real real real      p_1
+         $$   $$  real real      p_2
+         $$   $$   $$  real      p_3
+         $$   $$   $$   $$       p_4
+       
+
+                       Answer answer first j random,   \leftarrow        p_j
+                                     next q-j real.    
+                       p_0 p_1 ... p_q
+                       p_0 - p_q  > delta, so  there is some 
+                       p_j - p_{j+1} > delta/q    (0 <= i < q)
+                       In fact, for a random i,
+                          E [ p_j - p_{j+1} ] > delta/q  
+
+     
+   Definition of FG^f   0 <= j <= q-1
+   --------------------------------------
+
+    FG^f(find)
+    ..........
+
+       choose j at random from {0..q-1}
+
+       Run RR^g:
+
+         When RR makes it's i'th query, x_i, of g: 
+             * if i <= j, return y_i <- f($^|.|)
+             * if i = j+1, we are done with the find-stage.
+               Output  (M_0, M_1, s) <- ($^|x_i|,  x_i,  current state of RR)
+
+                         real oracle: encrypt M_0     : p_j 
+                         rand oracle: encrypt $^|M|   : p_j+1
+
+       //  C <- E_k(M_b) for some random bit b.   We don't see b or k
+
+    FG^f(guess, C, s)
+    ..........
+
+       Restore RR to state s.  RR just asked some query x_{j+1}.  Return C.
+       Continue running RR.
+
+       When RR makes subsequent oracle queries, x_i, of g: 
+            return f(x_i) 
+
+       When RR outputs a bit, b', output b'.
+
+
+   Analysis of FG^f  
+   ----------------
+        You get the idea...
+
