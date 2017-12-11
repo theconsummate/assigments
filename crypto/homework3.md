@@ -203,7 +203,7 @@ Definition of $AG^{RR}$
     - else return 0 // guess "fake"
 
 
-Analysis of RR^g  
+Analysis of $AG^{RR}$  
 
 Suppose that g is instantiated by a "real" encryption oracle. Perfectly simulates FG's "native" environment:
 - $Pr [ RR^{E_K(.)}=1 ] = Pr [ k \leftarrow K; (M_0, M_1, s) \leftarrow A^E_k ; b \leftarrow \{0,1\}; C \leftarrow E_k(M_b): A^E_k (guess, C, s) =b]$
@@ -212,49 +212,16 @@ If g is instantiated by a "fake" encryption oracle:
 
 $Pr[ RR^{E_K(|.|)}=1 ] = 1/2$
 
-Since, the RR only has an advantage in half of the cases, $Adv^RR = Adv^CPA  /  2$
+Since, RR only has an advantage in half of the cases, $Adv^{RR} = Adv^{CPA}  /  2$
 
 #### (b)
+Definition of FG^f   0 <= j <= q-1
 
-2.4. fg -> rr     (but in a weaker way!!)
-
-     If Pi is secure in the fg-sense
-     then Pi is secure in the rr-sense.
-
-       Suppose there is an adversary RR that attacks Pi in the rr-sense.
-       Then there is an adversary FG that attacks fg-sense.
-
-   Idea
-   ....
-        RR makes q queries to g.  Suppose answer all random   p_q    -- gap
-                                                 all real     p_0    __/
-
-
-        real real real real      p_0
-         $$  real real real      p_1
-         $$   $$  real real      p_2
-         $$   $$   $$  real      p_3
-         $$   $$   $$   $$       p_4
-       
-
-                       Answer answer first j random,   \leftarrow        p_j
-                                     next q-j real.    
-                       p_0 p_1 ... p_q
-                       p_0 - p_q  > delta, so  there is some 
-                       p_j - p_{j+1} > delta/q    (0 <= i < q)
-                       In fact, for a random i,
-                          E [ p_j - p_{j+1} ] > delta/q  
-
-     
-   Definition of FG^f   0 <= j <= q-1
-   --------------------------------------
-
-    FG^f(find)
-    ..........
+$AF^{CPA}$
 
        choose j at random from {0..q-1}
 
-       Run RR^g:
+       Run $AG^{RR}$:
 
          When RR makes it's i'th query, x_i, of g: 
              * if i <= j, return y_i <- f($^|.|)
