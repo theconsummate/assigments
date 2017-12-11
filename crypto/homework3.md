@@ -194,7 +194,7 @@ Definition of $AG^{RR}$
     - b <- {0,1}
     - C <- g(M_b)
 
-3. Run $AF^{CPA}^$f (guess, C, s)
+3. Run $AG^{CPA}(guess, C, s)$
     - When $AF^{CPA}$ makes a query x of f, answer with g(x)
 
 4. When $AF^{CPA}$ outputs a bit, b', 
