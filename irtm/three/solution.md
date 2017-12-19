@@ -56,6 +56,24 @@ R means relevant and NR means not-relevant.
 
 
 ## Task2
+Given the documents:
+- d1: Xerox reports a profit but revenue is down
+- d2: Lucene narrows quarter loss but revenue decreases further
+
+Given the query:
+- q: revenue down
+
+Lambda = 0.3
+
+P(q|d1) = (Lambda*(1/8) + (1-Lambda)*(2/16)) * (Lambda*(1/8) + (1-Lambda)*(1/16)) = 0.01
+
+P(q|d2) = (Lambda*(1/8) + (1-Lambda)*(2/16)) * (Lambda*(0/8) + (1-Lambda)*(1/16)) = 0.005
+
+Therefore d1 is more likely.
+
+Since the only difference between the two probabilities is the term Lambda*(1/8) (from P(q|d1)), the ranking will be similar for small values like 0.1 and will be greatly dissimilar for high values like 0.7, with d1 being greater than d2.
+
+The reason is that high values enable conjuctive like search and since d1 has both the terms from the query, it's ranking increases greatly.
 
 ## Task3
 Correct result: 1,33,40,63,126
