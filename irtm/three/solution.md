@@ -100,6 +100,9 @@ The task of IR is to return documents which provide the required information. Fo
 
 However, there may be an air or bus route which may also be available and the vector model will completely miss it. Therefore, we need a probabilistic measure of how relevant a document is to a give query.
 
+##### Implementing language model
+The language model can implemented in a manner similar to the inverted index. Since a language model is inferred for each document, we can have the same dictionary as in the inverted index and the postings list can contain the transition probabilities (along with the document id) for that particular document.
+
 ## Task5
 (It is being assumed that terms from the stop words list will be ignored/dropped from the query and/or document)
 ##### Advantages
