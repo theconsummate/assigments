@@ -58,48 +58,66 @@ R means relevant and NR means not-relevant.
 ##### Annotation
 |num|Dhruv|Ishan|
 |---|---|---|
-|1|R|NR|
-|2|R|NR|
-|3|R|NR|
-|4|R|NR|
-|5|R|NR|
-|6|R|NR|
-|7|R|NR|
-|8|R|NR|
-|9|NR|NR|
-|10|R|NR|
-|11|NR|NR|
-|12|NR|NR|
-|13|NR|NR|
-|14|NR|NR|
-|15|NR|NR|
+|1|R|R|
+|2|R|R|
+|3|R|R|
+|4|R|R|
+|5|R|R|
+|6|R|R|
+|7|R|R|
+|8|R|R|
+|9|NR|R|
+|10|R|R|
+|11|NR|R|
+|12|NR|R|
+|13|NR|R|
+|14|NR|R|
+|15|NR|R|
 |16|NR|NR|
 |17|NR|NR|
-|18|NR|NR|
+|18|NR|R|
 |19|R|NR|
-|20|NR|NR|
-|21|R|NR|
-|22|R|NR|
-|23|R|NR|
-|24|R|NR|
-|25|R|NR|
-|26|R|NR|
-|27|R|NR|
-|28|R|NR|
+|20|NR|R|
+|21|R|R|
+|22|R|R|
+|23|R|R|
+|24|R|R|
+|25|R|R|
+|26|R|R|
+|27|R|R|
+|28|R|R|
 |29|NR|NR|
 |30|R|NR|
 |31|NR|NR|
 |32|NR|NR|
 |33|NR|NR|
-|34|R|NR|
-|35|R|NR|
+|34|R|R|
+|35|R|R|
 |36|R|NR|
-|37|R|NR|
-|38|R|NR|
-|39|R|NR|
+|37|R|R|
+|38|R|R|
+|39|R|R|
 |40|NR|NR|
 
+|||Dhruv|R|NR|
+|---|---|---|---|---|
+|Ishan|R|*|22|8|
+||NR|*|3|7|
 
+$P_o$ = $\frac{29}{40}$ = 0.725
+
+$P_{yes}$ = $\frac{15}{32}$
+
+$P_{no}$ = $\frac{3}{32}$
+
+$P_e$ = $P_{yes}+P_{no}$ = $\frac{9}{16}$ = 0.5625
+
+k = $\frac{P_0-P_e}{1-P_e}$ = $\frac{0.1625}{0.4375} \equiv$ 0.3714
+
+The kappa score is low because we have annotated the links differently ie
+we have disagreement over 11 links out of the 40.
+
+Link11 is marked NR by Dhruv and R by Ishan. In this, document talks about passing the __police__ exam.
 ## Task2
 Given the documents:
 - d1: Xerox reports a profit but revenue is down
