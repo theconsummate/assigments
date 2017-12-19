@@ -91,6 +91,8 @@ Predicted result: 126,8,9,1,34,31,40,63
 |7|126,8,9,1,34,31,40|0.43|0.6|
 |8|126,8,9,1,34,31,40,63|0.5|0.8|
 
+##### Interpolated precision recall graph
+![image](figure.png)
 
 ## Task4
 ##### Motivation for probabilistic ranking
