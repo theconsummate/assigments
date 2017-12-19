@@ -75,5 +75,17 @@ Predicted result: 126,8,9,1,34,31,40,63
 
 
 ## Task4
+##### Motivation for probabilistic ranking
+The task of IR is to return documents which provide the required information. For example, If I want to get the directions from Stuttgart to Munich, the query [Stuttgart Munich train] made to a Vector model will return all documents which provide train routes because the documents will be similar with the query.
+
+However, there may be an air or bus route which may also be available and the vector model will completely miss it. Therefore, we need a probabilistic measure of how relevant a document is to a give query.
 
 ## Task5
+(It is being assumed that terms from the stop words list will be ignored/dropped from the query and/or document)
+##### Advantages
+- A high tf-idf score means that the the given term occurs very rarely in very documents. This is a very good indicator of similarity and implies that the corresponding documents will be highly relevant to the given query.
+- More accurate than stop words because of a measurable metric of relevance.
+
+##### Disadvantages
+- High computation/time cost. Simply dropping the terms from the stop words list decreases the search space and is therefore faster.
+- No clear indicator of relevance is available when the tf-idf scores are low.
