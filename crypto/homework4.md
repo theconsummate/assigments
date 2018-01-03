@@ -24,3 +24,8 @@ m is a multiple of o(g), therefore let m = k*o(g) for some natural number k.
 $g^{m} = g^{k*o(g)} = (g^{o(g)})^k = (1)^k = 1$
 
 ## Problem 5
+Let c be the inverse of a and let the unit element be 1. It is also given that $b^2=a$
+
+Therefore, $ca = 1 \rightarrow cb^2=1 \rightarrow (cb)b = 1$
+
+Since the inverse of b which is "cb" exists, it is invertible.
