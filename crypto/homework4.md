@@ -17,7 +17,13 @@ It is assumed that the key is constant. Collission can be detected as follows:
 The attacker will win the indistinguishability game since it can easily detect ciphertexts which are the encryptions of the same message.
 
 ## Problem 2
-vaudeney attack
+Since the attack is chosen ciphertext, the adversary has access to the decryption oracle D. Consider the following attack:
+
+- Adversary sends $m_0 = 0^n$ and $m_1 = 1^n$ to the encryption oracle.
+- Since the decryption oracle will not accept the encryption of the challenge messages ($m_0\ or\ m_1$) as input, the adversary will flip the first bit in the encryption of $m_b$ and send it to the decryption oracle.
+- The adversary can now tell from what he gets back. If $m_b=m_0$, then the output will be $10^{n-1}$  whereas if $m_b=m_1$ was encrypted, then output will be $01^{n-1}$.
+
+The adversary clearly has an advantage of 1 since it can perfectly distinguish between challenge ciphertexts.
 
 ## Problem 3
 
