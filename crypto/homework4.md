@@ -6,10 +6,15 @@ Authors:
 2. Ishan Adhaulia, st159571@stud.uni-stuttgart.de, Matriculation number: 3319219
 
 
+See here for more explanations: https://security.stackexchange.com/questions/63188/whats-the-point-of-the-nonce-in-ctr-mode
 ## Problem 1
-choose a message and wait for a collision. Once it happens, xor plaintext and ciphertext to obtain E(rc) or whatever and then decrypt.
+It is assumed that the key is constant. Collission can be detected as follows:
 
-Collission can be detected simply by comparing the cipertexts
+- Choose a message, $m_1$, and let the counter used for this challenge be $r_c$. Record the cipher text as $c_1$.
+- Keep requesting the system to encrypt $m_1$. Since it is given that a collission will occur in constant time, wait for it to happen. A collission can be detected when a new ciphertext, $c_2$ is equal to $c_1$.
+- After collission, save the output of the counter, $E(r_c) = m_1 \oplus c_1$
+
+The attacker will win the indistinguishability game since it can easily detect ciphertexts which are the encryptions of the same message.
 
 ## Problem 2
 vaudeney attack
