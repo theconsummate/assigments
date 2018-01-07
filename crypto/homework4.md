@@ -1,4 +1,4 @@
-# Solutions to Homework 3, Introdution to Modern Cryptography
+# Solutions to Homework 4, Introdution to Modern Cryptography
 Authors:
 
 1. Dhruv Mishra, st154709@stud.uni-stuttgart.de, Matriculation number: 3293775
