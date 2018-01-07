@@ -6,7 +6,6 @@ Authors:
 2. Ishan Adhaulia, st159571@stud.uni-stuttgart.de, Matriculation number: 3319219
 
 
-See here for more explanations: https://security.stackexchange.com/questions/63188/whats-the-point-of-the-nonce-in-ctr-mode
 ## Problem 1
 It is assumed that the key is constant. Collission can be detected as follows:
 
