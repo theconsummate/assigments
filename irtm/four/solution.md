@@ -39,6 +39,17 @@ The model will think that the document is equally likely to belong to either of 
 ## Task2
 ### Task 2.1
 
+For y = SPAM, the features f1, f3, f7 will be equal to 1 and the other features will be 0.
+
+p(SPAM|x1) = exp(0.2 + 0.5 + 0.1) = 2.46
+
+For y = HAM, the features f2, f4, f8 will be 1 and the other features will be 0.
+
+p(HAM|x1) = exp(-0.1 - 0.2 + 0) = 0.74
+
+Normalising,
+P(SPAM|x1) = 2.46/(2.46+0.74) = 0.77
+
 ### Task 2.2
 
 ## Task3
