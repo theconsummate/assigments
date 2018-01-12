@@ -51,5 +51,20 @@ Normalising,
 P(SPAM|x1) = 2.46/(2.46+0.74) = 0.77
 
 ### Task 2.2
+dA/dlambda6 = 0 + 0 + 0 + 0 + 1 + 1 = 2
+
+since f6(SPAM,x) will be zero, we only need to consider terms for f6(HAM,x)
+
+dB/dlambda6 = p(HAM|x1)f6(HAM,x1) + p(HAM|x2)f6(HAM,x2) + p(HAM|x3)f6(HAM,x3) + p(HAM|x4)f6(HAM,x4) + p(HAM|x5)f6(HAM,x5) + p(HAM|x6)f6(HAM,x6)
+
+= p(HAM|x3) + p(HAM|x5) + p(HAM|x6)
+
+p(HAM|x3) = exp(-0.1+0.4+0)/(exp(-0.1+0.4+0) + exp(0.2-0.1+0.1)) = exp(0.3)/(exp(0.3) + exp(0.2)) = 0.52
+
+p(HAM|x5) = exp(-0.2+0.4+0)/(exp(-0.2+0.4+0) + exp(0.5-0.1+0.1)) = exp(0.2)/(exp(0.2)+exp(0.5)) = 0.42
+
+p(HAM|x6) = exp(-0.1+0.4+0)/(exp(-0.1+0.4+0) + exp(0.2-0.1+0.1)) = exp(0.3)/(exp(0.3) + exp(0.2)) = 0.52
+
+dA/dlambda6 - dB/dlambda6 = 2 - (0.52 + 0.42 + 0.52) = 0.54
 
 ## Task3
