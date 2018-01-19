@@ -72,6 +72,19 @@ return h = 42.
 Therefore, the decrypted plaintext message is 42.
 
 ## Problem 4
+The attacker knows
+1. n = p.q
+2. $\phi(n) = (p-1)(q-1)$
+
+Substituting the value of q from 1 into 2,
+
+$\phi(n) = (p-1)(n/q-1)$
+
+$p\phi(n) = (p-1)(n-p)$
+
+$p^2 + p(\phi(n) -n -1) + n = 0$
+
+Finding the roots of this quadratic equation is trivial. Thus p and q can be computed efficiently.
 
 ## Problem 5
 
