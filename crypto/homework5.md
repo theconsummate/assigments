@@ -115,3 +115,18 @@ Pick $g^3$ and $g^4$ as the random ElGamal key pairs for Alice and Bob respectiv
 If Alice is sending the message, she would send $(g^3, 7.(g^4)^3)$, that is (8, 7) to Bob.
 
 ## Problem 6
+#### (a)
+
+#### (b)
+Let g be the chosen generator and a be the private key, thus $g^a= p$ be the public key.
+
+- Given the ciphertext $C = (x, y) = (g^k, m*p^k)$
+- Calculate $C' = (x*g^{k'}, y*p^{k'}*m')$
+- Give C' to the decryption oracle and get m'' in return.
+
+It can be observed that if $C' = (x',y')$, then
+
+- $x' = x*g^{k'} = g^k*g^{k'} = g^{k+k'} = g^{k''}$
+- $y' = y*p^{k'}*m' = m*p^k*p^{k'}*m' = (m*m')*p^{k+k'} = m''*p^{k''}$
+
+Therefore, the decryption of C' will give $m''=m*m'$. The original message can be retireved as $m = m''*(m')^{-1}$.
