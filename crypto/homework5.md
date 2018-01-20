@@ -87,5 +87,31 @@ $p^2 + p(\phi(n) -n -1) + n = 0$
 Finding the roots of this quadratic equation is trivial. Thus p and q can be computed efficiently.
 
 ## Problem 5
+1. $Z^*_{13} = \{1,2,3,4,5,6,7,8,9,10,11,12\}$
+
+Let g be the generator. Since $Z^*_{13}$ is a cyclic group, it follows that
+
+2. $Z^*_{13}= \{1,g,g^2,g^3,g^4,g^5,g^6,g^7,g^8,g^9,g^{10},g^{11},g^{12}\}$
+
+Comparing (1) and (2), it can be seen that 2 is the generator of $Z^*_{13}$. This can be verified by calculating the modular exponents of 2.
+
+- $2^1 mod\ 13= 2$
+- $2^2 mod\ 13= 4$
+- $2^3 mod\ 13= 8$
+- $2^4 mod\ 13= 3$
+- $2^5 mod\ 13= 6$
+- $2^6 mod\ 13= 12$
+- $2^7 mod\ 13= 11$
+- $2^8 mod\ 13= 9$
+- $2^9 mod\ 13= 5$
+- $2^10 mod\ 13= 10$
+- $2^11 mod\ 13= 7$
+- $2^12 mod\ 13= 1$
+
+Therefore, g = 2
+
+Pick $g^3$ and $g^4$ as the random ElGamal key pairs for Alice and Bob respectively.
+
+If Alice is sending the message, she would send $(g^3, 7.(g^4)^3)$, that is (8, 7) to Bob.
 
 ## Problem 6
