@@ -15,13 +15,17 @@ Since $n-1 = -1\ mod\ n$, it means that 1 and n-1 can not be used as witness for
 Let the Miller Rabin function be Miller-Rabin(n,m,l) where n is the input number, m and l are such that $n-1=m2^l$. Miller-Rabin(n,m,l) returns true if n is probably prime and false if n is composite.
 
 Miller-Rabin-Iter(n,i):
-1) Find m and l are such that $n-1=m2^l$
-2) Do following i times
-    ```
+
+1. Find m and l are such that $n-1=m2^l$
+
+2. Do following i times
+
+```
     if (Miller-Rabin(n,m,l) == false)
         return false
-    ```
-3) Return true.
+```
+
+3. Return true.
 
 From the slides, it is given that the probability of being wrong is less than 1/4. For i iterations, this probability will be 1/4i. As i increases, this value will become very small and therefore will be negligible.
 
@@ -32,6 +36,7 @@ For public key (n,e) and message m, textbook RSA gives a ciphertext $c = m^e mod
 Given (n,e) = (77,17) and m = 9, we have to compute $9^{17} mod\ 77$. Binary for of 17 is 10001.
 
 l = 4, i = l, h = 1, k = 9
+
 |i|h|k|
 |---|---|---|
 |4|1|9|
@@ -59,6 +64,7 @@ Therefore, $d = x_0\ mod\ n = -7\ mod\ 60 = 53$
 The decryption will be $y^d\ mod\ n = 70^{53}\ mod\ 77$. The binary for 53 is 110101.
 
 l = 5, i = l, h = 1, k = 70
+
 |i|h|k|
 |---|---|---|
 |5|1|70|
