@@ -7,7 +7,9 @@ Authors:
 
 
 ## Problem 1
-slide 58, set 5 proof given.
+According to the lemma given in slides, n is not a prime number if there exists $a \in Z_n$ such that $a^2\ mod\ n = 1\ and\ a\not\in \{1, -1\ mod\ n\}$.
+
+Since $n-1 = -1\ mod\ n$, it means that 1 and n-1 can not be used as witness for the primalty test.
 
 ## Problem 2
 Let the Miller Rabin function be Miller-Rabin(n,m,l) where n is the input number, m and l are such that $n-1=m2^l$. Miller-Rabin(n,m,l) returns true if n is probably prime and false if n is composite.
@@ -116,6 +118,30 @@ If Alice is sending the message, she would send $(g^3, 7.(g^4)^3)$, that is (8, 
 
 ## Problem 6
 #### (a)
+$E(1^\eta):\{0,1\}$
+
+$1.\ Generate\ keys$
+
+$(k, \hat{k} \xleftarrow{\textdollar} Gen(1^\eta))$
+
+$2.\ Find\ phase$
+
+$(z_0, z_1) \xleftarrow{\textdollar} AF(1^\eta, k)$
+
+$3.\ Selection$
+
+$b \xleftarrow{\textdollar} \{0,1\}; y \xleftarrow{\textdollar}E(z_b,k)$
+
+$4.\ Guess\ phase$
+
+$b' \xleftarrow{\textdollar} AG(1^\eta, k, y)$
+
+$5. Output$
+
+$return\ b'$
+
+The Adversary AG can make any number of decryption queries in polynomial time with the constraint that it can not query the given challenge ciphertext.
+
 
 #### (b)
 Let g be the chosen generator and a be the private key, thus $g^a= p$ be the public key.
