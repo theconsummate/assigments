@@ -25,3 +25,14 @@ Thus $H'$ is collision resistant in this case also.
 ## Problem 4
 
 ## Problem 5
+Since M is a secure MAC, it implies that for a message-tag pair $(m,t)$ provided by the adversary,
+
+$t \not= T(m,k)$
+
+concatenating the same bit string on both sides,
+
+$\Rightarrow m[0, l(\eta -1)]\ ||\ t \not= m[0, l(\eta -1)]\ ||\ T(m,k)$
+
+$\Rightarrow t' \not= T'(m,k)$
+
+Therefore, the MAC M' is also secure if M is secure.
