@@ -27,9 +27,9 @@ Take arbitrary $l(\eta)$ bit strings $n, n'$ and $c$ where $n \not= n'$. Given t
 - $t_{n'} = T(n', k)$
 - $t_{n1c} = T(n||1||c, k)$
 
-Now it can be easily seen that the tag $T(n'||1||t_n\oplus t_{n'} \oplus c)$ is the same as $t_{n1n'}$. 
+Now it can be easily seen that the tag $T(n'||1||t_n\oplus t_{n'} \oplus c)$ is the same as $t_{n1c}$
 
-The reason is that while processing the block $t_n\oplus t_{n'} \oplus c$, CBC will use the initial vector as the output of the block $n'||1$ which is $t_{n'}$. The xor operation in CBC will cancel out $t_{n'}$ from the input message (for that particular block) leaving behind $t_n$ which represents $n||1$.
+The reason is that while processing the block $t_n\oplus t_{n'} \oplus c$ , CBC will use the initial vector as the output of the block $n'||1$ which is $t_{n'}$. The xor operation in CBC will cancel out $t_{n'}$ from the input message (for that particular block) leaving behind $t_n$ which represents $n||1$.
 
 ## Problem 4
 
