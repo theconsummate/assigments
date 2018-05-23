@@ -46,14 +46,14 @@ class CKYParser():
     def parse(self, string):
         n = len(string)
         # init matrix of size (n+1, n+1)
-        table = [[None for i in range (n + 1)] for j in range(n + 1) ]
+        table = [[[] for i in range (n + 1)] for j in range(n + 1) ]
         # first loop
         for j in range(1, n + 1):
             for rule in self.grammar.productions:
                 # 1st element is lhs of a rule, 2nd is the rhs
                 if string[j-1] in rule[1]:
-                    if not table[j - 1][j]:
-                        table[j - 1][j] = list()
+                    # if not table[j - 1][j]:
+                    #     table[j - 1][j] = list()
                     table[j - 1][j].append(rule[0])
         
         # loop over rows, backwards
@@ -65,9 +65,9 @@ class CKYParser():
                         for production in rule[1]:
                             if production.isupper():
                                 # rule is of type A -> BC
-                                if table[i][k] and production[0] in table[i][k] and table[k][j] and production[1] in table[k][j]:
-                                    if not table[i][j]:
-                                        table[i][j] = list()
+                                if production[0] in table[i][k] and production[1] in table[k][j]:
+                                    # if not table[i][j]:
+                                    #     table[i][j] = list()
                                     table[i][j].append(rule[0])
 
     
