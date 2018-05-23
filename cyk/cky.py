@@ -47,6 +47,7 @@ class CKYParser():
         n = len(string)
         # init matrix of size (n+1, n+1)
         table = [[[] for i in range (n + 1)] for j in range(n + 1) ]
+        back = [[{} for i in range (n + 1)] for j in range(n + 1) ]
         # first loop
         for j in range(1, n + 1):
             for rule in self.grammar.productions:
@@ -55,12 +56,13 @@ class CKYParser():
                     # if not table[j - 1][j]:
                     #     table[j - 1][j] = list()
                     table[j - 1][j].append(rule[0])
+                    # append to backtrace
+                    # back[j - 1][j].append(Node(rule, None, None, string[j - 1]))
         
         # loop over rows, backwards
         # adding an extra 1 because of the python range function
             for i in range(j-2, -1, -1):
                 for k in range (i + 1, j):
-                    print (j, i, k)
                     for rule in self.grammar.productions:
                         for production in rule[1]:
                             if production.isupper():
@@ -70,17 +72,60 @@ class CKYParser():
                                     #     table[i][j] = list()
                                     table[i][j].append(rule[0])
 
-    
-        return table
+                                    # add backtrace
+                                    if rule[0] in back[i][j]:
+                                        back[i][j][rule[0]].append((k, production[0], production[1]))
+                                    else:
+                                        back[i][j][rule[0]] = [(k, production[0], production[1])]
+                                    # for b in back[i][k]:
+                                    #     for c in back[k][j]:
+                                    #         if b.root == production[0] and c.root == production[1]:
+                                    #             back[i][j].append(Node(rule[0], b, c, None))
 
+    
+        return table, back
+    
+
+    def build_tree(self, back, table, i, j, label):
+        start = back[i][j]
+        trees = []
+        # find the label if it is present in this start node.
+        # print start, label
+        if not start:
+            # dict is empty, which means that this is a leaf node.
+            for r in self.grammar.productions:
+                if r[0] == label:
+                    for t in r[1]:
+                        if t.islower():
+                            return [label + "{" + t + "}"]
+        else:
+            # this is not a leaf node, find the label in the current node and print out the children
+            if label in start:
+                for path in start[label]:
+                    left = self.build_tree(back, table, i, path[0], path[1])
+                    right = self.build_tree(back, table, path[0], j, path[2])
+                    for l in left:
+                        for r in right:
+                            if l and r:
+                                tree = "(" + label + "$ (" + l + " " + r + ") #)"
+                                trees.append(tree)
+        return trees
 
 if __name__ == '__main__':
+    string = "baaba"
     grammar_file = "grammar.txt"
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
-    print grammar
     parser = CKYParser(grammar)
-    table = parser.parse("baaba")
+    table, back = parser.parse(string)
     for row in table:
         print row
-    print(table[0][5])
+    print "$$$$$$$$$$$$$$$"
+    for row in back:
+        print row
+    print(table[0][len(string)])
+    print back[0][len(string)]
+    print parser.build_tree(back, table, 0, len(string), "S" )
+    # print table
+    # print back
+    # printParseTrees(back[0][5])
