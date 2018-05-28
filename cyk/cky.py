@@ -1,17 +1,37 @@
+# -*- coding: utf-8 -*-
+
 from sets import Set
 
 class Grammar():
     def __init__(self):
+        # define null production
+        self.null = "ε"
         # all upper case symbols
         self.nonterminals = Set()
         # all lowercase symbols
         self.terminals = Set()
         # this will be a list of tuples with lhs as the first element and rhs as an array of outputs
-        self.productions = list()
+        self.productions = {}
         self.start = list()
 
     def convert_to_cnf(self):
-        pass
+        def eliminate_start_symbol_from_rhs(self):
+            for rule in self.productions:
+                for production in rhs:
+                    if self.start in production:
+                        # start symbol is present in rhs, create a new start symbol
+                        self.start += "0"
+                        # drop the last char and we will have the original start symbol
+                        self.production.append((self.start, [self.start[:-1]]))
+        
+        def remove_null_productions(self):
+            for rule in self.productions:
+                for production in rhs:
+                    if self.null in production:
+                        # this has a null
+                        pass
+        
+        eliminate_start_symbol_from_rhs(self)
 
 
     def read_grammar_file(self, filename):
@@ -22,7 +42,7 @@ class Grammar():
             lhs, rhs = line.strip().replace(" ", "").split("->")
             self.nonterminals.add(lhs)
             
-            self.productions.append((lhs, rhs.split("|")))
+            self.productions[lhs] = rhs.split("|")
             # iterate the elements of rhs and add the small case chars to terminals
             for c in rhs.split("|"):
                 if c.islower():
@@ -51,12 +71,12 @@ class CKYParser():
         back = [[{} for i in range (n + 1)] for j in range(n + 1) ]
         # first loop
         for j in range(1, n + 1):
-            for rule in self.grammar.productions:
+            for lhs, rhs in self.grammar.productions.iteritems():
                 # 1st element is lhs of a rule, 2nd is the rhs
-                if string[j-1] in rule[1]:
+                if string[j-1] in rhs:
                     # if not table[j - 1][j]:
                     #     table[j - 1][j] = list()
-                    table[j - 1][j].append(rule[0])
+                    table[j - 1][j].append(lhs)
                     # append to backtrace
                     # back[j - 1][j].append(Node(rule, None, None, string[j - 1]))
         
@@ -64,24 +84,24 @@ class CKYParser():
         # adding an extra 1 because of the python range function
             for i in range(j-2, -1, -1):
                 for k in range (i + 1, j):
-                    for rule in self.grammar.productions:
-                        for production in rule[1]:
+                    for lhs, rhs in self.grammar.productions.iteritems():
+                        for production in rhs:
                             if production.isupper():
                                 # rule is of type A -> BC
                                 if production[0] in table[i][k] and production[1] in table[k][j]:
                                     # if not table[i][j]:
                                     #     table[i][j] = list()
-                                    table[i][j].append(rule[0])
+                                    table[i][j].append(lhs)
 
                                     # add backtrace
-                                    if rule[0] in back[i][j]:
-                                        back[i][j][rule[0]].append((k, production[0], production[1]))
+                                    if lhs in back[i][j]:
+                                        back[i][j][lhs].append((k, production[0], production[1]))
                                     else:
-                                        back[i][j][rule[0]] = [(k, production[0], production[1])]
+                                        back[i][j][lhs] = [(k, production[0], production[1])]
                                     # for b in back[i][k]:
                                     #     for c in back[k][j]:
                                     #         if b.root == production[0] and c.root == production[1]:
-                                    #             back[i][j].append(Node(rule[0], b, c, None))
+                                    #             back[i][j].append(Node(lhs, b, c, None))
 
     
         return table, back
@@ -94,9 +114,9 @@ class CKYParser():
         # print start, label
         if not start:
             # dict is empty, which means that this is a leaf node.
-            for r in self.grammar.productions:
-                if r[0] == label:
-                    for t in r[1]:
+            for lhs, rhs in self.grammar.productions.iteritems():
+                if lhs == label:
+                    for t in rhs:
                         if t.islower():
                             return [label + "{" + t + "}"]
         else:
