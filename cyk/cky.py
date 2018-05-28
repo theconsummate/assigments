@@ -16,6 +16,7 @@ class Grammar():
 
     def read_grammar_file(self, filename):
         fi = open(filename)
+        self.start = fi.readline().strip()
         for line in fi.readlines():
             # strip, remove whitespaces and then split into lhs and rhs
             lhs, rhs = line.strip().replace(" ", "").split("->")
@@ -125,7 +126,7 @@ if __name__ == '__main__':
         print row
     print(table[0][len(string)])
     print back[0][len(string)]
-    print parser.build_tree(back, table, 0, len(string), "S" )
+    print parser.build_tree(back, table, 0, len(string), grammar.start )
     # print table
     # print back
     # printParseTrees(back[0][5])
