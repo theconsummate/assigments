@@ -14,24 +14,62 @@ class Grammar():
         self.productions = {}
         self.start = list()
 
+
     def convert_to_cnf(self):
         def eliminate_start_symbol_from_rhs(self):
-            for rule in self.productions:
+            for lhs, rhs in self.productions.items():
                 for production in rhs:
                     if self.start in production:
                         # start symbol is present in rhs, create a new start symbol
                         self.start += "0"
                         # drop the last char and we will have the original start symbol
-                        self.production.append((self.start, [self.start[:-1]]))
+                        self.productions[self.start] = [self.start[:-1]]
+                        # add to list of non-terminals
+                        self.nonterminals.add(self.start)
+                        break
         
         def remove_null_productions(self):
-            for rule in self.productions:
+            null_list = list()
+            for lhs, rhs in self.productions.items():
+                # rhs[:] = [x for x in rhs if x == self.null and lhs not in null_list]
                 for production in rhs:
-                    if self.null in production:
-                        # this has a null
-                        pass
-        
+                    if production == self.null and lhs not in null_list:
+                        null_list.append(lhs)
+                        rhs.remove(production)
+                    if production in null_list:
+                        # ripple effect of another rule being null
+                        null_list.append(lhs)
+                # if after this null removal, there are no productions for a given rule, remove that rule.
+                if len(rhs) == 0:
+                    del self.productions[lhs]
+                    # TODO remove from non terminal list also
+ 
+            # propagate the null values to other rules
+            for val in null_list:
+                for lhs, rhs in self.productions.items():
+                    for production in rhs:
+                        # if the val is in the rhs and it still has a non - null production
+                        if val in production and val in self.productions:
+                            strr = production.replace(val, "")
+                            if not strr == "":
+                                rhs.append(strr)
+
+        def remove_unit_productions(self):
+            for lhs, rhs in self.productions.items():
+                for production in rhs:
+                    if production.isupper() and len(production) == 1:
+                        # this is a unit production A -> B
+                        # remove this
+                        rhs.remove(production)
+                        # add rules if not of type A -> A
+                        if not production == lhs:
+                            rhs += self.productions[production]
+
         eliminate_start_symbol_from_rhs(self)
+        print self.productions
+        remove_null_productions(self)
+        print self.productions
+        remove_unit_productions(self)
 
 
     def read_grammar_file(self, filename):
@@ -137,6 +175,8 @@ if __name__ == '__main__':
     grammar_file = "grammar.txt"
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
+    grammar.convert_to_cnf()
+    print grammar
     parser = CKYParser(grammar)
     table, back = parser.parse(string)
     for row in table:
