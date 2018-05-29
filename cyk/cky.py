@@ -13,6 +13,8 @@ class Grammar():
         # this will be a list of tuples with lhs as the first element and rhs as an array of outputs
         self.productions = {}
         self.start = list()
+        # TODO: hack for now, maybe this will be sufficient !!
+        self.new_symbols = ["P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
 
     def convert_to_cnf(self):
@@ -65,12 +67,60 @@ class Grammar():
                         if not production == lhs:
                             rhs += self.productions[production]
 
+        def reduce_large_rules(self):
+            # reduces large rules like A -> BCD to A -> XD and X -> BC
+            # keep cache of reduced symbols and reuse the rules
+            temp_symbols = {}
+            for lhs, rhs in self.productions.items():
+                for i in range(len(rhs)):
+                    while True:
+                        if len(rhs[i]) > 2:
+                            current_val = rhs[i][:2]
+                            # check cache
+                            if current_val not in temp_symbols:
+                                new_symbol = self.new_symbols.pop()
+                                temp_symbols[current_val] = new_symbol
+                            else:
+                                new_symbol = temp_symbols[current_val]
+                            # this should be reduced
+                            rhs[i] = self.new_symbols.pop() + rhs[i][2:]
+                            # add to productions dict
+                            self.productions[new_symbol] = [current_val]
+                            self.nonterminals.add(new_symbol)
+                        else:
+                            break
+        
+
+        def reduce_small_rules(self):
+            # reduces small rules like A -> aB to A-> XB and X -> a
+            # keep cache
+            temp_symbols = {}
+            for lhs, rhs in self.productions.items():
+                for i in range(len(rhs)):
+                    for j in range(len(rhs[i])):
+                        if rhs[i][j].islower():
+                            current_val = rhs[i][j]
+                            # check cache
+                            if current_val not in temp_symbols:
+                                new_symbol = self.new_symbols.pop()
+                                temp_symbols[current_val] = new_symbol
+                            else:
+                                new_symbol = temp_symbols[current_val]
+                            # update current rule
+                            rhs[i] = rhs[i][:j] + new_symbol + rhs[i][j+1:]
+                            # add new rule
+                            self.productions[new_symbol] = [current_val]
+
+
         eliminate_start_symbol_from_rhs(self)
         print self.productions
         remove_null_productions(self)
         print self.productions
         remove_unit_productions(self)
-
+        print self.productions
+        reduce_large_rules(self)
+        print self.productions
+        reduce_small_rules(self)
 
     def read_grammar_file(self, filename):
         fi = open(filename)
