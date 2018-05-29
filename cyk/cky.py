@@ -92,11 +92,15 @@ class Grammar():
         
 
         def reduce_small_rules(self):
+            # removes terminals cooccuring with nonterminals
             # reduces small rules like A -> aB to A-> XB and X -> a
             # keep cache
             temp_symbols = {}
             for lhs, rhs in self.productions.items():
                 for i in range(len(rhs)):
+                    if rhs[i].islower():
+                        # this means that there is only a terminal symbol here
+                        continue
                     for j in range(len(rhs[i])):
                         if rhs[i][j].islower():
                             current_val = rhs[i][j]
@@ -176,6 +180,8 @@ class CKYParser():
                         for production in rhs:
                             if production.isupper():
                                 # rule is of type A -> BC
+                                # print production
+                                # print (i,j,k)
                                 if production[0] in table[i][k] and production[1] in table[k][j]:
                                     # if not table[i][j]:
                                     #     table[i][j] = list()
