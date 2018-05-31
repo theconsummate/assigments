@@ -4,28 +4,48 @@ Authors:
 
 Dhruv Mishra, st154709@stud.uni-stuttgart.de, Matriculation number: 3293775
 
-Summarise the paper you presented in a report.
+Summarize the paper you presented in a report.
 Length: 5–8 pages
 Layout and structure: your choice
 
 ## Abstract
-This paper presents modality exclusivity norms for 400 randomly selected noun words, composed by asking participants for perceptual experience ratings for five sense, Auditory (by hearing), Gustatory (by tasting), Haptic (by feeling through touch), Olfactory (by smelling), Visual (by seeing). These ratings are then used to find a relationship between how a word is perceived by people in real life and the corresponding lexical attributes the given word has.
+This paper presents modality exclusivity norms for 400 randomly selected noun words, composed by asking participants for perceptual experience ratings for five sense:
+- Auditory (by hearing)
+- Gustatory (by tasting)
+- Haptic (by feeling through touch)
+- Olfactory (by smelling)
+- Visual (by seeing)
+
+These ratings are then used to find a relationship between how a word is perceived by people in real life and the corresponding lexical attributes the given word has.
 
 
 
 ### Method for collecting perceptual ratings
 - The participants were a group of 34 native speakers of English.
-- A random list of 400 words taken from the MRC psycholinguistic database.
+- A random list of 400 words taken from the MRC psycho-linguistic database.
 
 Procedure:
 - The material set was randomly split into two lists of 200 items and presented to participants for perceptual strength ratings.
 - Each word was presented on a separate screen with a line that read “To what extent do you experience WORD”
 - Each participant rated the word on a scale of 0 (not at all) to 5 (greatly).
+- The participants were informed that there was no right or wrong answer, and they should select the values which they feel are correct.
+- The experiment was paced by the participants and generally lasted between 45 and 60 mins.
 
+Dominant modality:
+- For each word, the modality which received the highest rating was assigned as the dominant modality for that word.
+- For four words, ties existed and the dominant modality was then chosen randomly from the tied values.
+
+
+### Results and discussion
+Basic exploratory analysis showed that the following observations:
+- Visual was the most strongest modality with a mean rating of 3.54, followed next by Auditory with a mean of 2.15 while Gustatory was the most weakest with a mean rating of 0.53.
+- High inter-annotator agreement was observed implying that the collected data can be considered as representative.
+- The 95% Confidence Intervals were quite small (less than 0.11) implying that the data is quite reliable.
 
 #### Modality exclusivity
-It is a measure of the extent to which a particular concept is perceived through a single perceptual modality, calculated per word as the rating range divided by the sum, and extending from 0% for completely multimodal, to 100% for completely unimodal.
-A high score means that the word has a very specific meaning whereas a low score means that the meaning is general and depends very often on the context.
+It is a measure of the extent to which a particular concept is perceived through a single perceptual modality, calculated per word as the rating range divided by the sum, and extending from 0% for completely multimodal, to 100% for completely unimodal. A high score means that the word has a very specific meaning whereas a low score means that the meaning is general and depends very often on the context.
+
+The 
 
 ##### Difference between nouns and adjectives
 Modality exclusivity scores for nouns (M = 39.2%) were significantly lower than those for adjectives (M = 46.1%).
