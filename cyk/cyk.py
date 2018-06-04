@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from sets import Set
+import sys
+
+"""
+This module implements the CYK table parsing algorithm.
+Usage:
+
+python cyk.py grammar_file "sentence with words separate by white spaces"
+"""
 
 class Grammar():
+    """
+    This is the init method, inits an empty grammar object
+    """
     def __init__(self):
         # define null production
         self.null = "ε"
@@ -18,6 +29,9 @@ class Grammar():
 
 
     def convert_to_cnf(self):
+        """
+        This method converts the object into a CNF grammar. The various steps are implemented in their own sub-methods.
+        """
         def eliminate_start_symbol_from_rhs(self):
             for lhs, rhs in self.productions.items():
                 for production in rhs:
@@ -127,6 +141,9 @@ class Grammar():
         reduce_small_rules(self)
 
     def read_grammar_file(self, filename):
+        """
+        reads a given grammar file and loads the information into self.
+        """
         fi = open(filename)
         self.start = fi.readline().strip()
         for line in fi.readlines():
@@ -149,7 +166,7 @@ class Grammar():
 Pseudo code:
 
 """
-class CKYParser():
+class CYKParser():
     """
     constructor for the parser class.
     """
@@ -157,6 +174,16 @@ class CKYParser():
         self.grammar = grammar
     
     def parse(self, string):
+        """
+        parse a given string using the grammar with which this class was initialized.
+
+        Args:
+        string: an array of words which has to be parsed.
+
+        Returns:
+        table: a table containing the CYK chart
+        back: a table containing the corresponding back pointers to build the parse tree.
+        """
         n = len(string)
         # init matrix of size (n+1, n+1)
         table = [[[] for i in range (n + 1)] for j in range(n + 1) ]
@@ -202,6 +229,19 @@ class CKYParser():
     
 
     def build_tree(self, back, table, i, j, label):
+        """
+        Builds a parse tree recursively for a given parse and a given start symbol.
+
+        Args:
+        back: a table containing back pointers, as returned from the parse method
+        table: a table containing CYK chart, as returned from the parse method
+        i: start row index
+        j: start column index
+        label: start symbol
+
+        Returns:
+        trees: an array containing all the possible parse trees.
+        """
         start = back[i][j]
         trees = []
         # find the label if it is present in this start node.
@@ -227,13 +267,20 @@ class CKYParser():
         return trees
 
 if __name__ == '__main__':
-    string = "baaba"
-    grammar_file = "grammar.txt"
+    if len(sys.argv) == 3:
+        grammar_file = sys.argv[1]
+        string = sys.argv[2]
+    else:
+        # use default
+        string = "b a a b a"
+        grammar_file = "grammar.txt"
+    # split the string into an array of words
+    string = string.split(" ")
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
     grammar.convert_to_cnf()
     print grammar
-    parser = CKYParser(grammar)
+    parser = CYKParser(grammar)
     table, back = parser.parse(string)
     for row in table:
         print row
