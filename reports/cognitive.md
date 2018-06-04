@@ -1,6 +1,6 @@
 # Modality exclusivity norms for 400 nouns: The relationship between perceptual experience and surface word form, Lynott and Conell
 
-Authors:
+Author:
 
 Dhruv Mishra, st154709@stud.uni-stuttgart.de, Matriculation number: 3293775
 
