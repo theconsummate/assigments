@@ -1,5 +1,14 @@
 S
-S -> AB | BC
-A -> BA | a
-B -> CC | b
-C -> AB | a
+S -> NP VP
+PP -> P NP
+NP -> Det N
+NP -> Det N PP
+NP -> 'I'
+VP -> V NP
+VP -> VP PP
+Det -> 'an'
+Det -> 'my'
+N -> 'elephant'
+N -> 'pajamas'
+V -> 'shot'
+P -> 'in'

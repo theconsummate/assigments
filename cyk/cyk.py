@@ -10,6 +10,20 @@ Usage:
 python cyk.py grammar_file "sentence with words separate by white spaces"
 """
 
+def is_production_terminal(production):
+    """
+    Args
+    production: an array containing the elements of the rhs of a rule.
+
+    returns:
+    True if the char ' is found in any for the element. False otherwise
+    """
+    for p in production:
+        if "'" in p:
+            return True
+    return False
+
+
 class Grammar():
     """
     This is the init method, inits an empty grammar object
@@ -25,7 +39,7 @@ class Grammar():
         self.productions = {}
         self.start = list()
         # TODO: hack for now, maybe this will be sufficient !!
-        self.new_symbols = ["P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+        self.new_symbols = ["J", "K", "Q", "R", "T", "U", "W", "X", "Y", "Z"]
 
 
     def convert_to_cnf(self):
@@ -73,7 +87,7 @@ class Grammar():
         def remove_unit_productions(self):
             for lhs, rhs in self.productions.items():
                 for production in rhs:
-                    if production.isupper() and len(production) == 1:
+                    if not is_production_terminal(production) and len(production) == 1:
                         # this is a unit production A -> B
                         # remove this
                         rhs.remove(production)
@@ -90,14 +104,15 @@ class Grammar():
                     while True:
                         if len(rhs[i]) > 2:
                             current_val = rhs[i][:2]
-                            # check cache
-                            if current_val not in temp_symbols:
+                            cache_key = ','.join(current_val)
+                            # check cache, convert to a string before key
+                            if cache_key not in temp_symbols:
                                 new_symbol = self.new_symbols.pop()
-                                temp_symbols[current_val] = new_symbol
+                                temp_symbols[cache_key] = new_symbol
                             else:
-                                new_symbol = temp_symbols[current_val]
+                                new_symbol = temp_symbols[cache_key]
                             # this should be reduced
-                            rhs[i] = self.new_symbols.pop() + rhs[i][2:]
+                            rhs[i] = [new_symbol] + rhs[i][2:]
                             # add to productions dict
                             self.productions[new_symbol] = [current_val]
                             self.nonterminals.add(new_symbol)
@@ -112,7 +127,7 @@ class Grammar():
             temp_symbols = {}
             for lhs, rhs in self.productions.items():
                 for i in range(len(rhs)):
-                    if rhs[i].islower():
+                    if is_production_terminal(rhs[i]):
                         # this means that there is only a terminal symbol here
                         continue
                     for j in range(len(rhs[i])):
@@ -148,11 +163,16 @@ class Grammar():
         self.start = fi.readline().strip()
         for line in fi.readlines():
             # strip, remove whitespaces and then split into lhs and rhs
-            lhs, rhs = line.strip().replace(" ", "").split("->")
+            lhs, rhs = line.strip().split("->")
+            lhs = lhs.strip()
+            rhs = rhs.strip()
             self.nonterminals.add(lhs)
             
-            self.productions[lhs] = rhs.split("|")
+            if lhs not in self.productions:
+                self.productions[lhs] = []
+            self.productions[lhs] += [p.split(" ") for p in rhs.split("|")]
             # iterate the elements of rhs and add the small case chars to terminals
+            # TODO this is not correct
             for c in rhs.split("|"):
                 if c.islower():
                     self.terminals.add(c)
@@ -192,10 +212,11 @@ class CYKParser():
         for j in range(1, n + 1):
             for lhs, rhs in self.grammar.productions.iteritems():
                 # 1st element is lhs of a rule, 2nd is the rhs
-                if string[j-1] in rhs:
-                    # if not table[j - 1][j]:
-                    #     table[j - 1][j] = list()
-                    table[j - 1][j].append(lhs)
+                for element in rhs:
+                    if string[j-1] in element:
+                        # if not table[j - 1][j]:
+                        #     table[j - 1][j] = list()
+                        table[j - 1][j].append(lhs)
         
         # loop over rows, backwards
         # adding an extra 1 because of the python range function
@@ -203,7 +224,7 @@ class CYKParser():
                 for k in range (i + 1, j):
                     for lhs, rhs in self.grammar.productions.iteritems():
                         for production in rhs:
-                            if production.isupper():
+                            if not is_production_terminal(production):
                                 # rule is of type A -> BC
                                 # print production
                                 # print (i,j,k)
@@ -245,8 +266,8 @@ class CYKParser():
             for lhs, rhs in self.grammar.productions.iteritems():
                 if lhs == label:
                     for t in rhs:
-                        if t.islower():
-                            return [label + "{" + t + "}"]
+                        if is_production_terminal(t):
+                            return [label + "{" + t[0] + "}"]
         else:
             # this is not a leaf node, find the label in the current node and print out the children
             if label in start:
@@ -266,10 +287,10 @@ if __name__ == '__main__':
         string = sys.argv[2]
     else:
         # use default
-        string = "b a a b a"
+        string = "an elephant shot my pajamas"
         grammar_file = "grammar.txt"
     # split the string into an array of words
-    string = string.split(" ")
+    string = ["'" + s + "'" for s in string.split(" ")]
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
     grammar.convert_to_cnf()
