@@ -2,3 +2,10 @@
 *.html
 rprogramming/.Rhistory
 rprogramming/data/*
+
+# removing latex aux files
+*.log
+*.aux
+*.bbl
+*.blg
+*.dvi

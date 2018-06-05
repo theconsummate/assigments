@@ -196,8 +196,6 @@ class CYKParser():
                     # if not table[j - 1][j]:
                     #     table[j - 1][j] = list()
                     table[j - 1][j].append(lhs)
-                    # append to backtrace
-                    # back[j - 1][j].append(Node(rule, None, None, string[j - 1]))
         
         # loop over rows, backwards
         # adding an extra 1 because of the python range function
@@ -219,10 +217,6 @@ class CYKParser():
                                         back[i][j][lhs].append((k, production[0], production[1]))
                                     else:
                                         back[i][j][lhs] = [(k, production[0], production[1])]
-                                    # for b in back[i][k]:
-                                    #     for c in back[k][j]:
-                                    #         if b.root == production[0] and c.root == production[1]:
-                                    #             back[i][j].append(Node(lhs, b, c, None))
 
     
         return table, back
