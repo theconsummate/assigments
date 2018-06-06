@@ -1,0 +1,20 @@
+S
+S -> NP VP
+PP -> P NP
+PP -> P N
+NP -> N
+NP -> Det N
+NP -> Det Adj N
+NP -> Det Adj N PP
+VP -> V NP
+VP -> VP PP
+NP -> NP PP
+Det -> 'a'
+Det -> 'an'
+Det -> 'the'
+N -> 'Batman'
+N -> 'street'
+N -> 'apple'
+V -> 'ate'
+V -> 'slept'
+P -> 'on'
