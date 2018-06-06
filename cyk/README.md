@@ -1,13 +1,3 @@
-http://courses.washington.edu/ling571/ling571_fall_2010/slides/cky_cnf.pdf
-
-a short description of the modules/functions/classes you implemented;
-• the programming language (with the version indicated), in which you coded;
-• a list of libraries or dependencies you used (if any);
-• instructions on how to run the code including those on how to install the dependencies
-(if necessary);
-Important: if your code cannot be run properly after following your instructions,
-this leads to the overall fail grade automatically
-
 ## Programming language
 The code is written in Python 2.7.12
 
@@ -15,6 +5,19 @@ The code is written in Python 2.7.12
 The code does not need any external libraries besides what is already included in the python distribution.
 
 ## How to run
+Two command line arguments are to be provided:
+- The first is the path to a grammar file.
+- The second is the input sentence.
+
+A few examples
+```
+python cyk.py grammar1.txt "a b"
+
+python cyk.py grammar2.txt "Batman ate an apple on the street"
+```
+
+If no arguments are given, the code will use a default value.
+ 
 
 ## Description of the code
 #### class Grammar
@@ -24,5 +27,8 @@ This object stores the grammar information provided as the input. The class prop
 
 #### class CKYParser
 The two methods are:
-- parse(string)
-- build_tree(back, table, i, j, label)
+- parse(string): it takes an input string and returns a parse table and a back trace.
+- build_tree(back, table, i, j, label): takes the parse table and back trace table from the parse method and recursively builds a parse tree.
+
+#### console output
+An appropriate result is printed on the console after each main function gets executed.
