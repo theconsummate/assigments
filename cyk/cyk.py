@@ -92,8 +92,8 @@ class Grammar():
                         # remove this
                         rhs.remove(production)
                         # add rules if not of type A -> A
-                        if not production == lhs:
-                            rhs += self.productions[production]
+                        if not production[0] == lhs:
+                            rhs += self.productions[production[0]]
 
         def reduce_large_rules(self):
             # reduces large rules like A -> BCD to A -> XD and X -> BC
@@ -146,13 +146,13 @@ class Grammar():
 
 
         eliminate_start_symbol_from_rhs(self)
-        print self.productions
+        # print self.productions
         remove_null_productions(self)
-        print self.productions
+        # print self.productions
         remove_unit_productions(self)
-        print self.productions
+        # print self.productions
         reduce_large_rules(self)
-        print self.productions
+        # print self.productions
         reduce_small_rules(self)
 
     def read_grammar_file(self, filename):
@@ -170,7 +170,7 @@ class Grammar():
             
             if lhs not in self.productions:
                 self.productions[lhs] = []
-            self.productions[lhs] += [p.split(" ") for p in rhs.split("|")]
+            self.productions[lhs] += [p.strip().split(" ") for p in rhs.split("|")]
             # iterate the elements of rhs and add the small case chars to terminals
             # TODO this is not correct
             for c in rhs.split("|"):
@@ -217,6 +217,8 @@ class CYKParser():
                         # if not table[j - 1][j]:
                         #     table[j - 1][j] = list()
                         table[j - 1][j].append(lhs)
+                        # add the back pointer here
+                        back[j - 1][j] = string[j-1]
         
         # loop over rows, backwards
         # adding an extra 1 because of the python range function
@@ -261,13 +263,15 @@ class CYKParser():
         trees = []
         # find the label if it is present in this start node.
         # print start, label
-        if not start:
+        if type(start) is str:
+            # this is a leaf node
+            return [label + "{" + start + "}"]
             # dict is empty, which means that this is a leaf node.
-            for lhs, rhs in self.grammar.productions.iteritems():
-                if lhs == label:
-                    for t in rhs:
-                        if is_production_terminal(t):
-                            return [label + "{" + t[0] + "}"]
+            # for lhs, rhs in self.grammar.productions.iteritems():
+            #     if lhs == label:
+            #         for t in rhs:
+            #             if is_production_terminal(t):
+            #                 return [label + "{" + t[0] + "}"]
         else:
             # this is not a leaf node, find the label in the current node and print out the children
             if label in start:
@@ -287,12 +291,17 @@ if __name__ == '__main__':
         string = sys.argv[2]
     else:
         # use default
-        string = "an elephant shot my pajamas"
-        grammar_file = "grammar.txt"
+        string = "Batman slept on the street"
+        string = "Batman ate an apple"
+        string = "Batman ate an apple on the street"
+        # string = "a b"
+        grammar_file = "grammar2.txt"
     # split the string into an array of words
     string = ["'" + s + "'" for s in string.split(" ")]
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
+    # printing before conversion
+    print grammar
     grammar.convert_to_cnf()
     print grammar
     parser = CYKParser(grammar)
@@ -304,7 +313,10 @@ if __name__ == '__main__':
         print row
     print(table[0][len(string)])
     print back[0][len(string)]
-    print parser.build_tree(back, table, 0, len(string), grammar.start )
+    parses = parser.build_tree(back, table, 0, len(string), grammar.start )
+    for p in parses:
+        print p
+        print "###"
     # print table
     # print back
     # printParseTrees(back[0][5])
