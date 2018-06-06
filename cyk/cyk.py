@@ -147,12 +147,16 @@ class Grammar():
 
         eliminate_start_symbol_from_rhs(self)
         # print self.productions
+        # print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
         remove_null_productions(self)
         # print self.productions
+        # print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
         remove_unit_productions(self)
         # print self.productions
+        # print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
         reduce_large_rules(self)
         # print self.productions
+        # print "$$$$$$$$$$$$$$$$$$$$$$$$$$$$"
         reduce_small_rules(self)
 
     def read_grammar_file(self, filename):
@@ -281,7 +285,7 @@ class CYKParser():
                     for l in left:
                         for r in right:
                             if l and r:
-                                tree = "(" + label + "$ (" + l + " " + r + ") #)"
+                                tree = "(" + label + " $(" + l + " " + r + ")# )"
                                 trees.append(tree)
         return trees
 
@@ -301,18 +305,22 @@ if __name__ == '__main__':
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
     # printing before conversion
+    print "printing input grammar..."
     print grammar
     grammar.convert_to_cnf()
+    print "printing input grammar after conversion to CNF..."
     print grammar
     parser = CYKParser(grammar)
     table, back = parser.parse(string)
+    print "table after final iteration..."
     for row in table:
         print row
-    print "$$$$$$$$$$$$$$$"
+    print "back trace table after final iteration..."
     for row in back:
         print row
-    print(table[0][len(string)])
-    print back[0][len(string)]
+    # print(table[0][len(string)])
+    # print back[0][len(string)]
+    print "printing all the parses..."
     parses = parser.build_tree(back, table, 0, len(string), grammar.start )
     for p in parses:
         print p
