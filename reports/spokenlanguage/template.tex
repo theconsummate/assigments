@@ -13,122 +13,81 @@
 \begin{document}
 
 \maketitle
-% 
+%
 \begin{abstract}
-  This report describes the paper \cite{dredze2010nlp} which was presented by me and two other papers: \cite{Davis80-COP} and \cite{Davis80-COP}. For your paper to be published in the conference proceedings, you must use this document as both an instruction set and as a template into which you can type your own text. If your paper does not conform to the required format, you will be asked to fix it.
-
-  Please do not reuse your past papers as a template. To prepare your paper for submission, please always download a fresh copy of this template from the conference website and please read the format instructions in this template before you use it for your paper.
-
-  Conversion to PDF may cause problems in the resulting PDF or expose problems in your source document. Before submitting your final paper in PDF, check that the format in your paper PDF conforms to this template. Specifically, check the appearance of the title and author block, the appearance of section headings, document margins, column width, column spacing, and other features such as figure numbers, table numbers and equation number. In summary, you must proofread your final paper in PDF before submission.
-  
-  The maximum number of pages is 5. The 5\textsuperscript{th} page may be used exclusively for references. The references should begin on an earlier page immediately after the Acknowledgements section, and continue onto the 5\textsuperscript{th} page. If no space is available on an earlier page, then the references may begin on the 5\textsuperscript{th} page.
-
-  Index terms should be included as shown below.
+  This report describes the paper \cite{dredze2010nlp} which was presented by me and two other papers: \cite{Davis80-COP} and \cite{Davis80-COP}.
 \end{abstract}
-\noindent\textbf{Index Terms}: speech recognition, human-computer interaction, computational paralinguistics
 
 \section{NLP on spoken documents without ASR}
-
-\subsection{Basic layout features}
+The paper \cite{dredze2010nlp} describes a technique to apply NLP algorithms directly on spoken documents by transforming the speech data into a vector representation which is very similar to how textual data is represented. The motivation to do is are many:
 
 \begin{itemize}
-\item Proceedings will be printed in DIN A4 format. Authors must submit their papers in DIN A4 format.
-\item Two columns are used except for the title section and for large figures that may need a full page width.
-\item Left and right margin are 20 mm each. 
-\item Column width is 80 mm. 
-\item Spacing between columns is 10 mm.
-\item Top margin is 25 mm (except for the first page which is 30 mm to the title top).
-\item Bottom margin is 35 mm.
-\item Text height (without headers and footers) is maximum 235 mm.
-\item Headers and footers must be left empty.
-\item Check indentations and spacings by comparing to this example file (in PDF).
+\item The current popular technique of using an ASR system to transcribe spoken decouments is not very efficient. This method is prone to limitations imposed by the ASR system and error propagation into the entire pipleline.
+\item NLP algorithms applied on text data often use simple features like term frequency (tf), inverted document frequency (idf) etc. Requirement for annotations is often very minimal.
+\item ASR systems on the other hand require a lot of annotated data, which is not always practical to procure or create.
 \end{itemize}
 
-\subsubsection{Headings}
+Therefore, a technique to convert speech into an appropriate vector representation which can be used as input to NLP algorithms is presented.
 
-Section headings are centered in boldface with the first word capitalized and the rest of the heading in lower case. Sub- headings appear like major headings, except they start at the left margin in the column. Sub-sub-headings appear like sub-headings, except they are in italics and not boldface. See the examples in this file. No more than 3 levels of headings should be used.
+\subsection{Data}
+The paper uses a subset of the Switchboard Telephone Speech Corpus. This corpus has 2400 two sided telephone conversations on 70 pre-selected topics. The six most commonly topics were selected: recycling, capital punishment, drug testing, family finance, job benefits, car buying. For these topics, 60 sides of conversations were randomly selected. The resulting data set therefore contained 360 documents spoken by different speakers and was 36 hours in length.
 
-\subsection{Text font}
+\subsection{Dot Plots}
+Dot plots is a method which has been borrowed from bio-informatics. Given character strings s1 and s2, substrings which are common to both of them can be seen as diagonal line segments in the visualisation. If the two strings are same, there will be a main diagonal which will be a result of self similarity. Therefore, search is for line segments other than the main diagonal to identify repetitions.
 
-Times or Times Roman font is used for the main text. Font size in the main text must be 9 points, and in the References section 8 points. Other font types may be used if needed for special purposes. It is VERY IMPORTANT that while making the final PDF file, you embed all used fonts! To embed the fonts, you may use the following instructions:
-\begin{enumerate}
-\item For Windows users, the bullzip printer can convert any PDF to have embedded and subsetted fonts.
-\item For Linux/Mac users, you may use \\
-   pdftops file.pdf\\
-   pstopdf -dPDFSETTINGS=/prepress file.pdf
-\end{enumerate}
+\subsection{Posteriorgram Representations}
+To adapt dot plots for spoken documents, the speech signals must be converted into a sequence of frames. Each frame is represented as the posterior probability distribution over a set of speech sounds given the speech observed at the particular point in time. The paper uses an English phone-set but it claims that it can be used for any language. The reason is that as long as the speech is reliably mapped to a probability distribution over this phone set, different languages will also get mapped into the same domain. This results in the applicability of this representation across different languages, although the paper does not test this hypothesis. This representation is also speaker-independent and provides sparsity to enable efficient storage and computation.
 
-\LaTeX users: users should use Adobe Type 1 fonts such as Times or Times Roman. These are used automatically by the INTERSPEECH2018.sty style file. Authors must not use Type 3 (bitmap) fonts.
+\subsection{Acoustic Dot Plots}
+Given a spoken document represented as a sequence of frames represented with posteriorgrams, an acoustic dotplot can be created, similar to the string dot plot where instead of matching characters, the frames are matched instead. This dot plot will have diagonal line segments for frames which are similar.
 
-\subsection{Figures}
+\subsubsection{Hyperparameters during matching phase}
+While matching characters is a simple task, matching frames is not trivial. The paper proposes two parameters to determine what a match is:
 
-All figures must be centered on the column (or page, if the figure spans both columns). Figure captions should follow each figure and have the format given in
-% Figure~\ref{fig:speech_production}.
+\begin{itemize}
+\item Kappa: This is the duration of the match in seconds.
+\item Tau: The overlap threshold, i.e. the extent of similarity. A value of 1 is an exact match whereas 0.5 means only half of the frame is a match.
+\end{itemize}
 
-Figures should be preferably line drawings. If they contain gray levels or colors, they should be checked to print well on a high-quality non-color laser printer.
+Decreasing Kappa results in more matched regions and increasing Tau results in less frames getting matched. Both of them increase the number of pseudo-terms.
 
-Graphics (i.\,e., illustrations, figures) must not use stipple fill patterns because they will not reproduce properly in Adobe PDF. Please use only SOLID FILL COLORS.
+\subsection{Pseudo Terms}
+Pseudo-terms represent a single word or phrase spoken at multiple points throughout the corpus. Each pseudo-term takes the place of a word of phrase in a bag or terms vector space model of a text document and allows the use of standard NLP algorithms. Pseudo-terms are created using by clustering the matched regions in the documents.
 
-Figures which span 2 columns (i.\,e., occupy full page width) must be placed at the top or bottom of the page.
+\subsubsection{Creating Pseudo-terms}
+After finding a set of matched regions, graph clustering is used to aggregate the similar matches into a cluster.
+The clusters thus formed are the pseudo-terms which represent a word of a phrase.
 
-\subsection{Tables}
+To take an example, suppose the phrase “It is sunny today” occurs once in three documents A,B and C. The acoustic dotplots will give three matches: AB, AC and BC. Each of these matches will have slightly different representations since the speakers are different. Using graph clustering, these matches are aggregated into a single cluster. This cluster is a pseudo-term which represents the term “It is sunny today” and has a tf of 3 and idf of 0 (because it occurs in 3 “documents”).
 
-An example of a table is shown in Table ~\ref{tab:example}. The caption text must be above the table.
+\subsubsection{Evaluation metrics for Clustering}
+The clusters created by graph clustering were evaluated on three metrics:
 
-\begin{table}[th]
-  \caption{This is an example of a table}
-  \label{tab:example}
-  \centering
-  \begin{tabular}{ r@{}l  r }
-    \toprule
-    \multicolumn{2}{c}{\textbf{Ratio}} & 
-                                         \multicolumn{1}{c}{\textbf{Decibels}} \\
-    \midrule
-    $1$                       & $/10$ & $-20$~~~             \\
-    $1$                       & $/1$  & $0$~~~               \\
-    $2$                       & $/1$  & $\approx 6$~~~       \\
-    $3.16$                    & $/1$  & $10$~~~              \\
-    $10$                      & $/1$  & $20$~~~              \\
-    $100$                     & $/1$  & $40$~~~              \\
-    $1000$                    & $/1$  & $60$~~~              \\
-    \bottomrule
-  \end{tabular}
-  
-\end{table}
+\begin{itemize}
+\item Purity: The precision of each cluster, i.e., how many examples in each cluster belong to the same true topic.
+Higher values are better.
+\item Entropy: how the members of a cluster are distributed amongst the true labels.
+Lower values are better.
+\item B-cubed: measures clustering effectiveness from the perspective of a user’s inspecting the clustering results.
+Higher values are better.
+\end{itemize}
 
-\subsection{Equations}
+\subsubsection{Clustering results}
+The pseudo-terms created by graph clustering were compared with two other baseline methods: Phonetic Trigrams (three sequential phones) and Word Transcripts (Unigram, Bigram, Trigram). It must be noted that Word Transcripts is the upper-bound for performance because in the best case, the pseudo-terms created will be the exact representations of words in the textual transcripts.
 
-Equations should be placed on separate lines and numbered. Examples of equations are given below. Particularly,
-% 
-\begin{equation}
-  x(t) = s(f_\omega(t))
-  \label{eq1}
-\end{equation}
-% 
-where \(f_\omega(t)\) is a special warping function
-% 
-\begin{equation}
-  f_\omega(t) = \frac{1}{2 \pi j} \oint_C 
-  \frac{\nu^{-1k} \mathrm{d} \nu}
-  {(1-\beta\nu^{-1})(\nu^{-1}-\beta)}
-  \label{eq2}
-\end{equation}
-% 
-A residue theorem states that
-% 
-\begin{equation}
-  \oint_C F(z)\,\mathrm{d}z = 2 \pi j \sum_k \mathrm{Res}[F(z),p_k]
-  \label{eq3}
-\end{equation}
-% 
-Applying (\ref{eq3}) to (\ref{eq1}), it is straightforward to see that
-% 
-\begin{equation}
-  1 + 1 = \pi
-  \label{eq4}
-\end{equation}
+% add the figure maybe!
+Pseudo-terms give perform significantly better than Phonetic Trigrams and almost as good as Word transcripts.
 
-Finally we have proven the secret theorem of all speech sciences. No more math is needed to show how useful the result is!
+
+\subsection{Supervised Classification using pseudo-terms}
+The pseudo-terms thus created were then used to do a topic classification task, where each document is labelled with the topic it belongs to. The topics were the six most common ones: recycling, capital punishment, drug testing, family finance, job benefits, car buying. Since the labels are balanced, random guessing will yield accuracy of 0.1667. A supervised learning algorithm was trained using labelled data and then asked to label some unseen test data.
+
+The performance evaluated on four popular learning algorithms:MIRA, Confidence Weighted (CW), Maximum Entropy, Support Vector Machines (SVM).
+
+Results:
+% add the figure maybe!
+Pseudo-terms give perform significantly better than Phonetic Trigrams and almost as good as Word transcripts.
+
 
 % \begin{figure}[t]
 %   \centering
@@ -139,44 +98,8 @@ Finally we have proven the secret theorem of all speech sciences. No more math i
 
 \subsection{Information for Word users only}
 
-For ease of formatting, please use the styles listed in Table 2. The styles are defined in this template file and are shown in the order in which they would be used when writing a paper. When the heading styles in Table 2 are used, section numbers are no longer required to be typed in because they will be automatically numbered by Word. Similarly, reference items will be automatically numbered by Word when the ``Reference'' style is used.
-
-\begin{table}[t]
-  \caption{Main predefined styles in Word}
-  \label{tab:word_styles}
-  \centering
-  \begin{tabular}{ll}
-    \toprule
-    \textbf{Style Name}      & \textbf{Entities in a Paper}                \\
-    \midrule
-    Title                    & Title                                       \\
-    Author                   & Author name                                 \\
-    Affiliation              & Author affiliation                          \\
-    Email                    & Email address                               \\
-    AbstractHeading          & Abstract section heading                    \\
-    Body Text                & First paragraph in abstract                 \\
-    Body Text Next           & Following paragraphs in abstract            \\
-    Index                    & Index terms                                 \\
-    1. Heading 1             & 1\textsuperscript{st} level section heading \\
-    1.1 Heading 2            & 2\textsuperscript{nd} level section heading \\
-    1.1.1 Heading 3          & 3\textsuperscript{rd} level section heading \\
-    Body Text                & First paragraph in section                  \\
-    Body Text Next           & Following paragraphs in section             \\
-    Figure Caption           & Figure caption                              \\
-    Table Caption            & Table caption                               \\
-    Equation                 & Equations                                   \\
-    \textbullet\ List Bullet & Bulleted lists                              \\\relax
-    [1] Reference            & References                                  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-If your Word document contains equations, you must not save your Word document from ``.docx'' to ``.doc'' because when doing so, Word will convert all equations to images of unacceptably low resolution.
 
 \subsection{Hyperlinks}
-
-For technical reasons, the proceedings editor will strip all active links from the papers during processing. Hyperlinks can be included in your paper, if written in full, e.\,g.\ ``http://www.foo.com/index.html''. The link text must be all black. 
-Please make sure that they present no problems in printing to paper.
 
 \subsection{Multimedia files}
 
@@ -193,32 +116,12 @@ The reference format is the standard IEEE one. References should be numbered in 
 
 \subsection{Abstract}
 
-The total length of the abstract is limited to 200 words. The abstract included in your paper and the one you enter during web-based submission must be identical. Avoid non-ASCII characters or symbols as they may not display correctly in the abstract book.
-
-\subsection{Author affiliation}
-
-Please list country names as part of the affiliation for each country.
-
-\subsection{Number of authors in the author list}
-
-The maximum number of authors in the author list is twenty. If the number of contributing authors is more than twenty, they should be listed in a footnote or in acknowledgement section, as appropriate.
-
-\subsection{Submitted files}
-
-Authors are requested to submit PDF files of their manu­scripts. 
-
 \section{Discussion}
 
 This is the discussion. This is the discussion. This is the discussion. Is there any discussion?
 
 \section{Conclusions}
-
-Authors must proofread their PDF file prior to submission to ensure it is correct. Authors should not rely on proofreading the Word file. Please proofread the PDF file before it is submitted.
-
-\section{Acknowledgements}
-
-The ISCA Board would like to thank the organizing committees of the past INTERSPEECH conferences for their help and for kindly providing the template files. \\
-Note to authors: Authors should not use logos in acknowledgement section; rather authors should acknowledge corporations by naming them only.
+A new strategy to perform unsupervised clustering and supervised classification of spoken documents. The performance is quite close to manual word transcriptions and generally matching or exceeding that achieved with a phonetic recognizer.
 
 
 \bibliographystyle{IEEEtran}
