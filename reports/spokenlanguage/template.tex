@@ -23,24 +23,39 @@ The paper \cite{dredze2010nlp} describes a technique to apply NLP algorithms dir
 
 \begin{itemize}
 \item The current popular technique of using an ASR system to transcribe spoken decouments is not very efficient. This method is prone to limitations imposed by the ASR system and error propagation into the entire pipleline.
+\item Building an ASR system is very expensive and difficult to do. The training often requires a large amount of engineering knowledge, many hours of audio data and machines for carrying out the computations.
+\item ASR systems do not work across languages.
+\item Out of vocabulary terms is a bigger problem in ASR than text data, simply because of the size of the training data. For comparison, Switchboard corpus has about 1 million tokens whereas Common crawl has about 600 billion tokens. Therefore, it is highly likely that the number of unseen words will be far larger in speech data as compared to text data.
+\item ASR accuracy will put an upper limit to the accuracy of the overall pipeline.
 \item NLP algorithms applied on text data often use simple features like term frequency (tf), inverted document frequency (idf) etc. Requirement for annotations is often very minimal.
 \item ASR systems on the other hand require a lot of annotated data, which is not always practical to procure or create.
 \end{itemize}
 
-Therefore, a technique to convert speech into an appropriate vector representation which can be used as input to NLP algorithms is presented.
+Therefore, a technique to convert speech into an appropriate vector representation which can be used as input to NLP algorithms is presented. This is very similar to the idea of word embeddings, where text data is converted into vectors representations before they are fed into a machine learning algorithm.
 
 \subsection{Data}
 The paper uses a subset of the Switchboard Telephone Speech Corpus. This corpus has 2400 two sided telephone conversations on 70 pre-selected topics. The six most commonly topics were selected: recycling, capital punishment, drug testing, family finance, job benefits, car buying. For these topics, 60 sides of conversations were randomly selected. The resulting data set therefore contained 360 documents spoken by different speakers and was 36 hours in length.
 
+
+\subsection{Architecture Overview}
+The whole architecture has the following major components:
+
+\begin{itemize}
+\item Speech data: Raw speech data is taken from multiple speakers.
+\item Dot Plot Matching: Acoustic dot plots using Posteriorgram representation are created to find matching regions.
+\item Pseudo-terms: The matched regions are clustered together to form pseudo terms, which represent a word or a phrase in the document.
+\item NLP: The pseudo terms are then used as an input for an NLP task. In this paper, topic classification of the spoken documents is performed.
+\end{itemize}
+
 \subsection{Dot Plots}
 Dot plots is a method which has been borrowed from bio-informatics. Given character strings s1 and s2, substrings which are common to both of them can be seen as diagonal line segments in the visualisation. If the two strings are same, there will be a main diagonal which will be a result of self similarity. Therefore, search is for line segments other than the main diagonal to identify repetitions.
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=\linewidth]{fig1.png}
-  \caption{An example of dotplot for the string "text processing vs speech processing" plotted against itself.}
-  \label{fig:dotplot}
-\end{figure}
+% \begin{figure}[t]
+%   \centering
+%   \includegraphics[width=\linewidth]{fig1.png}
+%   \caption{An example of dotplot for the string "text processing vs speech processing" plotted against itself.}
+%   \label{fig:dotplot}
+% \end{figure}
 
 \subsection{Posteriorgram Representations}
 To adapt dot plots for spoken documents, the speech signals must be converted into a sequence of frames. Each frame is represented as the posterior probability distribution over a set of speech sounds given the speech observed at the particular point in time. The paper uses an English phone-set but it claims that it can be used for any language. The reason is that as long as the speech is reliably mapped to a probability distribution over this phone set, different languages will also get mapped into the same domain. This results in the applicability of this representation across different languages, although the paper does not test this hypothesis. This representation is also speaker-independent and provides sparsity to enable efficient storage and computation.
@@ -82,10 +97,6 @@ Higher values are better.
 \subsubsection{Clustering results}
 The pseudo-terms created by graph clustering were compared with two other baseline methods: Phonetic Trigrams (three sequential phones) and Word Transcripts (Unigram, Bigram, Trigram). It must be noted that Word Transcripts is the upper-bound for performance because in the best case, the pseudo-terms created will be the exact representations of words in the textual transcripts.
 
-% add the figure maybe!
-Pseudo-terms give perform significantly better than Phonetic Trigrams and almost as good as Word transcripts.
-
-
 \subsection{Supervised Classification using pseudo-terms}
 The pseudo-terms thus created were then used to do a topic classification task, where each document is labelled with the topic it belongs to. The topics were the six most common ones: recycling, capital punishment, drug testing, family finance, job benefits, car buying. Since the labels are balanced, random guessing will yield accuracy of 0.1667. A supervised learning algorithm was trained using labelled data and then asked to label some unseen test data.
 
@@ -93,7 +104,7 @@ The performance evaluated on four popular learning algorithms:MIRA, Confidence W
 
 Results:
 % add the figure maybe!
-Pseudo-terms give perform significantly better than Phonetic Trigrams and almost as good as Word transcripts.
+In both clustering evaluation and Supervised classification, the results presented in the paper show that for similar values of Kappa and Tau, the performance of pseudo-terms is significantly better than Phonetic Trigrams and almost as good as Word transcripts.
 
 
 % \begin{figure}[t]
@@ -103,33 +114,18 @@ Pseudo-terms give perform significantly better than Phonetic Trigrams and almost
 %   \label{fig:speech_production}
 % \end{figure}
 
-\subsection{Information for Word users only}
-
-
-\subsection{Hyperlinks}
-
-\subsection{Multimedia files}
-
-The INTERSPEECH organizing committee offers the possibility to submit multimedia files.
-
-\subsection{Page numbering}
-
-Final page numbers will be added later to the document electronically. \emph{Don't make any footers or headers!}
-
 
 \subsection{References}
 
 The reference format is the standard IEEE one. References should be numbered in order of appearance, for example \cite{Davis80-COP}, \cite{Rabiner89-ATO}, \cite[pp.\ 417--422]{Hastie09-TEO}, and \cite{YourName17-XXX}.
 
-\subsection{Abstract}
 
-\section{Discussion}
-
-This is the discussion. This is the discussion. This is the discussion. Is there any discussion?
-
-\section{Conclusions}
+\subsection{Conclusions}
 A new strategy to perform unsupervised clustering and supervised classification of spoken documents. The performance is quite close to manual word transcriptions and generally matching or exceeding that achieved with a phonetic recognizer.
 
+\section{Paper 1}
+
+\section{Paper 2}
 
 \bibliographystyle{IEEEtran}
 
