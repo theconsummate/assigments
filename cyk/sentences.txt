@@ -1,0 +1,9 @@
+grammar1:
+a a a a a
+a b
+b c b a c
+
+grammar2:
+Batman slept on the street
+Batman ate an apple
+Batman ate an apple on the street
