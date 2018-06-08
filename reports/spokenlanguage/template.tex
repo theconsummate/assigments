@@ -35,6 +35,13 @@ The paper uses a subset of the Switchboard Telephone Speech Corpus. This corpus 
 \subsection{Dot Plots}
 Dot plots is a method which has been borrowed from bio-informatics. Given character strings s1 and s2, substrings which are common to both of them can be seen as diagonal line segments in the visualisation. If the two strings are same, there will be a main diagonal which will be a result of self similarity. Therefore, search is for line segments other than the main diagonal to identify repetitions.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\linewidth]{fig1.png}
+  \caption{An example of dotplot for the string "text processing vs speech processing" plotted against itself.}
+  \label{fig:dotplot}
+\end{figure}
+
 \subsection{Posteriorgram Representations}
 To adapt dot plots for spoken documents, the speech signals must be converted into a sequence of frames. Each frame is represented as the posterior probability distribution over a set of speech sounds given the speech observed at the particular point in time. The paper uses an English phone-set but it claims that it can be used for any language. The reason is that as long as the speech is reliably mapped to a probability distribution over this phone set, different languages will also get mapped into the same domain. This results in the applicability of this representation across different languages, although the paper does not test this hypothesis. This representation is also speaker-independent and provides sparsity to enable efficient storage and computation.
 
