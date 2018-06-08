@@ -20,6 +20,7 @@ C -> 'c'
 The CYK chart is the table after the final iteration.
 
 The format of parse tree is:
+
 - nodes: (label \$(left right)# )
 - leaf: label{word}
 
@@ -94,11 +95,21 @@ Table:
 
 Backtrace table:
 ```
-[{}, "'b'", {'A': [(1, 'B', 'C')], 'S': [(1, 'B', 'C')]}, {'S': [(2, 'A', 'B')], 'B': [(1, 'B', 'A')]}, {'S': [(2, 'A', 'B')], 'B': [(1, 'B', 'A'), (3, 'B', 'A')]}, {'A': [(1, 'B', 'C'), (3, 'B', 'C'), (4, 'B', 'C')], 'S': [(1, 'B', 'C'), (3, 'B', 'C'), (4, 'B', 'C')], 'C': [(1, 'B', 'B')]}]
-[{}, {}, "'c'", {'A': [(2, 'C', 'B')]}, {'A': [(2, 'C', 'B')]}, {'C': [(3, 'A', 'C'), (4, 'A', 'C')], 'B': [(2, 'C', 'A')]}]
-[{}, {}, {}, "'b'", {'B': [(3, 'B', 'A')]}, {'A': [(3, 'B', 'C'), (4, 'B', 'C')], 'S': [(3, 'B', 'C'), (4, 'B', 'C')]}]
+[{}, "'b'", {'A': [(1, 'B', 'C')], 'S': [(1, 'B', 'C')]}, {'S': [(2, 'A', 'B')], 
+'B': [(1, 'B', 'A')]}, {'S': [(2, 'A', 'B')], 'B': [(1, 'B', 'A'), 
+(3, 'B', 'A')]}, {'A': [(1, 'B', 'C'), (3, 'B', 'C'), (4, 'B', 'C')], 
+'S': [(1, 'B', 'C'), (3, 'B', 'C'), (4, 'B', 'C')], 'C': [(1, 'B', 'B')]}]
+
+[{}, {}, "'c'", {'A': [(2, 'C', 'B')]}, {'A': [(2, 'C', 'B')]}, 
+{'C': [(3, 'A', 'C'), (4, 'A', 'C')], 'B': [(2, 'C', 'A')]}]
+
+[{}, {}, {}, "'b'", {'B': [(3, 'B', 'A')]}, {'A': [(3, 'B', 'C'), (4, 'B', 'C')],
+ 'S': [(3, 'B', 'C'), (4, 'B', 'C')]}]
+
 [{}, {}, {}, {}, "'a'", {'C': [(4, 'A', 'C')]}]
+
 [{}, {}, {}, {}, {}, "'c'"]
+
 [{}, {}, {}, {}, {}, {}]
 ```
 
@@ -117,7 +128,7 @@ Backtrace table:
 ```
 
 #### S<sub>3</sub>: Conclusion
-This sentence belongs to the grammar but it is ambiguous because it has 4 parse trees.
+This sentence belongs to the grammar but it is ambiguous because it has 5 parse trees.
 
 
 
@@ -163,7 +174,8 @@ The grammar is represented as a dictionary of rules, with each rule having an ar
     'P': [["'on'"]],
     'S': [['NP', 'VP']],
     'V': [["'ate'"], ["'slept'"]],
-    'NP': [['N'], ['Det', 'N'], ['Det', 'Adj', 'N'], ['Det', 'Adj', 'N', 'PP'], ['NP', 'PP']]
+    'NP': [['N'], ['Det', 'N'], ['Det', 'Adj', 'N'], 
+           ['Det', 'Adj', 'N', 'PP'], ['NP', 'PP']]
     }
 ```
 
@@ -294,7 +306,8 @@ Table:
 Backtrace table:
 ```
 [{}, "'Batman'", {}, {}, {'S': [(1, 'NP', 'VP')]}, {}, {}, {'S': [(1, 'NP', 'VP')]}]
-[{}, {}, "'ate'", {}, {'VP': [(2, 'V', 'NP')]}, {}, {}, {'VP': [(2, 'V', 'NP'), (4, 'VP', 'PP')]}]
+[{}, {}, "'ate'", {}, {'VP': [(2, 'V', 'NP')]}, {}, {}, {'VP': [(2, 'V', 'NP'),
+ (4, 'VP', 'PP')]}]
 [{}, {}, {}, "'an'", {'NP': [(3, 'Det', 'N')]}, {}, {}, {'NP': [(4, 'NP', 'PP')]}]
 [{}, {}, {}, {}, "'apple'", {}, {}, {'NP': [(4, 'NP', 'PP')]}]
 [{}, {}, {}, {}, {}, "'on'", {}, {'PP': [(5, 'P', 'NP')]}]
@@ -305,9 +318,11 @@ Backtrace table:
 
 #### S<sub>6</sub>: Parse tree
 ```
-(S $(NP{'Batman'} (VP $(V{'ate'} (NP $((NP $(Det{'an'} N{'apple'})# ) (PP $(P{'on'} (NP $(Det{'the'} N{'street'})# ))# ))# ))# ))# )
+(S $(NP{'Batman'} (VP $(V{'ate'} (NP $((NP $(Det{'an'} N{'apple'})# ) (PP $(P{'on'}
+ (NP $(Det{'the'} N{'street'})# ))# ))# ))# ))# )
 
-(S $(NP{'Batman'} (VP $((VP $(V{'ate'} (NP $(Det{'an'} N{'apple'})# ))# ) (PP $(P{'on'} (NP $(Det{'the'} N{'street'})# ))# ))# ))# )
+(S $(NP{'Batman'} (VP $((VP $(V{'ate'} (NP $(Det{'an'} N{'apple'})# ))# ) (PP 
+$(P{'on'} (NP $(Det{'the'} N{'street'})# ))# ))# ))# )
 ```
 
 #### S<sub>6</sub>: Conclusion
