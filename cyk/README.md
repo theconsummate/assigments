@@ -22,13 +22,15 @@ If no arguments are given, the code will use a default value.
 ## Description of the code
 #### class Grammar
 This object stores the grammar information provided as the input. The class properties are defined in the init method. This class has two other primary functions:
+
 - ``convert_to_cnf()``: It converts the object (self) to CNF if it was not already in CNF
 - ``read_grammar_file(filename)``: This function reads a given input file and loads the information into the object (self).
 
 #### class CKYParser
 The two methods are:
-- parse(string): it takes an input string and returns a parse table and a back trace.
-- build_tree(back, table, i, j, label): takes the parse table and back trace table from the parse method and recursively builds a parse tree.
+
+- ``parse(string)``: it takes an input string and returns a parse table and a back trace.
+- ``build_tree(back, table, i, j, label)``: takes the parse table and back trace table from the parse method and recursively builds a parse tree.
 
 #### console output
 An appropriate result is printed on the console after each main function gets executed.
