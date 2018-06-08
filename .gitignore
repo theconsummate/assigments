@@ -2,6 +2,7 @@
 *.html
 rprogramming/.Rhistory
 rprogramming/data/*
+*.zip
 
 # removing latex aux files
 *.log
