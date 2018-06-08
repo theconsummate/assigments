@@ -32,3 +32,10 @@ The two methods are:
 
 #### console output
 An appropriate result is printed on the console after each main function gets executed.
+
+#### main method
+- The input grammar file is first loaded into an object of type Grammar.
+- the Grammar.convert_to_cnf() function then changes this grammar into CNF.
+- the grammar object is then used to initialize an object of type Parser.
+- the parse method of the parser object is called with the sentence to be parsed provided as the input.
+- the parse method returns a table and a backtrace, both of which are then passed to the build_tree method which returns all the possible parse trees.
