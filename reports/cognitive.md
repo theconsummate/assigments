@@ -4,10 +4,6 @@ Author:
 
 Dhruv Mishra, st154709@stud.uni-stuttgart.de, Matriculation number: 3293775
 
-Summarize the paper you presented in a report.
-Length: 5–8 pages
-Layout and structure: your choice
-
 ## Abstract
 This paper presents modality exclusivity norms for 400 randomly selected noun words, composed by asking participants for perceptual experience ratings for five sense:
 - Auditory (by hearing)
@@ -117,3 +113,6 @@ The relationships were consistent with previous literature.
 
 
 ### References
+- Dermot Lynott and Louise Connell. Modality Exclusivity Norms for 400 Nouns: The Relationship
+between Perceptual Experience and Surface Word Form. Behavior Research Methods, 45:516–526,
+2013
