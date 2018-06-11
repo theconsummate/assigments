@@ -7,16 +7,20 @@ The code does not need any external libraries besides what is already included i
 ## How to run
 Two command line arguments are to be provided:
 - The first is the path to a grammar file.
-- The second is the input sentence.
+- The second is the path to a file containing the sentence to be parsed (one sentence per line).
 
 A few examples
 ```
-python cyk.py grammar1.txt "a b"
+python cyk.py grammar1.txt sentences1.txt
 
-python cyk.py grammar2.txt "Batman ate an apple on the street"
+python cyk.py grammar2.txt sentences2.txt
+
+python cyk.py grammar1.txt sentences2.txt
+
+python cyk.py grammar2.txt sentences1.txt
 ```
 
-If no arguments are given, the code will use a default value.
+If no arguments are given, an error message is displayed.
  
 
 ## Description of the code

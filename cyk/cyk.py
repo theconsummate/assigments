@@ -292,16 +292,17 @@ class CYKParser():
 if __name__ == '__main__':
     if len(sys.argv) == 3:
         grammar_file = sys.argv[1]
-        string = sys.argv[2]
+        sentence_file = sys.argv[2]
     else:
         # use default
-        string = "Batman slept on the street"
-        string = "Batman ate an apple"
-        string = "Batman ate an apple on the street"
-        # string = "a b"
-        grammar_file = "grammar2.txt"
-    # split the string into an array of words
-    string = ["'" + s + "'" for s in string.split(" ")]
+        error_msg = """
+        Please provide the path to the grammar and sentence files.
+        How to run:
+        python cyk.py <grammar_file_path> <sentence_file_path>
+        """
+        print error_msg
+        sys.exit()
+    
     grammar = Grammar()
     grammar.read_grammar_file(grammar_file)
     # printing before conversion
@@ -311,20 +312,26 @@ if __name__ == '__main__':
     print "printing input grammar after conversion to CNF..."
     print grammar
     parser = CYKParser(grammar)
-    table, back = parser.parse(string)
-    print "table after final iteration..."
-    for row in table:
-        print row
-    print "back trace table after final iteration..."
-    for row in back:
-        print row
-    # print(table[0][len(string)])
-    # print back[0][len(string)]
-    print "printing all the parses..."
-    parses = parser.build_tree(back, table, 0, len(string), grammar.start )
-    for p in parses:
-        print p
-        print "###"
-    # print table
-    # print back
-    # printParseTrees(back[0][5])
+    # parse each sentence
+    sentencef = open(sentence_file)
+    for line in sentencef.readlines():
+        # split the string into an array of words
+        string = ["'" + s + "'" for s in line.strip().split(" ")]
+        print "parsing input sentence " + line + "..."
+        table, back = parser.parse(string)
+        print "table after final iteration..."
+        for row in table:
+            print row
+        print "back trace table after final iteration..."
+        for row in back:
+            print row
+        # print(table[0][len(string)])
+        # print back[0][len(string)]
+        print "printing all the parses..."
+        parses = parser.build_tree(back, table, 0, len(string), grammar.start )
+        for p in parses:
+            print p
+            print "###"
+        print "parsing complete...\n"
+    
+    sentencef.close()
