@@ -49,8 +49,6 @@ This paper tackles the problem of learning multi lingual word embeddings which a
 
 Translation between languages is often represented by a probability distribution and therefore is a little ambiguous. For example, “the” in english can translate to “el” or “la” in spanish with equal probability. The authors want to develop a framework which learns embeddings independently from the possible translations a word might have.
 
-
-
 \section{Problem Definition}
 The goal is to learn translation invariant embeddings with the following input data.
 
@@ -122,8 +120,8 @@ The solution is given by principal components of the singular value decompositio
 Incorporating D1 and D2 and trying to simultaneously explain X and the various translation of it, the previous objective function can be written as: <eq2>.
 
 \subsection{Lanczos Algorithm}
-The new matrix Ẋ is not very sparse.
-Lanczos algorithm (Golub and Van Loan, 1996, Chapter 9), implements the calculation of SVD through the factors without the need for carrying out multiplication explicitly.
+The new matrix X is not very sparse.
+Lanczos algorithm \cite{van1996matrix}, implements the calculation of SVD through the factors without the need for carrying out multiplication explicitly.
 The method has linear complexity in the number of non-zeros present in the sparse matrices involved.
 Thus, the time required for calculating the SVD of Ẋ is not much more than that of X.
 
