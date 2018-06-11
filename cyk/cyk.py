@@ -4,10 +4,12 @@ from sets import Set
 import sys
 
 """
-This module implements the CYK table parsing algorithm.
+This module implements the CYK table paring algorithm.
+
+@Author: Dhruv Mishra
 Usage:
 
-python cyk.py grammar_file "sentence with words separate by white spaces"
+python cyk.py grammar_file sentence_file
 """
 
 def is_production_terminal(production):
