@@ -7,34 +7,35 @@
 \name{Dhruv Mishra}
 %The maximum number of authors in the author list is twenty. If the number of contributing authors is more than twenty, they should be listed in a footnote or in acknowledgement section, as appropriate.
 \address{
-  IMS, Uni Stuttgart}
-\email{author@university.edu, coauthor@company.com}
+  IMS, University of Stuttgart}
+\email{author@university.edu}
 
 \begin{document}
 
 \maketitle
 %
 \begin{abstract}
-  This report describes the paper \cite{dredze2010nlp} which was presented by me and two other papers: \cite{Davis80-COP} and \cite{Davis80-COP}.
+  This report describes the paper \cite{dredze2010nlp} which was presented by me and two other papers: \cite{li2018spoken} and \cite{Davis80-COP}.
 \end{abstract}
 
 \section{NLP on spoken documents without ASR}
-The paper \cite{dredze2010nlp} describes a technique to apply NLP algorithms directly on spoken documents by transforming the speech data into a vector representation which is very similar to how textual data is represented. The motivation to do is are many:
+\subsection{Introduction}
+The paper \cite{dredze2010nlp} describes a technique to apply NLP algorithms directly on spoken documents by transforming the speech data into a vector representation which is very similar to how textual data is represented. The motivation to do this are many:
 
 \begin{itemize}
-\item The current popular technique of using an ASR system to transcribe spoken decouments is not very efficient. This method is prone to limitations imposed by the ASR system and error propagation into the entire pipleline.
-\item Building an ASR system is very expensive and difficult to do. The training often requires a large amount of engineering knowledge, many hours of audio data and machines for carrying out the computations.
-\item ASR systems do not work across languages.
+\item The current popular technique of using an ASR system to transcribe spoken documents is not very efficient. This method is prone to limitations imposed by the ASR system and error propagation into the entire pipeline.
+\item Building an ASR system is very expensive and difficult to do. The training often requires a large amount of engineering knowledge, many hours of annotated audio data and machines for carrying out the computations.
+\item ASR systems in general do not work across languages. Multi-lingual speech recognition models have been presented in the past but their accuracy is often quite less as compared to a monolingual ASR system.
 \item Out of vocabulary terms is a bigger problem in ASR than text data, simply because of the size of the training data. For comparison, Switchboard corpus has about 1 million tokens whereas Common crawl has about 600 billion tokens. Therefore, it is highly likely that the number of unseen words will be far larger in speech data as compared to text data.
 \item ASR accuracy will put an upper limit to the accuracy of the overall pipeline.
-\item NLP algorithms applied on text data often use simple features like term frequency (tf), inverted document frequency (idf) etc. Requirement for annotations is often very minimal.
+\item NLP algorithms applied on text data often use simple features like term frequency (tf), inverted document frequency (idf) etc. Requirement for annotations is often very minimal and these techniques work across different languages.
 \item ASR systems on the other hand require a lot of annotated data, which is not always practical to procure or create.
 \end{itemize}
 
 Therefore, a technique to convert speech into an appropriate vector representation which can be used as input to NLP algorithms is presented. This is very similar to the idea of word embeddings, where text data is converted into vectors representations before they are fed into a machine learning algorithm.
 
 \subsection{Data}
-The paper uses a subset of the Switchboard Telephone Speech Corpus. This corpus has 2400 two sided telephone conversations on 70 pre-selected topics. The six most commonly topics were selected: recycling, capital punishment, drug testing, family finance, job benefits, car buying. For these topics, 60 sides of conversations were randomly selected. The resulting data set therefore contained 360 documents spoken by different speakers and was 36 hours in length.
+The paper uses a subset of the Switchboard Telephone Speech Corpus. This corpus has 2400 two sided telephone conversations on 70 pre-selected topics. The six most commonly topics were selected: \textbf{recycling, capital punishment, drug testing, family finance, job benefits, car buying}. For these topics, 60 sides of conversations were randomly selected. The resulting data set therefore contained 360 documents spoken by different speakers and was 36 hours in length.
 
 
 \subsection{Architecture Overview}
@@ -60,18 +61,20 @@ Dot plots is a method which has been borrowed from bio-informatics. Given charac
 \subsection{Posteriorgram Representations}
 To adapt dot plots for spoken documents, the speech signals must be converted into a sequence of frames. Each frame is represented as the posterior probability distribution over a set of speech sounds given the speech observed at the particular point in time. The paper uses an English phone-set but it claims that it can be used for any language. The reason is that as long as the speech is reliably mapped to a probability distribution over this phone set, different languages will also get mapped into the same domain. This results in the applicability of this representation across different languages, although the paper does not test this hypothesis. This representation is also speaker-independent and provides sparsity to enable efficient storage and computation.
 
+To illustrate this advantage, the authors state that they were able to perform the $O(n^2)$ dotplot computations for 60+ hours of speech (36 hours of training speech data matched with itself), which roughly corresponds to 500 terapixel of dotplots in approximately 5 hours using a grid of 100 cores.
+
 \subsection{Acoustic Dot Plots}
-Given a spoken document represented as a sequence of frames represented with posteriorgrams, an acoustic dotplot can be created, similar to the string dot plot where instead of matching characters, the frames are matched instead. This dot plot will have diagonal line segments for frames which are similar.
+Given a spoken document represented as a sequence of frames represented with posteriorgrams, an acoustic dotplot can be created, similar to the string dot plot where instead of matching characters, the frames are matched instead. This dot plot will have diagonal line segments for frames which are similar. The authors do not provide the details about the algorithm used for performing the dot plot matching, but it can be assumed to be trivial in the context of this work.
 
 \subsubsection{Hyperparameters during matching phase}
-While matching characters is a simple task, matching frames is not trivial. The paper proposes two parameters to determine what a match is:
+While matching characters is a simple task of checking if the two characters are the same, matching frames is a more subjective problem. The paper proposes two parameters to determine what an acoustic match is:
 
 \begin{itemize}
-\item Kappa: This is the duration of the match in seconds.
-\item Tau: The overlap threshold, i.e. the extent of similarity. A value of 1 is an exact match whereas 0.5 means only half of the frame is a match.
+\item $\kappa$: This is the duration of the match in seconds.
+\item $\tau$: The overlap threshold, i.e. the extent of similarity. A value of 1 is an exact match whereas 0.5 means only half of the frame is a match.
 \end{itemize}
 
-Decreasing Kappa results in more matched regions and increasing Tau results in less frames getting matched. Both of them increase the number of pseudo-terms.
+The paper presents the matching results by varying the values of both of these parameters simultaneously. Decreasing $\kappa$ results in more matched regions and increasing $\tau$ results in less frames getting matched. Both of them increase the number of pseudo-terms.
 
 \subsection{Pseudo Terms}
 Pseudo-terms represent a single word or phrase spoken at multiple points throughout the corpus. Each pseudo-term takes the place of a word of phrase in a bag or terms vector space model of a text document and allows the use of standard NLP algorithms. Pseudo-terms are created using by clustering the matched regions in the documents.
@@ -86,26 +89,22 @@ To take an example, suppose the phrase “It is sunny today” occurs once in th
 The clusters created by graph clustering were evaluated on three metrics:
 
 \begin{itemize}
-\item Purity: The precision of each cluster, i.e., how many examples in each cluster belong to the same true topic.
-Higher values are better.
-\item Entropy: how the members of a cluster are distributed amongst the true labels.
-Lower values are better.
-\item B-cubed: measures clustering effectiveness from the perspective of a user’s inspecting the clustering results.
-Higher values are better.
+\item Purity: The precision of each cluster, i.e., how many examples in each cluster belong to the same true topic. Higher values are better.
+\item Entropy: how the members of a cluster are distributed amongst the true labels. Lower values are better.
+\item B-cubed: measures clustering effectiveness from the perspective of a user’s inspecting the clustering results. Directly quoting from the paper, "B-cubed precision can be defined as an algorithm as follows: suppose a user randomly selects a single example. She then proceeds to inspect every other example that occurs in the same cluster. How many of these items will have the same true label as the selected example (precision)?". Higher values are better.
 \end{itemize}
 
 \subsubsection{Clustering results}
-The pseudo-terms created by graph clustering were compared with two other baseline methods: Phonetic Trigrams (three sequential phones) and Word Transcripts (Unigram, Bigram, Trigram). It must be noted that Word Transcripts is the upper-bound for performance because in the best case, the pseudo-terms created will be the exact representations of words in the textual transcripts.
+The pseudo-terms created by graph clustering were compared with two other baseline methods: Phonetic Trigrams (three sequential phones) and Word Transcripts (Unigram, Bigram, Trigram). It must be noted that Word Transcript is the upper-bound for performance because in the best case, the pseudo-terms created will be the exact representations of words in the textual transcripts.
+
+For each $\kappa$ the same narrow range of $\tau$ values achieve good results. The best result was for $\kappa$ = 0.6 s and $\tau$ = 0.96 which yielded a purity of 0.9750. The purity of unigram word transcript is 0.9917 whereas that of phonetic trigram is 0.6194. It must also be noted that decreasing $\kappa$ meant more features, but these additional features did not improve clustering performance in any measurable way. After performing clustering on the tuning and evaluation data, the final best values of the hyper-parameters was determined to be $\kappa$ = 0.7 s and $\tau$ = 0.98.
 
 \subsection{Supervised Classification using pseudo-terms}
 The pseudo-terms thus created were then used to do a topic classification task, where each document is labelled with the topic it belongs to. The topics were the six most common ones: recycling, capital punishment, drug testing, family finance, job benefits, car buying. Since the labels are balanced, random guessing will yield accuracy of 0.1667. A supervised learning algorithm was trained using labelled data and then asked to label some unseen test data.
 
-The performance evaluated on four popular learning algorithms:MIRA, Confidence Weighted (CW), Maximum Entropy, Support Vector Machines (SVM).
+The performance was evaluated on four popular learning algorithms:MIRA, Confidence Weighted (CW), Maximum Entropy, Support Vector Machines (SVM). In all four cases, the pseudo-term performance was quite close to the Word transcript performance and significantly better than Phonetic Trigrams.
 
-Results:
-% add the figure maybe!
-In both clustering evaluation and Supervised classification, the results presented in the paper show that for similar values of Kappa and Tau, the performance of pseudo-terms is significantly better than Phonetic Trigrams and almost as good as Word transcripts.
-
+The best performing configuration after performing the same selection heuristic as in clustering, was for $\kappa$ = 0.75 s and $\tau$ = 0.97. It is interesting to note that the parameter values are quite similar for the clustering and the classification task, which means that both of these two components are compatible with each to be used in a cascade setting. This detail is very important because it justifies the use of pseudo-terms. If the optimal parameters had been drastically different for the two stages, we would have two models which work very good on their own but perform badly together, something which is not the goal.
 
 % \begin{figure}[t]
 %   \centering
@@ -114,16 +113,11 @@ In both clustering evaluation and Supervised classification, the results present
 %   \label{fig:speech_production}
 % \end{figure}
 
-
-\subsection{References}
-
-The reference format is the standard IEEE one. References should be numbered in order of appearance, for example \cite{Davis80-COP}, \cite{Rabiner89-ATO}, \cite[pp.\ 417--422]{Hastie09-TEO}, and \cite{YourName17-XXX}.
-
-
 \subsection{Conclusions}
-A new strategy to perform unsupervised clustering and supervised classification of spoken documents. The performance is quite close to manual word transcriptions and generally matching or exceeding that achieved with a phonetic recognizer.
+This paper presents a new strategy to perform unsupervised clustering and supervised classification of spoken documents by proposing a method to convert speech documents into a bag of words model of pseudo-terms and then using standard NLP algorithms. The performance is quite close to manual word transcriptions, which is the theoretical upper-bound and significantly exceeds that achieved with a phonetic recognizer.
 
-\section{Paper 1}
+\section{Spoken SQuAD: A Study of Mitigating the Impact of Speech Recognition Errors on Listening Comprehension}
+\subsection{}
 
 \section{Paper 2}
 
