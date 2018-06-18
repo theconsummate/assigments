@@ -118,9 +118,52 @@ This paper presents a new strategy to perform unsupervised clustering and superv
 
 \section{Spoken SQuAD: A Study of Mitigating the Impact of Speech Recognition Errors on Listening Comprehension}
 \subsection{Introduction}
-The primary motivation behind this work is the fact that humans can read plain-text documents faster than they can consume multimedia content. To put this fact in perspective, a normal reader who uses subvocalization, i.e. speaking each word internally in the mind (which can be equivalent to hearing spoken version of the text) can read approximately 250 words per minute whereas, a reader who employs visual reading, i.e. understanding the meaning of the word without speaking it loud inside the mind or hearing it can read approximately 700 words per minute. Therefore, the idea of developing a machine to understand spoken documents is very appealing.
+The primary motivation behind this work is the fact that humans can read plain-text documents faster than they can consume multimedia content. To put this fact in perspective, a normal reader who uses subvocalization, i.e. speaking each word internally in the mind (which is equivalent to hearing spoken version of the text) can read approximately 250 words per minute whereas, a reader who employs visual reading, i.e. understanding the meaning of the word without speaking it loud inside the mind or hearing it can read approximately 700 words per minute. Therefore, the idea of developing a machine to understand spoken documents is very appealing.
 
-This paper
+This paper uses the Stanford Question Answering Dataset (SQuAD) \cite{rajpurkar2016squad}, which is a popular Question Answering (QA) corpus and converts it into a speech processing task by converting the text documents into speech documents with the help of Google Text-to-Speech software. This new task, which takes a spoken reference document and a question in text form to answer it using the document is named as Spoken Question Answering (SQA). The authors then evaluate the effect of the ASR system analyzing the document and propose various measures to mitigate the impact of ASR error on the overall system.
+
+\subsection{Task Description}
+\subsubsection{Corpus}
+All of the text documents in SQuAD are converted into speech documents. The answer to each question is a span of the document. The entire corpus was randomly partitioned into 80\% training, 10\% development and 10\% test. The speech documents were then transcribed into text using CMU Sphinx. The questions were left in their original textual form. Answers which were not present in the ASR transcriptions were removed due to their non-triviality.
+
+\subsubsection{Evaluation Metrics}
+The authors propose two ways to evaluate the model:
+
+\begin{itemize}
+  \item Directly compute the Exact Match (EM) and F1 scores between the predicted text answer and the ground-truth text answer. If the predicted text answer and the ground-truth text answer are exactly the same, then the EM score is 1, otherwise 0
+
+  \item  compute Audio Overlapping Score (AOS) between the time span of system output and the ground-truth time span as $AOS = (X \cap Y)/(X \cup Y)$. Here, X is the audio time of predicted answer and Y is the audio time of ground truth answer. To calculate audio time, the timestamp of every word is used.
+\end{itemize}
+
+\subsection{Model}
+The SQA is a cascade of an ASR module and a Reading Comprehension module.
+
+\subsubsection{Reading Comprehension Models} \label{rcmodels}
+The various Reading Comprehension models which have shown to have good performance on SQuAD are: BiDirectional Attention Flow (BiDAF), R-NET, Mnemonic Reader, FusionNet and Dr.QA.
+
+\subsubsection{Subword units and Phoneme CNN}
+Subword units are smaller parts of a word. They can be of many types: characters, phonemes or syllables. These units can provide important additional information to the reading comprehension module because as is very often the case, an ASR system might correctly transcribe parts of word even then the complete word was transcribed incorrectly.
+
+The authors train word embeddings by training a CNN on a input subword sequence, similar to the usual method of applying CNN on a sequence of character for text data. The parameters of the embedding matrix are learned end-to-end with the reading comprehension module during the same training process.
+
+\subsection{Experimental Results}
+
+\subsubsection{Impact of ASR Errors}
+The various models listed in \ref{rcmodels} were trained on SQuAD training set and tested on SQuAD dev set and Spoken SQuAD test set. EM and F1 both drastically reduced in the test set. No AOS scores were provided.
+
+\subsubsection{Training on ASR transcripts}
+The models BiDAF and Dr.QA were trained on training sets of both SQuAD and Spoken SQuAD and tested on test set of Spoken SQuAD. The results showed that the models trained on Spoken SQuAD achieved better EM and F1 scores in the presence of ASR errors in the test data.
+
+\subsubsection{Mitigating ASR errors with Subword Units}
+Each word was converted into a sequence of phonemes using the CMU LOGIOS Lexicon Tool, which was then fed into the Phoneme CNN to create word embeddings. Five different configurations were tried out: Word, Word+Char, Word+Phoneme, Word+Syllable and Word+Char+Phoneme+Syllable.
+
+The embeddings were then used with BiDAF and the results showed that Word+Char+Phoneme+Syllable setting achieved the best performance over both the evaluation metrics. However, with the addition of a dropout layer in Phoneme CNN, the Word+Phoneme embeddings gave the best results.
+
+\subsubsection{Analysis}
+The results showed that BiDAF with only word embeddings is not robust to ASR errors but the addition of phoneme sequence embeddings results in the selection correct answers despite ASR errors.
+
+\subsection{Conclusion}
+This paper presented a new task description for evaluating the answering capabilities of a machine when the reference documents are present in speech format. This task which is currently dependent on an ASR transcribing module is greatly limited in it's performance by the errors introduced by ASR. A technique of phonetic embeddings was proposed to mitigate these errors, but the overall performance is still significantly lagging behind that of traditional text based QA systems.
 
 \section{Paper 2}
 
