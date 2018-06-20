@@ -15,7 +15,7 @@
 \maketitle
 %
 \begin{abstract}
-  This report describes the paper \cite{dredze2010nlp} which was presented by me and two other papers: \cite{li2018spoken} and \cite{Davis80-COP}.
+  This report describes the paper \cite{dredze2010nlp} which was presented by me and two other papers: \cite{li2018spoken} and \cite{rosiger2017improving}.
 \end{abstract}
 
 \section{NLP on spoken documents without ASR}
@@ -165,7 +165,54 @@ The results showed that BiDAF with only word embeddings is not robust to ASR err
 \subsection{Conclusion}
 This paper presented a new task description for evaluating the answering capabilities of a machine when the reference documents are present in speech format. This task which is currently dependent on an ASR transcribing module is greatly limited in it's performance by the errors introduced by ASR. A technique of phonetic embeddings was proposed to mitigate these errors, but the overall performance is still significantly lagging behind that of traditional text based QA systems.
 
-\section{Paper 2}
+\section{Improving coreference resolution with automatically predicted prosodic information}
+\subsection{Introduction}
+Coreference resolution refers to grouping the Noun Phrases referring to the same entity in a text or spoken document. This paper presents a method to automatically predict pitch accents using the acoustic features extracted from the speech signal and adding this information to the text features such as POS tags and other syntactic information used by a coreference resolver. The reason to do is because it has been observed that using text features on spoken documents leads in a drop in performance. Prosody is useful because it provides two important signals: firstly, it can help in distinguishing between already known and new information. Secondly, in spoken language, there is a tendency for the coreferent phrase to be not have any accent.
+
+\subsection{Prosodic Features} \label{prosodicfeatures}
+A pilot study done by \cite{rosiger2015using} showed the usability of pitch accents and prosodic phrasing where these features were added to the usual text based features. However, the pitch accents were added manually and this is not a very scalable method. Therefore, the authors of this paper (\cite{rosiger2017improving}) try to automate this process of adding pitch accents by predicting them directly from the acoustic features of the speech signal. Two labels were defined to use pitch accents:
+
+\begin{itemize}
+  \item Short NPs: uses the absence of a pitch accent.
+  \item Long NPs: nuclear accents are more relevant as their presence indicates that the NP is less likely to be a part of a reference chain.
+\end{itemize}
+
+The features which were demonstrated to be useful in the pilot study are Pitch accent presence and Nuclear accent (derived from phrase boundary) presence. They were calculated for every NP.
+
+\subsection{Data}
+The DIRNDL dataset was used in this paper. It is a German radio news corpus having manual coreference and prosody labels. The documents were spoken by 13 male and 7 female speakers and the total length of audio was approximately 5 hours. The two features described in \ref{prosodicfeatures} were used as the class labels for automatic prediction.
+
+\subsection{Automatic Prosodic information}
+\subsubsection{Model} \label{model}
+A model is a CNN which takes an input word and it's right and left adjacent word as the context window. The input matrix is a frame based representation of speech and the output is a boolean value denoting the presence or absence of pitch the prosodic event. The signal is divided into overlapping frames of length 20ms with a shift window of 10ms. Each frame is represented by a 6 dimensional feature vector. Therefore, the input matrix is a concatenation of three frames. The acoustic features used were: smoothed fundamental frequency (f0), RMS energy, PCM loudness, voicing probability and Harmonics-to-Noise Ratio. The model has two convolution layers followed by a max-pool layer.
+
+\subsubsection{Prosodic labels for DIRNDL corpus}
+The CNN model for detecting prosodic events is trained on an English corpus and tested on the German corpus. The english dataset used for training is a 2.5 hour subset of the Boston University Radio News Corpus and it contains manually annotated prosodic labels. The reason to use an English dataset here was to avoid the use of the same German language data twice. If the german data is being used to train prosodic labels and then again in the training of coreference resolution, the complete model pipeline is very prone to over-fitting.
+
+The performance on the German corpus for both the events mentioned in \ref{prosodicfeatures} is over 80\%. Therefore, it can be inferred that training over english corpus is also applicable to german corpus and the model can be used along with the coreference resolver.
+
+\subsection{Coreference Resolution}
+The IMS HotCoref DE was used as the coreference resolver in this paper. The baseline used in this paper is this model trained on the concatenation of training and development data of the DIRNDL corpus. The score achieved is 46.11.
+
+\subsection{Experiments and Analysis}
+The prosodic features trained from \ref{model} are added to the feature set of the baseline resolver. This setting is tested on three configurations:
+
+\begin{itemize}
+  \item trained and tested on manual prosodic labels (gold).
+  \item trained on manual prosodic labels, but tested on automatic labels (gold/auto).
+  \item trained and tested on automatic prosodic labels (auto).
+\end{itemize}
+
+Two different configurations of feature sets were used for each of the above mentioned variations: Short NPs (NPs of length less than 3) and All NPs. Therefore a total of 6 different configurations were tested.
+
+The performance for the coreference resolver was improved as compared to the baseline by the addition of prosodic event (pitch accent or nuclear accent) in all the configurations. As expected, the pattern of gold>gold/auto>auto was observed for both Short NPs and All NPs, which tells us that the errors in the CNN model are being propagated here. However, the difference between gold and auto was very marginal for all NPs in pitch accent detection and Short NPs in nuclear accent detection whereas the difference was much larger for the other cases.
+
+Pitch accent was more informative for Short NPs because Long NPs are accented most of the time. On the other hand, Nuclear accent is more informative for Long NPs as compared to Short NPs, but it improved performance over baseline in both cases.
+
+
+
+\subsection{Conclusion}
+The paper showed a process to automatically predict prosodic labels. Although the predicted labels were not as accurate as the gold labels, their addition still resulted in an improved performance by the coreference resolver. This result supports the fact that prosodic information is helpful and further work to extract better labels from auditory features will improve performance of coreference resolution too. As future work, the authors suggest the use of ASR transcriptions instead of gold text transcriptions and adding lexical or syntactic information to the prosodic label predictor.
 
 \bibliographystyle{IEEEtran}
 
