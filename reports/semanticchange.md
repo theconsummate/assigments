@@ -5,9 +5,9 @@ Author:
 Dhruv Mishra, st154709@stud.uni-stuttgart.de, Matriculation number: 3293775
 
 ## Abstract
-This paper evaluates the validity of previously stated laws of semantic change in literature by applying them on a randomized controlled data set. The claim is that if semantic change can indeed be represented by the theoretical laws, their effect should not be seen on a randomized data set, or at least get significantly diminished.
+This paper evaluates the validity of previously stated laws of semantic change in literature by applying them on a randomized controlled data set. The claim is that if semantic change can indeed be represented by the theoretical laws as reported in previous literature, their effect should not be seen on a randomized data set, or at least get significantly diminished.
 
-The goal is to specifically analyze these laws:
+The goal is to specifically analyze these three laws:
 
 - The Law of Conformity: Frequency is negatively correlated with semantic change.
 - The Law of Innovation: Polysemy is positively correlated with semantic change.
@@ -15,14 +15,14 @@ The goal is to specifically analyze these laws:
 
 ## Method
 #### Real Data
-The historical data-set used is Google Books 5-grams of English fiction. Equally sized samples of 10 million 5-grams per year were taken for the period 1900-1999. To account for outliers, uncommon word were removed and the 100,000 most frequent words were used as the vocabulary. Since this data spans an entire century, it is big enough to assume the presence of semantic change, thereby making it appropriate for carrying out the testing process.
+The historical data-set used is Google Books 5-grams of English fiction. Equally sized samples of 10 million 5-grams per year were taken for the period 1900-1999. To account for outliers, uncommon words were removed and the 100,000 most frequent words were used as the vocabulary. Since this data spans an entire century, it is big enough to assume the presence of semantic change, thereby making it appropriate for carrying out the testing process.
 
 ### Controlled data
 #### Continuously shuffled corpus (Shuffle)
-This corpus tries to distribute the meaning change uniformly across the whole time period. To do this, the 5-grams in the real data were randomly shuffled to achieve a uniform distribution. Any semantic change trends which were previously present should get significantly diminished in this new shuffled corpus.
+This corpus tries to distribute the semantic meaning change uniformly across the whole time period of the data. To do this, the 5-grams in the original data were randomly shuffled to achieve a uniform distribution. Any semantic change trends which were previously present should get significantly diminished in this new shuffled corpus and must be attributed to chance.
 
 #### One synchronous corpus (sample)
-The underlying assumption in all models of semantic change is that no meaning change happens within the same year. Therefore 10 million 5-grams were randomly subsampled from all the 5-grams of the year 1999 and this process was repeated 30 times. Any changes observed in this corpus will be attributed to “noise”.
+Since the smallest time unit of the dataset is one year, the underlying assumption in all models of semantic change is that no meaning change happens within a single year. Therefore the 10 million 5-grams were randomly subsampled from all the 5-grams of the year 1999 and this process was repeated 30 times. Since this entire corpus comes from a single year, any changes observed in this corpus will be attributed to “noise”.
 
 ### Validity of controlled data
 To prove that the controlled data created above is indeed valid to carry out the evaluation of semantic laws, it should satisfy the following three conditions:
@@ -30,7 +30,7 @@ To prove that the controlled data created above is indeed valid to carry out the
 - Semantic change, if present by chance, should be uniformly distributed across time.
 - The variance of semantic change should be very small.
 
-The shuffled corpus satisfied all these three conditions and therefore it can be used as valid control condition.
+The shuffled corpus showed constant semantic change across the decades which was much lower than what was observed in the original data. The variance was also constant. Therefore this corpus satisfied all the three conditions listed above and therefore it can be used as valid control condition.
 
 
 ## Word meaning representations
@@ -40,8 +40,7 @@ The words in the corpus were mathematically represented in the following ways:
 Co-occurrence counts were collected for all the words in the vocabulary per decade. 
 
 ### PPMI
-Sparse square matrices of size equal to that of vocabulary size were created to store the pointwise mutual information (PPMI) scores for each decade. These scores were based on co-occurrence counts.
-Based on co-occurrence counts.
+Sparse square matrices of size equal to that of vocabulary size were created to store the pointwise mutual information (PPMI) scores for each decade. These scores were based on co-occurrence counts of the words.
 
 ### SVD
 The PPMI matrix was reduced into lower dimensions by singular vector decomposition. The resulting embeddings were then aligned with the orthogonal Procrustes method.
@@ -55,11 +54,14 @@ The authors calculated the correlation between frequency of words and their corr
 Now the correlation was calculated between semantic change scores and frequency for the whole century using the shuffle corpus. In stark contrast to expectations, almost identical correlation coefficients were observed for both the original and the shuffled corpus. This tells us that the effect of frequency is not really as great as has been reported in literature.
 
 ### Testing the law of Innovation and Prototypicality
-To test these two laws, the authors did a regression analysis with frequency and polysemy as the independent variables for the law of innovation and frequency and prototypicality for the law of prototypicality. For these two-predictor models, the authors compared the the $\beta$ and the explained variance for both the original and shuffled corpus.
+To test these two laws, the authors did a regression analysis with frequency and polysemy as the independent variables for the law of innovation and frequency and prototypicality for the law of prototypicality. For these models with two predictor variables, the authors compared the the $\beta$ and the explained variance for both the original and shuffled corpus.
 
-Again, contrary to expectations, not much difference was seen between the two corpus. In case of polysemy, the explained variance for PPMI+SVD representations was 68% and 60% for original and shuffle respectively. This difference is way too less and it can be concluded that the law of innovation is not very strong. The reason according to the paper is that polysemy is highly collinear with frequency and therefore does not make any strong contributions to the two variable regression model.
+Again, contrary to expectations, not much difference was seen between the two corpus. In case of polysemy, the explained variance for PPMI+SVD representations was 68% and 60% for original and shuffle respectively. For PPMI representations, these numbers were 9% and 4% respectively. This difference is way too less and it can be concluded that the law of innovation is not very strong. The reason according to the paper is that polysemy is highly collinear with frequency and therefore does not make any strong contributions to the two variable regression model.
 
-Similarly for prototypicality for PPMI+SVD representations, the explained variance was 65% and 60% for the genuine and shuffle corpus respectively. Once again, the difference was too low and the law of prototypicality does not seem to be holding up.
+Similarly for prototypicality for PPMI+SVD representations, the explained variance was 65% and 60% for the genuine and shuffle corpus respectively. For PPMI representations, these numbers were 2% and 0% respectively. Once again, the difference was too low and the law of prototypicality does not seem to be holding up.
+
+
+An important point to note is that the models using only PPMI representations explain very insignificant amounts of variance while this is not the case with PPMI+SVD representations. This fact implies that the model of semantic meaning change is highly dependent on the underlying word representation it uses and is not very generalizable, thereby highlighting another major drawback.
 
 
 ## Theoretical analysis
