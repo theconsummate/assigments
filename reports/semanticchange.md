@@ -57,13 +57,23 @@ Now the correlation was calculated between semantic change scores and frequency 
 ### Testing the law of Innovation and Prototypicality
 To test these two laws, the authors did a regression analysis with frequency and polysemy as the independent variables for the law of innovation and frequency and prototypicality for the law of prototypicality. For these two-predictor models, the authors compared the the $\beta$ and the explained variance for both the original and shuffled corpus.
 
-Again, contrary to expectations, not much difference was seen between the two corpus. In case of polysemy, the explained variance for PPMI+SVD representations was 68% and 60% for original and shuffle respectively. This difference is way too less and it can be concluded that the law of innovation is not very strong.
+Again, contrary to expectations, not much difference was seen between the two corpus. In case of polysemy, the explained variance for PPMI+SVD representations was 68% and 60% for original and shuffle respectively. This difference is way too less and it can be concluded that the law of innovation is not very strong. The reason according to the paper is that polysemy is highly collinear with frequency and therefore does not make any strong contributions to the two variable regression model.
 
-Similarly for prototypicality for PPMI+SVD representations, the explained variance was 65% and 60% for the genuine and shuffle corpus respectively. Once again, the difference is was too low and the law of prototypicality does not seem to be holding up.
+Similarly for prototypicality for PPMI+SVD representations, the explained variance was 65% and 60% for the genuine and shuffle corpus respectively. Once again, the difference was too low and the law of prototypicality does not seem to be holding up.
+
+
+## Theoretical analysis
+The paper starts by analyzing the relationship between sampling variability and cosine similarity. The lemma says that cosine distance is directly related to the variance of the variable. As a measure of caution, the cosine distance should only be used when it is larger than the empirically calculated variance.
+
+Next the paper proves that for a given word w, the cosine distance of two iid samples from the distribution of count vector of w is monotonically decreasing with the word frequency. For polysemy, the paper proves that cosine distance between two samples of the word w becomes larger when the word has more meanings.
 
 
 ## Conclusion and General Discussion
-The paper showed the failure of three laws of semantic change which had been reported in literature. The extent of the relationship as claimed was not observed when tested with randomized control data. This shows the fragility of the current state of research and points out the vulnerabilities of the mathematics and data used to prove these laws. In my opinion, the people who published these laws went too far in their claims by calling relationships between two variables a "law". The laws of motion suggested by Issac Newton are rightfully laws but those of semantic change should not be attached the same label. The relationship only appears to be present by chance and  it may or may not be replicable under a variety of conditions. Therefore it does not indicate anything and should be reconsidered.
+The paper showed the failure of three laws of semantic change which had been reported in literature. The extent of the relationship as claimed was not observed when tested with randomized control data. This shows the fragility of the current state of research and points out the vulnerabilities of the mathematics and data used to prove these laws. The paper also presents mathematical proofs deconstructing the fallacy and while they are instructive, I have chosen not to include them in this report to avoid copying the proofs here.
+
+The paper also showed that the output of a model of semantic change is often dependent on the word representations it is using. As was seen in subsample case of the law of conformity, different representations provided different correlation values. The authors argue that the representations using count vectors inherently introduce a dependence of word frequency, which then leads to misleading observations. The authors leave the task of finding out if other word representations (Skip Gram Negative Sampling etc)
+
+In my opinion, the people who published these laws went too far in their claims by calling relationships between two variables a "law". The laws of motion suggested by Issac Newton are rightfully laws but those of semantic change should not be attached the same label. The relationship only appears to be present by chance and  it may or may not be replicable under a variety of conditions. Therefore it does not indicate anything and should be reconsidered.
 
 The positive aspect is that the paper presented a framework for testing and evaluating the results of a model before it gets generalized. This is a very important contribution as testing is something which often gets neglected by people.
 
