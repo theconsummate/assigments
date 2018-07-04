@@ -3,12 +3,12 @@
 \usepackage{INTERSPEECH2018}
 \usepackage{cite}
 
-\title{Paper Template for INTERSPEECH 2018}
+\title{Spoken Language Processing Report}
 \name{Dhruv Mishra}
 %The maximum number of authors in the author list is twenty. If the number of contributing authors is more than twenty, they should be listed in a footnote or in acknowledgement section, as appropriate.
 \address{
   IMS, University of Stuttgart}
-\email{author@university.edu}
+\email{st154709@stud.uni-stuttgart.de}
 
 \begin{document}
 
@@ -205,7 +205,7 @@ The prosodic features trained from \ref{model} are added to the feature set of t
 
 Two different configurations of feature sets were used for each of the above mentioned variations: Short NPs (NPs of length less than 3) and All NPs. Therefore a total of 6 different configurations were tested.
 
-The performance for the coreference resolver was improved as compared to the baseline by the addition of prosodic event (pitch accent or nuclear accent) in all the configurations. As expected, the pattern of gold>gold/auto>auto was observed for both Short NPs and All NPs, which tells us that the errors in the CNN model are being propagated here. However, the difference between gold and auto was very marginal for all NPs in pitch accent detection and Short NPs in nuclear accent detection whereas the difference was much larger for the other cases.
+The performance for the coreference resolver was improved as compared to the baseline by the addition of prosodic event (pitch accent or nuclear accent) in all the configurations. As expected, the pattern of gold $>$ gold/auto $>$ auto was observed for both Short NPs and All NPs, which tells us that the errors in the CNN model are being propagated here. However, the difference between gold and auto was very marginal for all NPs in pitch accent detection and Short NPs in nuclear accent detection whereas the difference was much larger for the other cases.
 
 Pitch accent was more informative for Short NPs because Long NPs are accented most of the time. On the other hand, Nuclear accent is more informative for Long NPs as compared to Short NPs, but it improved performance over baseline in both cases.
 
