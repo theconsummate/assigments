@@ -41,7 +41,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-This report describes \cite{huang2015translation}
+This report is a critical response to the paper \cite{huang2015translation} presented by me in class. The report will first describe the contents of the paper briefly and then go into talking about the potential flaws and methodological errors I noticed.
 \end{abstract}
 
 \section{Introduction}
@@ -62,6 +62,7 @@ A single multilingual co-occurrence matrix.
 Words as the rows and contexts as columns.
 Entries specify the co-occurrence count between a word in any language and a context in any language.
 
+\begin{table}[h]  
 \begin{center}
 \begin{tabular}{ |c|c|c| } 
   \hline
@@ -72,12 +73,15 @@ Entries specify the co-occurrence count between a word in any language and a con
   \hline
 \end{tabular}
 \end{center}
+\caption{\label{font-table} A sample matrix for X }
+\end{table}
 
 \subsection{D1}
 A word alignment matrix with all the words (all languages) as both rows and columns.
 Entries in this matrix specify which words are translations of which other words.
 
 
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{ |c|c|c| } 
   \hline
@@ -87,12 +91,15 @@ Entries in this matrix specify which words are translations of which other words
   \hline
 \end{tabular}
 \end{center}
+\caption{\label{font-table} A sample matrix for D1 }
+\end{table}
 
 \subsection{D2}
 A word alignment matrix with all the words (all languages) as both rows and columns.
 Entries in this matrix specify which words are translations of which other words.
 
 
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{ |c|c|c|c| } 
   \hline
@@ -103,6 +110,8 @@ Entries in this matrix specify which words are translations of which other words
   \hline
 \end{tabular}
 \end{center}
+\caption{\label{font-table} A sample matrix for D2 }
+\end{table}
 
 \subsection{Find}
 A latent representation for each word in each language that :
