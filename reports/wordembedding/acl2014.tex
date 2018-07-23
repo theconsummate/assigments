@@ -19,6 +19,7 @@
 \usepackage{times}
 \usepackage{url}
 \usepackage{latexsym}
+\usepackage{amsmath}
 
 %\setlength\titlebox{5cm}
 
@@ -32,8 +33,6 @@
 
 \author{First Author \\
   Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
   {\tt email@domain}}
 
 \date{}
@@ -47,20 +46,19 @@ This report is a critical response to the paper \cite{huang2015translation} pres
 \section{Introduction}
 This paper tackles the problem of learning multi lingual word embeddings which are independent of the translations between the languages.  This concept is called “Translation Invariant word embeddings”.
 
-Translation between languages is often represented by a probability distribution and therefore is a little ambiguous. For example, “the” in english can translate to “el” or “la” in spanish with equal probability. The authors want to develop a framework which learns embeddings independently from the possible translations a word might have.
+Translation between languages is often represented by a probability distribution and therefore is a little ambiguous. For example, ``the" in english can translate to ``el" or ``a" in spanish with equal probability. The authors want to develop a framework which learns embeddings independently from the possible translations a word might have.
 
 \section{Problem Definition}
 The goal is to learn translation invariant embeddings with the following input data.
-
-- A set of co-occurrence statistics between words in each of several languages. It is the frequency of a word occurring with another word in a particular context, either of the same language or another. 
-- A translation table containing alignment counts between words in each of these languages. For example, alignment matrices for “english-to-foreign” and “foreign-to-english”. These matrices represent a normalized probability distribution.
+\begin{itemize}
+\item A set of co-occurrence statistics between words in each of several languages. It is the frequency of a word occurring with another word in a particular context, either of the same language or another. 
+\item A translation table containing alignment counts between words in each of these languages. For example, alignment matrices for “english-to-foreign” and “foreign-to-english”. These matrices represent a normalized probability distribution.
+\end{itemize}
 
 \section{Notation}
 
 \subsection{X}
-A single multilingual co-occurrence matrix.
-Words as the rows and contexts as columns.
-Entries specify the co-occurrence count between a word in any language and a context in any language.
+This represents a single multilingual co-occurrence matrix. The rows are the Words and the columns are the contexts in which these words appear. The entries specify the co-occurrence count between a word in any language and a context in any language.
 
 \begin{table}[h]  
 \begin{center}
@@ -78,7 +76,7 @@ Entries specify the co-occurrence count between a word in any language and a con
 
 \subsection{D1}
 A word alignment matrix with all the words (all languages) as both rows and columns.
-Entries in this matrix specify which words are translations of which other words.
+Entries in this matrix specify which words are translations of which other words in a different language.
 
 
 \begin{table}[h]
@@ -95,8 +93,8 @@ Entries in this matrix specify which words are translations of which other words
 \end{table}
 
 \subsection{D2}
-A word alignment matrix with all the words (all languages) as both rows and columns.
-Entries in this matrix specify which words are translations of which other words.
+A word alignment matrix with all the contents (all languages) as both rows and columns.
+Entries in this matrix specify which contents are translations of which other contents in a different language.
 
 
 \begin{table}[h]
@@ -114,32 +112,47 @@ Entries in this matrix specify which words are translations of which other words
 \end{table}
 
 \subsection{Find}
-A latent representation for each word in each language that :
-Captures information from X.
-Utilizes D1 and D2 to make the representation “translation invariant”.
+The goal is to find a latent representation for each word in each language that:
+\begin{itemize}
+  \item Captures information from X.
+  \item Utilizes D1 and D2 to make the representation “translation invariant”.
+\end{itemize}
 
 
+\section{Translation invariant LSA (TI-LSA)}
+The classic method makes use of the equation: \[\min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F\]
 
-\section{Translation invariant LSA}
-The classic method makes use of the equation: <eq1>.
+In this equation, the rows of U (or rows of V) represent the word embeddings. The solution of the equation is given by principal components of the singular value decomposition (SVD) of X.
 
-The rows of U (or rows of V) are the word embeddings.
-The solution is given by principal components of the singular value decomposition (SVD) of X.
+Incorporating D1 and D2 and trying to simultaneously explain X and the various translation of it, the previous objective function can be written as:
 
-Incorporating D1 and D2 and trying to simultaneously explain X and the various translation of it, the previous objective function can be written as: <eq2>.
+\begin{multline*}
+\min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F + \left\lVert D_{1}X - UV^T \right\rVert^{2}_F \\+ \left\lVert XD^{T}_2 - UV^T \right\rVert^{2}_F + \left\lVert D_{1}XD^{T}_2 - UV^T \right\rVert^{2}_F
+\end{multline*}
+
+This can be rewritten as \[\min_{U,V}\left\lVert \widetilde{X} - UV^T \right\rVert^{2}_F\] where,
+\begin{multline*}
+\widetilde{X} = \frac{1}{4}(X + D_{1}X + XD^{T}_2 +D_{1}XD^{T}_2 ) \\
+= \frac{1}{4}(I + D_{1})X(I + D_2)^{T}
+\end{multline*}
 
 \subsection{Lanczos Algorithm}
-The new matrix X is not very sparse.
-Lanczos algorithm \cite{van1996matrix}, implements the calculation of SVD through the factors without the need for carrying out multiplication explicitly.
-The method has linear complexity in the number of non-zeros present in the sparse matrices involved.
-Thus, the time required for calculating the SVD of Ẋ is not much more than that of X.
+The new matrix $\widetilde{X}$ obtained above is not very sparse which means that calculation of SVD will not be efficient. To solve this problem, the paper uses the Lanczos algorithm \cite{van1996matrix}, which implements the calculation of SVD through the factors without the need for carrying out multiplication explicitly. This method has linear complexity in the number of non-zeros present in the sparse matrices involved.
+Thus, the time required for calculating the SVD of $\widetilde{X}$ is not much more than that of X.
 
 \section{Experiments}
-Three experiments presented:
-Cross- lingual evaluation
-Monolingual evaluation
-Scalability
+The paper compares its results with \cite{faruqui2014improving} and makes use of the same training data.
+\subsection{Cross- lingual evaluation}
+To compare with other techniques, a dependency parsing model of \cite{guo2015cross} was trained and the LAS and UAS scores were compared. The TI-LSA embeddings produces scores which were slightly better than \cite{faruqui2014improving} and \cite{guo2015cross}.
 
+\subsection{Monolingual evaluation}
+The embeddings were evaluated on monolingual word similarity tasks of \cite{faruqui2014community}. The average correlation was equal to vanilla LSA and only slightly worse than \cite{faruqui2014improving}. Thus this method does not deteriorate monolingual performance at the expense of crosslingual performance.
+
+\subsection{Scalability}
+Since the method is linear in the number of non-zeros in the data, the method can be scaled quite easily to many languages. The paper presents results for up to 4 languages and the run time increases linearly.
+
+\section{Potential Flaws}
+\section{Methodological Errors}
 
 
 % include your own bib file like this:
