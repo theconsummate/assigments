@@ -119,22 +119,22 @@ The goal is to find a latent representation for each word in each language that:
 \end{itemize}
 
 
-\section{Translation invariant LSA (TI-LSA)}
-The classic method makes use of the equation: \[\min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F\]
+\section{Translation invariant LSA (TI-LSA)} \label{tilsa}
+The classic method makes use of the equation: \begin{multline}\min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F\end{multline}
 
 In this equation, the rows of U (or rows of V) represent the word embeddings. The solution of the equation is given by principal components of the singular value decomposition (SVD) of X.
 
 Incorporating D1 and D2 and trying to simultaneously explain X and the various translation of it, the previous objective function can be written as:
 
-\begin{multline*}
+\begin{multline}
 \min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F + \left\lVert D_{1}X - UV^T \right\rVert^{2}_F \\+ \left\lVert XD^{T}_2 - UV^T \right\rVert^{2}_F + \left\lVert D_{1}XD^{T}_2 - UV^T \right\rVert^{2}_F
-\end{multline*}
+\end{multline}
 
-This can be rewritten as \[\min_{U,V}\left\lVert \widetilde{X} - UV^T \right\rVert^{2}_F\] where,
-\begin{multline*}
+This can be rewritten as \begin{multline}\min_{U,V}\left\lVert \widetilde{X} - UV^T \right\rVert^{2}_F\end{multline} where,
+\begin{multline}
 \widetilde{X} = \frac{1}{4}(X + D_{1}X + XD^{T}_2 +D_{1}XD^{T}_2 ) \\
 = \frac{1}{4}(I + D_{1})X(I + D_2)^{T}
-\end{multline*}
+\end{multline}
 
 \subsection{Lanczos Algorithm}
 The new matrix $\widetilde{X}$ obtained above is not very sparse which means that calculation of SVD will not be efficient. To solve this problem, the paper uses the Lanczos algorithm \cite{van1996matrix}, which implements the calculation of SVD through the factors without the need for carrying out multiplication explicitly. This method has linear complexity in the number of non-zeros present in the sparse matrices involved.
@@ -151,8 +151,35 @@ The embeddings were evaluated on monolingual word similarity tasks of \cite{faru
 \subsection{Scalability}
 Since the method is linear in the number of non-zeros in the data, the method can be scaled quite easily to many languages. The paper presents results for up to 4 languages and the run time increases linearly.
 
-\section{Potential Flaws}
+% Write a critical response to your paper. Highlight flaws, methodological errors,
+% and/or shortcomings. Propose ways that the authors could have done things
+% better, and highlight other works which avoid your criticisms of your paper.
+
 \section{Methodological Errors}
+\subsection{Missing description of data} \label{missingdata}
+The paper states that it uses the same data as in \cite{faruqui2014improving} but does not give any details about what they do with it. Steps like preprocessing, removing bad data, split between train, development and test sets etc are not at all talked about. It is quite possible that they are not doing any preprocessing and just plugging the whole data straight into their model but this fact should have been mentioned. \cite{faruqui2014improving} on the other hand talk about the data they used and provide information about how the preprocessing steps.
+
+\subsection{Lack of details about evaluation results}
+For Monolingual evaluation, the paper presents an average of the correlation scores across 11 tasks described in \cite{faruqui2014community}. There is no description about what these tasks are and what they are trying to measure or evaluate. The paper also does not provide the scores for each of these tasks and how it compared with other word embedding techniques. The average score reported in the paper is not enough information for the readers to understand how the performance of this technique, where it excels and where it fails for monolingual tasks.
+
+\section{Potential Flaws}
+\subsection{Construction of D1 and D2 matrices}
+\cite{faruqui2014improving} provide details about how they constructed their version of the X matrix (which is quite similar to this paper) but since they do not use D1 and D2, and as this paper also completely skips all details about the data as seen in \ref{missingdata}, it is quite unclear how these two matrices are obtained. Since these matrices contain the translation information, any error in their construction will have a huge ripple effect on the quality of the resulting embedding.
+
+\subsection{Construction of the objective function}
+\ref{tilsa} describes the process used in the paper to derive the objective function. The matrices D1 and D2 are added to the basic LSA equation by adding three more expressions. It is interesting to note that while the logic is sound, the effects of the individual terms is not studied. Like in Linear Regression, different predicting variables might explain different levels of variance, the different expressions involving D1 and D2 might contribute differently here, i.e. one expression might explain more variance than others.
+
+In my view, the authors should have presented results for different objective functions and compared the results with each other to verify how much the additional information is contributing to the improvement of word vectors. Some obvious variations can be:
+
+Only D1:
+\begin{multline}
+\min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F + \left\lVert D_{1}X - UV^T \right\rVert^{2}_F
+\end{multline}
+
+Only D2:
+\begin{multline}
+\min_{U,V}\left\lVert X - UV^T \right\rVert^{2}_F + \left\lVert XD^{T}_2 - UV^T \right\rVert^{2}_F
+\end{multline}
 
 
 % include your own bib file like this:
