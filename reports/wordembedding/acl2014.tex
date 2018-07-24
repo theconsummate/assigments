@@ -182,6 +182,12 @@ Only D2:
 \end{multline}
 
 
+\subsection{Overestimating the impact of Scalability}
+The paper highlights the linear runtime of the method a lot and it is infact listed as one of the main advantage. It must be noted that most methods for obtaining word embeddings are infact linear in their runtime so it's not really that big of an advantage. Secondly, all the matrices are composed by concatenating the co-occurrence statistics for all the available languages. While this may be simple in theory, in general, it is very difficult to do in practice. For example, assuming a dataset of four languages, it will be very difficult to get pairwise translation probability for all the possible pairs to fill the matrices. Except popular languages like English, Mandarin etc, there is simply not so much pairwise data available for other languages publicly.
+
+\subsection{Unaccounted impact of hyperparameters in dependency parsing}
+The paper presents a comparison with \cite{guo2015cross} but it is also mentioned that the results could not be exactly reproduced due to difference in hyperparameters. It is also interesting to note that the difference between the average UAS score for the projection based heuristic of \cite{guo2015cross} and CCA as reported by them  is 1.66. This is in contrast to the difference reported in this paper, which is 0.6. This clearly shows that the effect of hyperparameters is quite prominent and thus the results should be taken with a grain of salt because it is quite possible that under a different hyperparameter configuration the TI-LSA embeddings might not outperform the other methods. 
+
 % include your own bib file like this:
 \bibliographystyle{acl}
 \bibliography{acl2014}
