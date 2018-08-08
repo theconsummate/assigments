@@ -40,7 +40,7 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-This report is a critical response to the paper \cite{huang2015translation} presented by me in class. The report will first describe the contents of the paper briefly and then go into talking about the potential flaws and methodological errors I noticed.
+This report is a critical response to the paper \cite{huang2015translation} presented by me in class. The report will first describe the contents of the paper briefly and then go into talking about the potential flaws and methodological errors I noticed. After that, I will do a comparison with \cite{faruqui2014improving} as the authors have used it as a baseline for their results.
 \end{abstract}
 
 \section{Introduction}
@@ -187,6 +187,14 @@ The paper highlights the linear runtime of the method a lot and it is infact lis
 
 \subsection{Unaccounted impact of hyperparameters in dependency parsing}
 The paper presents a comparison with \cite{guo2015cross} but it is also mentioned that the results could not be exactly reproduced due to difference in hyperparameters. It is also interesting to note that the difference between the average UAS score for the projection based heuristic of \cite{guo2015cross} and CCA as reported by them  is 1.66. This is in contrast to the difference reported in this paper, which is 0.6. This clearly shows that the effect of hyperparameters is quite prominent and thus the results should be taken with a grain of salt because it is quite possible that under a different hyperparameter configuration the TI-LSA embeddings might not outperform the other methods.
+
+\section{Comparison with \cite{faruqui2014improving}}
+\subsection{Similarities}
+Both of these papers share the same motivation of using the translation context to improve word embeddings.
+
+\subsection{Differences}
+% provide analysis also
+
 
 \section{Conclusion}
 This paper presents a technique to incorporate translation data into the word embeddings using a modified LSA process. The technique gives superior performance on multilingual tasks and this ability does does not hurt performance on monolingual tasks. Finally, it scales linearly in the size of input data.
