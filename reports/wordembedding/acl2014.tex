@@ -190,10 +190,14 @@ The paper presents a comparison with \cite{guo2015cross} but it is also mentione
 
 \section{Comparison with \cite{faruqui2014improving}}
 \subsection{Similarities}
-Both of these papers share the same motivation of using the translation context to improve word embeddings.
+Both the papers build up on the distributional hypothesis which only considers the context of a word by extending to include "translational context" as well to improve word embeddings. What this means is that for any given word, the context includes the context in the source language (to which the word belongs) and the context of the corresponding translated word in a target language. It is important to note that the target languages can be multiple, depending upon the number of languages being considered in the task.
+
 
 \subsection{Differences}
 % provide analysis also
+The method of incorporating "translational context" is the main difference between the two papers. \cite{faruqui2014improving} starts with word vectors and uses Canonical correlation analysis (CCA) to map two or more languages into a common shared space. The word vectors for each of the languages are transformed into a common space by learning a transformation matrix which optimizes the correlation between the two language vectors. Thus the goal is to make embeddings as similar as possible.
+
+On the other hand, \cite{huang2015translation} starts with raw language data and learns the word vectors by incorporating the translational context into the learning algorithm. Therefore, the result is that different languages have their own vector space which has been enriched by extra information from a foreign language rather than having a shared vector space.
 
 
 \section{Conclusion}
