@@ -40,22 +40,23 @@
 \begin{document}
 \maketitle
 \begin{abstract}
-This report is a critical response to the paper \cite{huang2015translation} presented by me in the class. The report will first describe the contents of the paper briefly and then go into talking about the potential flaws and methodological errors which I have noticed. After that, I will do a comparison with \cite{faruqui2014improving} as the authors have used it as a baseline for their results.
+This report is a critical response to the paper \cite{huang2015translation} presented by me in the class. The report will first describe the contents of the paper briefly and then go into talking about the potential flaws and methodological errors which I have noticed. After that, I will do a comparison with \cite{faruqui2014improving} as the authors have used the same dataset as them and treated it as a baseline for their results.
 \end{abstract}
 
 \section{Introduction}
 This paper tackles the problem of learning multi lingual word embeddings which are independent of the translations between the languages.  This concept is called “Translation Invariant word embeddings”.
 
-Translation between languages is often represented by a probability distribution and therefore is a little ambiguous. For example, ``the" in english can translate to ``el" or ``a" in spanish with equal probability. The authors want to develop a framework which learns embeddings independently from the possible translations a word might have.
+Translation between languages is often represented by a probability distribution and therefore is a little ambiguous. For example, ``the" in english can translate to ``el" or ``a" in spanish with equal probability. The authors want to develop a framework which learns embeddings independently from all the possible translations a word might have.
 
 \section{Problem Definition}
 The goal is to learn translation invariant embeddings with the following input data.
 \begin{itemize}
-\item A set of co-occurrence statistics between words in each of several languages. It is the frequency of a word occurring with another word in a particular context, either of the same language or another. 
+\item A set of co-occurrence statistics between words in each of several languages. It is the frequency of a word occurring with another word in a particular context, either of the same language or another. All values are integers.
 \item A translation table containing alignment counts between words in each of these languages. For example, alignment matrices for “english-to-foreign” and “foreign-to-english”. These matrices represent a normalized probability distribution.
 \end{itemize}
 
 \section{Notation}
+The examples in each of the subsections are for two languages. In case of more than two languages, all the data is simply concatenated to produce the data types as described below.
 
 \subsection{X}
 This represents a single multilingual co-occurrence matrix. The rows are the words and the columns are the contexts in which these words appear. The entries specify the co-occurrence count between a word in any language and a context in any language.
@@ -215,7 +216,7 @@ Finally, the emphasis on scalability in \cite{huang2015translation} stands in st
 
 
 \section{Conclusion}
-This paper presents a technique to incorporate translation data into the word embeddings using a modified LSA process. The technique gives superior performance on multilingual tasks and this ability does does not hurt performance on monolingual tasks. Finally, it scales linearly in the size of input data.
+This paper presents a technique to incorporate translation data into the word embeddings using a modified Latent Semantic Analysis algorithm. The technique gives superior performance on multilingual tasks as compared to two other similar methods presented in \cite{faruqui2014improving} and \cite{guo2015cross}.  The multilingual enhancement does not hurt the performance on monolingual tasks, which stays the same as compared to vanilla LSA. Finally, it scales linearly in the size of input data which enables the use of multiple languages at the same time, instead of being restricted to a pair of two languages.
 
 
 % include your own bib file like this:
