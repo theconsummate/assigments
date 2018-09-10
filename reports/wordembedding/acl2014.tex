@@ -160,7 +160,9 @@ Since the method is linear in the number of non-zeros in the data, the method ca
 The paper states that it uses the same data as in \cite{faruqui2014improving} but does not give any details about what they do with it. Steps like preprocessing, removing bad data, split proportions between train, development and test sets etc are not at all talked about. It is quite possible that they are not doing any preprocessing and just plugging the whole data straight into their model but this fact should have been mentioned. \cite{faruqui2014improving} on the other hand talks about the data they used and provide information about the preprocessing steps.
 
 \subsection{Lack of details about evaluation results}
-For Monolingual evaluation, the paper presents an average of the correlation scores across 11 tasks described in \cite{faruqui2014community}. There is no description about what these tasks are and what they are trying to measure or evaluate. The paper also does not provide the scores for each of these tasks and how it compared with other word embedding techniques. The average score reported in the paper is not enough information for the readers to understand the finer details of this technique, where it excels and where it fails for monolingual tasks.
+For monolingual evaluation, the paper presents an average of the correlation scores across 11 tasks described in \cite{faruqui2014community}. There is no description about what these tasks are and what they are trying to measure or evaluate. The paper also does not provide the scores for each of these tasks and how it compared with other word embedding techniques. The average score reported in the paper is not enough information for the readers to understand the finer details of this technique, where it excels and where it fails for monolingual tasks.
+
+For multilingual evaluation, the paper does not present any results for standardized multilingual tasks, which in my opinion is a very big problem as this restricts a direct comparison with other techniques. While results on a practical application such as dependency parsing are important, the evaluation on a standardized multilingual task should have higher priority.
 
 \subsection{Lack of implementation details}
 The method described computes SVD of a very big matrix. It can be safely assumed that in the future, the size of training data is only going to get bigger and therefore efficient memory implementation is also required along with speed. There is no mention about how such large matrices were handled during implementation and what are the memory requirements. There is also no mention about the memory requirement of Lanczos Algorithm.
@@ -200,7 +202,15 @@ Both the papers build up on the distributional hypothesis which only considers t
 % provide analysis also
 The method of incorporating "translational context" is the main difference between the two papers. \cite{faruqui2014improving} starts with word vectors and uses Canonical correlation analysis (CCA) to map two or more languages into a common shared space. The word vectors for each of the languages are transformed into a common space by learning a transformation matrix which optimizes the correlation between the two language vectors. Thus the goal is to make embeddings as similar as possible.
 
-On the other hand, \cite{huang2015translation} starts with raw language data and learns the word vectors by incorporating the translational context into the learning algorithm. Therefore, the result is that different languages have their own vector space which has been enriched by extra information from a foreign language rather than having a shared vector space.
+While preparing the word vectors, they only select the context's which have a frequency greater than 10 and remove the top 100 most frequent context's to account for stop words. They also transform the frequency values, which are integers into Pointwise Mutual information (PMI).
+
+The paper shows results for various evaluation tasks on both monolingual and multilingual embeddings but does not present any data about performance in a practical application. While this is not a very serious drawback, it does leave scope for skepticism.
+
+On the other hand, \cite{huang2015translation} starts with raw language data and learns the word vectors by incorporating the translational context into the learning algorithm. Therefore, the result is that different languages have their own vector space which has been enriched by extra information from a foreign language rather than having a shared vector space. No preprocessing is done on the input matrices and the training takes place using frequency values rather than PMI.
+
+This paper only presents an aggregated average of the evaluation results for monolingual tasks but the same thing is absent for the multilingual case, which instead contains a comparison on a dependency parsing task.
+
+Finally, the emphasis on scalability in \cite{huang2015translation} stands in stark contrast to the absence of the same in \cite{faruqui2014improving}.
 
 
 \section{Conclusion}
