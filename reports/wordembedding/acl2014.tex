@@ -160,7 +160,7 @@ Since the method is linear in the number of non-zeros in the data, the method ca
 The paper states that it uses the same data as in \cite{faruqui2014improving} but does not give any details about what they do with it. Steps like preprocessing, removing bad data, split proportions between train, development and test sets etc are not at all talked about. It is quite possible that they are not doing any preprocessing and just plugging the whole data straight into their model but this fact should have been mentioned. \cite{faruqui2014improving} on the other hand talks about the data they used and provide information about the preprocessing steps.
 
 \subsection{Lack of details about evaluation results}
-For monolingual evaluation, the paper presents an average of the correlation scores across 11 tasks described in \cite{faruqui2014community}. There is no description about what these tasks are and what they are trying to measure or evaluate. The paper also does not provide the scores for each of these tasks and how it compared with other word embedding techniques. The average score reported in the paper is not enough information for the readers to understand the finer details of this technique, where it excels and where it fails for monolingual tasks.
+For monolingual evaluation, the paper presents an average of the correlation scores across 11 tasks described in \cite{faruqui2014community}. There is no description about what these tasks are and what they are trying to measure or evaluate. The paper also does not provide the scores for each of these tasks and how it compared with other word embedding techniques. The average score reported in the paper is not enough information for the readers to understand the finer details of this technique, where it excels and where it fails for monolingual tasks. To exacerbate the problem, the paper does not provide the accuracy scores too, which other contemporary papers do.
 
 For multilingual evaluation, the paper does not present any results for standardized multilingual tasks, which in my opinion is a very big problem as this restricts a direct comparison with other techniques. While results on a practical application such as dependency parsing are important, the evaluation on a standardized multilingual task should have higher priority.
 
@@ -197,10 +197,11 @@ The paper presents a comparison with \cite{guo2015cross} but it is also mentione
 \subsection{Similarities}
 Both the papers build up on the distributional hypothesis which only considers the context of a word by extending simple word embeddings to include "translational context" as well, to improve the quality. What this means is that for any given word, the context includes the context in the source language (to which the word belongs) and the context of the corresponding translated word in a target language. It is important to note that the target languages can be multiple, depending upon the number of languages being considered in the task.
 
+Both papers also compare their methods with other contemporary techniques in an attempt to provide a justification for better performance. \cite{faruqui2014improving} goes an extra step by doing a comparison with embeddings learnt using Neural Networks, such as RNN and Skip Gram models.
 
 \subsection{Differences}
 % provide analysis also
-The method of incorporating "translational context" is the main difference between the two papers. \cite{faruqui2014improving} starts with word vectors and uses Canonical correlation analysis (CCA) to map two or more languages into a common shared space. The word vectors for each of the languages are transformed into a common space by learning a transformation matrix which optimizes the correlation between the two language vectors. Thus the goal is to make embeddings as similar as possible.
+The method of incorporating "translational context" is the main difference between the two papers although the end goal remains the same. \cite{faruqui2014improving} starts with word vectors and uses Canonical correlation analysis (CCA) to map two or more languages into a common shared space. The word vectors for each of the languages are transformed into a common space by learning a transformation matrix which optimizes the correlation between the two language vectors. Thus the goal is to make embeddings as similar as possible.
 
 While preparing the word vectors, they only select the context's which have a frequency greater than 10 and remove the top 100 most frequent context's to account for stop words. They also transform the frequency values, which are integers into Pointwise Mutual information (PMI).
 
@@ -210,7 +211,7 @@ On the other hand, \cite{huang2015translation} starts with raw language data and
 
 This paper only presents an aggregated average of the evaluation results for monolingual tasks but the same thing is absent for the multilingual case, which instead contains a comparison on a dependency parsing task.
 
-Finally, the emphasis on scalability in \cite{huang2015translation} stands in stark contrast to the absence of the same in \cite{faruqui2014improving}.
+Finally, the emphasis on scalability in \cite{huang2015translation} stands in stark contrast to the absence of the same in \cite{faruqui2014improving}. The latter only considers pairs of two languages and it is not quite clear if the technique can reliably scale if more languages are added.
 
 
 \section{Conclusion}
