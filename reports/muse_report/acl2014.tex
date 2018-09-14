@@ -91,8 +91,28 @@ The network provided by \cite{muserepo} was considered as the baseline system fo
   \hline
   \end{tabular}
   \end{center}
-  \caption{ Comparison of average scores for different experiments with English as source language and Spanish as target language}
-  \label{summa}
+  \caption{ Monolingual scores for source language (English)}
+  \label{monolingual-source}
+\end{table*}
+
+\begin{table*}[ht]
+  \begin{center}
+  \begin{tabular}{|c|l|l|l|l|l|l|}
+  \hline
+  Dataset & Baseline & Baseline-bias & Nonlinear & Piecewise-relu & Piecewise-relu & Wasserstein loss\\
+  \hline
+  ES\_SEMEVAL17 & 0.7391 & 0.7392 & 0.7392 & 0.7392 & 0.7392 & 0.7392 \\
+  \hline
+  ES\_RG-65 & 0.8794 & 0.8794 & 0.8794 & 0.8794 & 0.8794 & 0.8794 \\
+  \hline
+  ES\_WS-353 & 0.6126 & 0.6126 & 0.6126 & 0.6126 & 0.6126 & 0.6126 \\
+  \hline
+  ES\_MC-30 & 0.7475 & 0.7475 & 0.7475 & 0.7475 & 0.7475 & 0.7475 \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption{ Monolingual scores for target language (Spanish)}
+  \label{monolingual-target}
 \end{table*}
 
 \subsection{Adding a bias}
@@ -106,13 +126,18 @@ The mapping function used is a piecewise function. The formula for a piecewise f
 
 $Piecewise(x) = (A_1*x + b_1) + relu(A_n*x + b_n) + ... + relu(A_n*x + b_n)$
 
-\subsubsection{One breakpoint}
-
-\subsubsection{Four breakpoints}
+The functions are tested with one and four breakpoints.
 
 \subsubsection{Linearity of piecewise functions}
 
+
 \subsection{Wasserstein Loss}
+The mapping function of \ref{baseline} used but the loss function is changed from binary cross-entropy to Wasserstein loss.
+
+\section{Results}
+\subsection{Monolingual source word scores}
+
+\subsection{Monolingual target word scores}
 
 \subsection{Summary of average scores}
 \begin{table*}[ht]
