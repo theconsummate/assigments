@@ -47,26 +47,75 @@ Remove me: \cite{lample2017unsupervised}
 \end{abstract}
 
 \section{Introduction}
-\cite{conneau2017word} describes a method to learn a transformation matrix to map word vectors in one language into another in an unsupervised way.
+\cite{conneau2017word} describes a method to learn a mapping function to align word vectors in one language with another in an unsupervised way. It is assumed that the word vectors are already provided. The training process is adversarial with the Mapping function as the generator and an additional fully connected feedforward network as the Discriminator. In the paper, the mapping function is a matrix. Therefore after the adversarial training, the paper suggests orthogonalization of the matrix followed by (iterative) Procrustes refinement. Since these add-on steps are only possible with a matrix, I removed them from all of the experiments to enable a justified comparison.
 
 \section{Experiments}
+This section describes the various configurations tried out with their respective motivations. There are no experiments involving a change in the Discriminator because there can't be any improvements made in it. It takes a vector as input and outputs a probability indicating whether the vector is original or fake. For this simple setting, a feedforward network is the most optimum system. Obviously, changes could be made in the depth of this network but that is not a very significant design change so I decided to leave it out and focus on the mapping and loss functions.
 
-\subsection{Baseline}
+English was used as the source language while Spanish was the target language. Since the vectors for the source language are being aligned with the target, the monolingual target word embedding scores mostly stay constant. The cross-lingual average only includes the single EN\_ES\_SEMEVAL17 dataset and therefore the values for this score are provided at the end in the summary table.
+
+\subsection{Baseline} \label{baseline}
+The network provided by \cite{muserepo} was considered as the baseline system for future experiments. The mapping function is a matrix and the loss function of the discriminator is binary cross-entropy loss.
+
+\begin{table*}[ht]
+  \begin{center}
+  \begin{tabular}{|c|l|l|l|l|l|l|}
+  \hline
+  Dataset & Baseline & Baseline-bias & Nonlinear & Piecewise-relu & Piecewise-relu & Wasserstein loss\\
+  \hline
+  EN\_MTurk-771 & 0.6375 & 0.6596 & 0.4730 & 0.6248 & 0.5905 & 0.5715 \\
+  \hline
+  EN\_RG-65 & 0.7559 & 0.7890 & 0.5649 & 0.7562 & 0.7569 & 0.7321 \\
+  \hline
+  EN\_WS-353-REL & 0.6930 & 0.6699 & 0.3294 & 0.6356 & 0.6158 & 0.5913 \\
+  \hline
+  EN\_YP-130 & 0.4871 & 0.5004 & 0.3174 & 0.4651 & 0.3936 & 0.4988 \\
+  \hline
+  EN\_MTurk-287 & 0.6717 & 0.6651 & 0.5080 & 0.6518 & 0.6134 & 0.6205 \\
+  \hline
+  EN\_VERB-143 & 0.3013 & 0.3476 & 0.3602 & 0.2902 & 0.2773 & 0.3932 \\
+  \hline
+  EN\_SIMLEX-999 & 0.3666 & 0.3748 & 0.2374 & 0.3444 & 0.3304 & 0.3680 \\
+  \hline
+  EN\_MEN-TR-3k & 0.7439 & 0.7553 & 0.5927 & 0.7246 & 0.7141 & 0.7081 \\
+  \hline
+  EN\_WS-353-ALL & 0.7327 & 0.7272 & 0.4867 & 0.7004 & 0.6959 & 0.6741 \\
+  \hline
+  EN\_WS-353-SIM & 0.7601 & 0.7724 & 0.5790 & 0.7496 & 0.7187 & 0.7329 \\
+  \hline
+  EN\_MC-30 & 0.7985 & 0.8049 & 0.6249 & 0.7936 & 0.7210 & 0.7947 \\
+  \hline
+  EN\_RW-STANFORD & 0.4945 & 0.5053 & 0.3619 & 0.4793 & 0.4854 & 0.4650 \\
+  \hline
+  EN\_SEMEVAL17 & 0.7037 & 0.7171 & 0.5886 & 0.6801 & 0.6639 & 0.6614 \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption{ Comparison of average scores for different experiments with English as source language and Spanish as target language}
+  \label{summa}
+\end{table*}
 
 \subsection{Adding a bias}
+The mapping function in \ref{baseline} is modified to include a bias variable while the loss function stays the same.
 
 \subsection{Deep Network}
+The mapping function used is a deep feedforward network with LeakyReLU as the activation function.
 
 \subsection{Piece wise non-linear}
+The mapping function used is a piecewise function. The formula for a piecewise function with $n$ breakpoints is:
+
+$Piecewise(x) = (A_1*x + b_1) + relu(A_n*x + b_n) + ... + relu(A_n*x + b_n)$
 
 \subsubsection{One breakpoint}
 
 \subsubsection{Four breakpoints}
 
+\subsubsection{Linearity of piecewise functions}
+
 \subsection{Wasserstein Loss}
 
 \subsection{Summary of average scores}
-\begin{table}[h]
+\begin{table*}[ht]
   \begin{center}
   \begin{tabular}{|c|l|l|l|l|}
   \hline
@@ -76,19 +125,19 @@ Remove me: \cite{lample2017unsupervised}
   \hline
   Baseline + Bias & 0.63757 & 0.74465 & 0.69111 & 0.70998 \\
   \hline
-  Deep Network & 0.2 & 0.742 & 0.7435 & 0.7155 \\
+  Deep Network & 0.46338 & 0.74467 & 0.60402 & 0.01153 \\
   \hline
-  Piecewise-one & 0.05 & 0.755 & 0.7655 & 0.7255 \\
+  Piecewise-one & 0.60735 & 0.74467 & 0.67601 & 0.6660 \\
   \hline
-  Piecewise-four & 0.1 & 0.75 & 0.7515 & 0.7035 \\
+  Piecewise-four & 0.58284 & 0.74467 & 0.66375 & 0.58018 \\
   \hline
-  Wasserstein Loss & 0.2 & 0.741 & 0.7355 & 0.7145 \\
+  Wasserstein Loss & 0.60090 & 0.74467 & 0.67278 & 0.01945 \\
   \hline
   \end{tabular}
   \end{center}
-  \caption{ Comparison of average scores for different experiments}
+  \caption{ Comparison of average scores for different experiments with English as source language and Spanish as target language}
   \label{summary-table}
-\end{table}
+\end{table*}
 
 \section{Conclusion}
 
