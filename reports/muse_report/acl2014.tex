@@ -128,18 +128,19 @@ $Piecewise(x) = (A_1*x + b_1) + relu(A_n*x + b_n) + ... + relu(A_n*x + b_n)$
 
 The functions are tested with one and four breakpoints.
 
-\subsubsection{Linearity of piecewise functions}
-
-
 \subsection{Wasserstein Loss}
 The mapping function of \ref{baseline} used but the loss function is changed from binary cross-entropy to Wasserstein loss.
 
 \section{Results}
 \subsection{Monolingual source word scores}
+The scores are shown in Table \ref{monolingual-source}
 
 \subsection{Monolingual target word scores}
+The scores are shown in Table \ref{monolingual-target}
 
 \subsection{Summary of average scores}
+The scores are shown in Table \ref{summary-table}
+
 \begin{table*}[ht]
   \begin{center}
   \begin{tabular}{|c|l|l|l|l|}
@@ -163,6 +164,31 @@ The mapping function of \ref{baseline} used but the loss function is changed fro
   \caption{ Comparison of average scores for different experiments with English as source language and Spanish as target language}
   \label{summary-table}
 \end{table*}
+
+\subsubsection{Linearity of piecewise functions}
+To investigate if the model ended up learning a linear function for majority of the domain, a linearity metric was introduced. For a function $f(x)$, it was calculated as:
+
+$linearity = average(mod(f(a + b) - f(a) - f(b)))$
+
+where $a$ and $b$ are random samples and the average is taken over 10,000 such samples. Lower values mean that $f(x)$ is linear while higher values mean that it is non-linear. The results are shown in Table \ref{linearity-table}.
+
+\begin{table}[h]
+  \begin{center}
+  \begin{tabular}{|c|l|}
+  \hline
+   & Linearity \\
+  \hline
+  Baseline & 0.011146 \\
+  \hline
+  Piecewise-one & 2.2960 \\
+  \hline
+  Piecewise-four & 3.0163 \\
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption{ Linearity values}
+  \label{linearity-table}
+\end{table}
 
 \section{Conclusion}
 
