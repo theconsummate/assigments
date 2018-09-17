@@ -47,14 +47,16 @@ Remove me: \cite{lample2017unsupervised}
 \end{abstract}
 
 \section{Introduction}
-\cite{conneau2017word} describes a method to learn a mapping function to align word vectors in one language with another in an unsupervised way. It is assumed that the word vectors are already provided. The training process is adversarial with the Mapping function as the generator and an additional fully connected feedforward network as the Discriminator. The paper uses a linear matrix transformation as the mapping function and therefore, the main hypothesis being tested in this report is that whether non-linear mapping functions can perform better or not.
+\cite{conneau2017word} describes a method to learn a mapping function to align word vectors in one language with another in an unsupervised way. It is assumed that the word vectors for both the source and the target language are already provided. The training process is adversarial with the Mapping function acting as the generator and an additional fully connected feedforward network acting as the Discriminator. The paper uses a linear matrix transformation as the mapping function and therefore, the main hypothesis being tested in this report is that whether other non-linear mapping functions can perform better or not.
 
 \section{Experiments}
-This section describes the various configurations tried out with their respective motivations. There are no experiments involving a change in the Discriminator because there can't be any improvements made in it. It takes a vector as input and outputs a probability indicating whether the vector is original or fake. For this simple setting, a feedforward network is the most optimum system. Obviously, changes could be made in the depth of this network but that is not a very significant design change so I decided to leave it out and focus on the mapping and loss functions.
+This section describes the various configurations tried out with their respective motivations. There are no experiments involving a change in the Discriminator because there can't be any improvements made in it from a theoretical perspective since it takes a vector as input and outputs a probability indicating whether the vector is original or fake. For this simple setting, a feedforward network is the most optimum system. Obviously, changes could be made in the depth of this network but that is not a very significant design change so I decided to leave it out and focus on experimenting with the mapping and loss functions.
 
-In \cite{conneau2017word}, the mapping function is a matrix. Therefore after the adversarial training, the paper suggests orthogonalization of the matrix followed by (iterative) Procrustes refinement. Since these add-on steps are only possible with a matrix, I removed them from all of the experiments to enable a justified comparison.
+In \cite{conneau2017word}, the mapping function is a matrix. Therefore after the adversarial training, the paper suggests orthogonalization of the matrix followed by (iterative) Procrustes refinement. Since these add-on steps are only possible with a matrix, I removed them from all of the experiments to enable a justified comparison with other non-linear functions which do not go through these post-processing steps.
 
-English was used as the source language while Spanish was the target language. Since the vectors for the source language are being aligned with the target, the monolingual target word embedding scores mostly stay constant. The cross-lingual average only includes the single EN\_ES\_SEMEVAL17 dataset and therefore the values for this score are provided at the end in the summary table. All the experiments use the same hyper-parameters. Training included 5 epochs with 1,000,000 iterations in each epoch.
+English was used as the source language while Spanish was the target language. Since the vectors for the source language are being aligned with the target, the monolingual target word embedding scores mostly stay constant. The cross-lingual average only includes the single EN\_ES\_SEMEVAL17 dataset and therefore the values for this score are provided at the end in the summary table. All the experiments use the same hyper-parameters. Training was performed over 5 epochs with 1,000,000 iterations in each epoch.
+
+The code for this report can be viewed at \cite{muserepomine}. This repository is a fork of \cite{muserepo}. The various non-linear functions explored later on have their own corresponding branches.
 
 \subsection{Baseline} \label{baseline}
 The network provided by \cite{muserepo} was considered as the baseline system for future experiments. The mapping function is a matrix and the loss function of the discriminator is binary cross-entropy loss.
@@ -134,14 +136,6 @@ A breakpoint means the value of the independent variable at which the function i
 The mapping function of \ref{baseline} used but the loss function is changed from binary cross-entropy to Wasserstein loss function from \cite{arjovsky2017wasserstein}. Although the discriminator is being trained more than the generator, convergence could not be achieved for this case within 5 epochs, as can be seen by the abysmally low cross-lingual score in Table \ref{summary-table}.
 
 \section{Results}
-\subsection{Monolingual source word scores}
-The scores are shown in Table \ref{monolingual-source}. The scores are the maximum for Baseline+Bias, which is only slightly higher than the Baseline case. All other systems perform poorly.
-
-\subsection{Monolingual target word scores}
-The scores are shown in Table \ref{monolingual-target}. Except the Baseline+Bias case, the scores for all the other systems remain the same. This is because target word vectors go through minimal changes during the alignment process, which is more focussed on aligning the source vectors with target vectors rather than the other way round.
-
-\subsection{Summary of average scores}
-The scores are shown in Table \ref{summary-table}
 
 \begin{table*}[ht]
   \begin{center}
@@ -167,8 +161,19 @@ The scores are shown in Table \ref{summary-table}
   \label{summary-table}
 \end{table*}
 
-\subsubsection{Linearity of piecewise functions}
-To investigate if the model ended up learning a linear function for majority of the domain, a linearity metric was introduced. For a function $f(x)$, it was calculated as:
+\subsection{Monolingual source word scores}
+This evaluation task measures monolingual word accuracy for the aligned source vectors computed using the mapping functions learned after the training process. The scores are shown in Table \ref{monolingual-source}. The scores are the maximum for Baseline+Bias, which is only slightly higher than the Baseline case. All other systems perform poorly.
+
+\subsection{Monolingual target word scores}
+The scores are shown in Table \ref{monolingual-target}. Except the Baseline+Bias case, the scores for all the other systems remain the same. This is because target word vectors go through minimal changes during the alignment process, which is more focussed on aligning the source vectors with target vectors rather than the other way round.
+
+\subsection{Summary of average scores}
+Table \ref{summary-table} shows the average scores for each of the different mapping functions along with the cross-lingual scores, which was computed only on the the EN\_ES\_SEMEVAL17 dataset. It is interesting to note that while the monolingual scores don't deteriorate too much, the cross-lingual scores are almost close to zero for the cases, Deep Network and Wasserstein Loss. This suggests that the training could not converge and no learning occurred.
+
+The Piecewise functions were able to converge but the cross lingual scores kept getting lower as the extent of non-linearity was increased, suggesting that it is incredibly difficult to train a non-linear function for this task.
+
+\subsubsection{Linearity of piecewise functions} \label{linearity}
+For the Piecewise-one case, a linearity metric was introduced to investigate if the model ended up learning a linear function for majority of the domain. For a function $f(x)$, this metric was calculated as:
 
 $linearity = average(mod(f(a + b) - f(a) - f(b)))$
 
@@ -192,10 +197,14 @@ where $a$ and $b$ are random samples and the average is taken over 10,000 such s
   \label{linearity-table}
 \end{table}
 
-It is interesting to note that although Piecewise-one functions is significantly non-linear as compared to the baseline, it's monolingual source word scores are only slightly worse.
+It is interesting to note that although Piecewise-one function is significantly non-linear as compared to the baseline, it's monolingual source word scores are only slightly worse. This suggests that there two mapping function is not exactly linear and it should be possible to model a non-linear mapping if the adversarial training can converge.
 
 \section{Conclusion}
+This report tested out the hypothesis of learning a non-linear mapping function for aligning word vectors from a source language to another target language through unsupervised learning. To achieve this goal, adversarial learning was used as the training process. A simple linear matrix mapping function was taken as the baseline and the results were compared with a few other non-linear functions. To do an even comparison, all post-processing steps were removed.
 
+The results showed that it is incredibly difficult to achieve convergence for a non-linear mapping function in the training process. Therefore, even though the monolingual scores remained about the same, the cross-lingual scores were essentially zero. It is possible that the training might have converged if the process was continued for a few more epochs but I did not try that out. It is an open question which can be explored in future work.
+
+Another interesting observation which supports the hypothesis is that the piecewise-one function, which is linear at all points except one showed that the cross-lingual scores were not very low as compared to the baseline, even though this function is highly non-linear as suggested by the linearity metric in \ref{linearity}.
 
 
 % include your own bib file like this:
