@@ -165,13 +165,13 @@ The mapping function of \ref{baseline} was used but the loss function is changed
 \end{table*}
 
 \subsection{Monolingual source word scores}
-This evaluation task measures monolingual word accuracy for the aligned source vectors computed using the mapping functions learned after the training process. The scores are shown in Table \ref{monolingual-source}. The scores are the maximum for Baseline+Bias, which is only slightly higher than the Baseline case. All other systems perform poorly.
+This evaluation task measures monolingual word accuracy for the aligned source vectors computed using the mapping functions learned after the training process. The scores are shown in Table \ref{monolingual-source}. The scores are the maximum for Baseline+Bias, which is only slightly higher than the Baseline case. All other systems perform poorly as compared to the baseline, although the piecewise-one function is only slightly worse.
 
 \subsection{Monolingual target word scores}
 The scores are shown in Table \ref{monolingual-target}. Except the Baseline+Bias case, the scores for all the other systems remain the same. This is because target word vectors go through minimal changes during the alignment process, which is more focussed on aligning the source vectors with target vectors rather than the other way round.
 
 \subsection{Summary of average scores}
-Table \ref{summary-table} shows the average scores for each of the different mapping functions along with the cross-lingual scores, which was computed only on the the EN\_ES\_SEMEVAL17 dataset. It is interesting to note that while the monolingual scores don't deteriorate too much, the cross-lingual scores are almost close to zero for the cases, Deep Network and Wasserstein Loss. This suggests that the training could not converge and no learning occurred.
+Table \ref{summary-table} shows the average scores for each of the different mapping functions along with the cross-lingual scores, which was computed only on the the EN\_ES\_SEMEVAL17 dataset. The Monolingual Word similarity score is the average of the monolingual scores for source and target language. Since the target language scores stay almost constant, the main contributor to the average is the source language scores. It is interesting to note that while the monolingual scores don't deteriorate too much, the cross-lingual scores are almost close to zero for the cases, Deep Network and Wasserstein Loss. This suggests that the training could not converge and no learning occurred.
 
 The Piecewise functions were able to converge but the cross lingual scores kept getting lower as the extent of non-linearity was increased, suggesting that it is incredibly difficult to train a non-linear function for this task.
 
