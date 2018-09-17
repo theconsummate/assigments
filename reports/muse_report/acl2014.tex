@@ -49,6 +49,9 @@ Remove me: \cite{lample2017unsupervised}
 \section{Introduction}
 \cite{conneau2017word} describes a method to learn a mapping function to align word vectors in one language with another in an unsupervised way. It is assumed that the word vectors for both the source and the target language are already provided. The training process is adversarial with the Mapping function acting as the generator and an additional fully connected feedforward network acting as the Discriminator. The paper uses a linear matrix transformation as the mapping function and therefore, the main hypothesis being tested in this report is that whether other non-linear mapping functions can perform better or not.
 
+\section{Dataset}
+Pre-trained vectors English and Spanish were obtained from \url{https://github.com/facebookresearch/fastText/blob/master/pretrained-vectors.md}. These vectors have been trained on Wikipedia using fastText as described in \cite{bojanowski2016enriching}. The evaluation datasets are as described at \url{https://github.com/facebookresearch/MUSE#get-evaluation-datasets}.
+
 \section{Experiments}
 This section describes the various configurations tried out with their respective motivations. There are no experiments involving a change in the Discriminator because there can't be any improvements made in it from a theoretical perspective since it takes a vector as input and outputs a probability indicating whether the vector is original or fake. For this simple setting, a feedforward network is the most optimum system. Obviously, changes could be made in the depth of this network but that is not a very significant design change so I decided to leave it out and focus on experimenting with the mapping and loss functions.
 
@@ -57,9 +60,6 @@ In \cite{conneau2017word}, the mapping function is a matrix. Therefore after the
 English was used as the source language while Spanish was the target language. Since the vectors for the source language are being aligned with the target, the monolingual target word embedding scores mostly stay constant. The cross-lingual average only includes the single EN\_ES\_SEMEVAL17 dataset and therefore the values for this score are provided at the end in the summary table. All the experiments use the same hyper-parameters. Training was performed over 5 epochs with 1,000,000 iterations in each epoch.
 
 The code for this report can be viewed at \cite{muserepomine}. This repository is a fork of \cite{muserepo}. The various non-linear functions explored later on have their own corresponding branches.
-
-\subsection{Baseline} \label{baseline}
-The network provided by \cite{muserepo} was considered as the baseline system for future experiments. The mapping function is a matrix and the loss function of the discriminator is binary cross-entropy loss.
 
 \begin{table*}[ht]
   \begin{center}
@@ -99,6 +99,9 @@ The network provided by \cite{muserepo} was considered as the baseline system fo
   \label{monolingual-source}
 \end{table*}
 
+\subsection{Baseline} \label{baseline}
+The network provided by \cite{muserepo} was considered as the baseline system for future experiments. The mapping function is a matrix and the loss function of the discriminator is binary cross-entropy loss.
+
 \begin{table*}[ht]
   \begin{center}
   \begin{tabular}{|c|l|l|l|l|l|l|}
@@ -123,17 +126,17 @@ The network provided by \cite{muserepo} was considered as the baseline system fo
 The mapping function in \ref{baseline} is modified to include a bias variable while the loss function stays the same. The result was a slight marginal improvement but not significant enough to warrant the removal of orthogonalization and Procrustes alignment.
 
 \subsection{Deep Network}
-The mapping function used is a deep feedforward network with LeakyReLU as the activation function and consisted of 4 layers. The layers were linear matrix transformations with bias, i.e. $AX + B$. This was the first non-linear function which was tested. Unfortunately, this function was a complete train wreck as shown by the cross-lingual scores in Table \ref{summary-table} which suggests that no alignment is being learnt. The most likely reason for this output is that the adversarial training process was not able to reach convergence.
+The mapping function used is a deep feedforward network with LeakyReLU as the activation function and consisted of 4 layers. The layers were linear matrix transformations with bias, i.e. $AX + B$. This was the first non-linear function which was tested as this simple network seems like a good intuitive first step. Unfortunately, this function was a complete train wreck as shown by the cross-lingual scores in Table \ref{summary-table} which suggests that no alignment is being learnt. The most likely reason for this output is that the adversarial training process was not able to reach convergence.
 
 \subsection{Piece wise non-linear}
-The mapping function used is a piecewise function. The formula for a piecewise function with $n$ breakpoints is:
+The mapping function used is a piecewise function. These functions are linear everywhere except at the breakpoints. The formula for a piecewise function with $n$ breakpoints is:
 
 $Piecewise(x) = (A_1*x + b_1) + relu(A_n*x + b_n) + ... + relu(A_n*x + b_n)$
 
 A breakpoint means the value of the independent variable at which the function is non-differentiable. At all other values, the function is linear and therefore differentiable. The functions are tested with one and four breakpoints. The scores for the one breakpoint function is only marginally worse than the baseline but the scores keep getting worse by introducing more breakpoints, as can be seen from the scores for the four breakpoints function.
 
 \subsection{Wasserstein Loss}
-The mapping function of \ref{baseline} used but the loss function is changed from binary cross-entropy to Wasserstein loss function from \cite{arjovsky2017wasserstein}. Although the discriminator is being trained more than the generator, convergence could not be achieved for this case within 5 epochs, as can be seen by the abysmally low cross-lingual score in Table \ref{summary-table}.
+The mapping function of \ref{baseline} was used but the loss function is changed from binary cross-entropy to Wasserstein loss function. The algorithm described in \cite{arjovsky2017wasserstein} was used to implement it. Although the discriminator is being trained more than the generator, convergence could still not be achieved for this case within 5 epochs, as can be seen by the abysmally low cross-lingual score in Table \ref{summary-table}.
 
 \section{Results}
 
