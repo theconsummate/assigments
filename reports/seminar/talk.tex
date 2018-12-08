@@ -38,9 +38,8 @@
 \begin{frame} \frametitle{Introduction}
 
   \begin{itemize}
-    \item This report explores a small subset (about 250 MB+, as of 2015) of the database of complaints filed by residents of New York City since 2010 via 311 calls.
+    \item This report explores a small subset (about 250 MB+, as of 2015) of the database of complaints filed by residents of New York City since 2010 via 311 calls \cite{subset}.
     \item The full dataset is available at the NYC open data portal \cite{nycdatafull}.
-    \item Agency: Acronym of responding City Government Agency.
 \end{itemize}
 
 \end{frame}
@@ -59,6 +58,88 @@ The complete dataset has 41 columns but the subset considers only 6 of those col
 
 \end{frame}
 
+\begin{frame} \frametitle{Preview of the data}
+The top 5 rows of the database look like:
+
+\begin{center}
+ \begin{tabular}{||p{2.15cm} p{2.15cm} p{0.75cm} p{1.5cm} p{1.5cm} p{1cm}||}
+ \hline
+ Created Date & Closed Date & Agency & Complaint Type & Descriptor & City \\ [0.5ex]
+ \hline\hline
+ 2015-09-15 02:14:04.000000 & None & NYPD & Illegal Parking & Blocked Hydrant & None \\
+ \hline
+ 2015-09-15 02:12:49.000000 & None & NYPD & Noise - Street/Side walk & Loud Talking & NEW YORK \\
+ \hline
+ 2015-09-15 02:11:19.000000 & None & NYPD & Noise - Street/Side walk & Loud Talking & NEW YORK \\
+ \hline
+ 2015-09-15 02:09:46.000000 & None & NYPD & Noise - Commercial & Loud Talking & BRONX \\
+ \hline
+ 2015-09-15 02:08:01.000000 & 2015-09-15 02:08:18.000000 & DHS & Homeless Person Assistance & Status Call  & NEW YORK \\ [1ex]
+ \hline
+\end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame} \frametitle{Number of distinct values for each column}
+The table below shows the number of distinct values present in each of the different columns.
+\begin{center}
+ \begin{tabular}{||c c||}
+ \hline
+ Column & Distinct Values \\ [0.5ex]
+ \hline\hline
+Agency    & 50 \\
+Complaint Type    & 200 \\
+Descriptor   & 1220 \\
+City   & 547 \\ [1ex]
+ \hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame} \frametitle{What are the top 25 most common type of complaints?}
+\includegraphics[scale=0.21]{top25complaints}
+\end{frame}
+
+\begin{frame} \frametitle{Top 10 cities with the largest number of complaints?}
+\begin{center}
+ \begin{tabular}{||c c||}
+ \hline
+ name & freq \\ [0.5ex]
+ \hline\hline
+BROOKLYN    & 579363 \\
+NEW YORK    & 385655 \\
+BRONX   & 342533 \\
+STATEN ISLAND   & 92509 \\
+Jamaica & 46683 \\
+Flushing    & 35504 \\
+ASTORIA & 31873 \\
+Ridgewood   & 21618 \\
+Woodside    & 15932 \\
+Corona  & 15740 \\ [1ex]
+ % 5 & 88 & 788 & 6344 \\ [1ex]
+ \hline
+\end{tabular}
+\end{center}
+\end{frame}
+
+
+\begin{frame} \frametitle{What is the number of complaints by type and by city for the top 7 cities?}
+\includegraphics[scale=0.21]{topcomplaintsfortop7cities}
+\end{frame}
+
+\begin{frame} \frametitle{What is the most common hour for noise complaints?}
+\includegraphics[scale=0.21]{noisecomplaintsbyhour}
+\end{frame}
+
+
+
+\begin{frame} \frametitle{Timeseries for top 5 complaints}
+\includegraphics[scale=0.17]{timeseries}
+
+A line chart for showing the fraction of complaints (y-axis) associated with each hour of the day (x-axis)
+\end{frame}
+
 \begin{frame} \frametitle{References}
 % Bibliography:
 \begin{thebibliography}{9}
@@ -73,6 +154,11 @@ NYC Open Data Subset used in this report
 \bibitem{plotly}
 Big data analytics using python and sqlite on NYC's 311 complaints since 2003.
 \\\texttt{https://plot.ly/ipython-notebooks/big-data-\\analytics-with-pandas-and-sqlite/}
+
+
+\bibitem{online}
+Open online course in python
+\\\texttt{https://www.edx.org/course/introduction-to-computing\\-for-data-analysis-2}
 
 \end{thebibliography}
 
