@@ -36,6 +36,8 @@
 \section{Introduction}
 This report explores a small subset (about 250 MB+, as of 2015) of the database of complaints filed by residents of New York City since 2010 via 311 calls. The data considered in this report can be downloaded from \cite{subset}. The full dataset is available at the NYC open data portal \cite{nycdatafull}.
 
+I first encountered this dataset while doing an online course in Python and I really liked it because the data sheds some light on the way of living of the people of New York City.
+
 \subsection{Columns in this dataset}
 The complete dataset has 41 columns but the subset considers only 6 of those columns, as described in \cite{nycdatafull}:
 \begin{itemize}
@@ -43,8 +45,8 @@ The complete dataset has 41 columns but the subset considers only 6 of those col
     \item Closed Date: Date and Time when the complaint was closed by responding agency.
     \item Agency: Acronym of responding City Government Agency.
     \item Complaint Type: This is the first level of a hierarchy identifying the topic of the incident or condition. Complaint Type may have a corresponding Descriptor or may stand alone.
-    \item Descriptor: This is associated to the Complaint Type, and provides further detail on the incident or condition. Descriptor values are dependent on the Complaint Type, and are not always required in complaint.
-    \item City: City of the incident location provided by geovalidation.
+    \item Descriptor: This is associated with the Complaint Type, and provides further detail on the incident or condition. Descriptor values are dependent on the Complaint Type and are not always required in a complaint.
+    \item City: City of the incident location provided by geovalidation. These cities are actually the different neighbourhoods in NYC (for example Manhattan, Upper East Side, Brooklyn etc.) and should not be confused by the conventional definition of a city.
 \end{itemize}
 
 \subsection{Preview of the data}
@@ -70,6 +72,21 @@ The top 5 rows of the database look like:
 
 It is interesting to note that there are a couple of None values in the data which will have to be filtered out.
 
+\subsection{Number of distinct values for each column}
+The table below shows the number of distinct values present in each of the different columns.
+\begin{center}
+ \begin{tabular}{||c c||}
+ \hline
+ Column & Distinct Values \\ [0.5ex]
+ \hline\hline
+Agency    & 50 \\
+Complaint Type    & 200 \\
+Descriptor   & 1220 \\
+City   & 547 \\ [1ex]
+ \hline
+\end{tabular}
+\end{center}
+
 \section{Analysis}
 \subsection{What are the top 25 most common type of complaints?}  \label{top25}
 \begin{verbatim}
@@ -85,7 +102,8 @@ SELECT ComplaintType as type, COUNT(*) AS freq
 Heat/Hot Water comes out as the most common type of complaint.
 
 \subsection{Top 10 cities with the largest number of complaints?}  \label{top10cities}
-Let's select the top 10 cities which have recorded the maximum number of complaints. As there are some rows which have None in the City, it is necessary to filter them out.
+Let's select the top 10 cities which have recorded the maximum number of complaints. As there are some rows which have None in the City, it is necessary to filter them out. Since the data is case sensitive, the following case-insensitive query is used:
+
 \begin{verbatim}
 SELECT City AS name, COUNT(*) AS freq
     FROM data
@@ -115,7 +133,9 @@ Corona  & 15740 \\ [1ex]
 \end{tabular}
 \end{center}
 
-\subsection{What the number of complaints by type and by city for the top 7 cities?}
+It is interesting to see that the number of complaints in the top 3 cities Brooklyn, New York and  Bronx is greater than the other cities by an order of magnitude. Looks like people in these cities are the biggest troublemakers!
+
+\subsection{What is the number of complaints by type and by city for the top 7 cities?}
 The first step is to get the complaints by type and city for only the top 7 cities.
 \begin{verbatim}
 SELECT ComplaintType as complaint_type, City as city_name,
@@ -170,7 +190,7 @@ SELECT strftime ('%H', CreatedDate) AS hour, COUNT(*) as count
 As can be expected, noise complaints are recorded during the late night hours when people are most likely trying to sleep.
 
 \subsection{Timeseries for top 5 complaints}
-The next figure is a line chart to showing the fraction of complaints (y-axis) associated with each hour of the day (x-axis), with each complaint type shown as a differently colored line. Only the top 5 complaints are showed and complaints with a zero-timestamp have been excluded.
+The next figure is a line chart for showing the fraction of complaints (y-axis) associated with each hour of the day (x-axis), with each complaint type shown as a differently coloured line. Only the top 5 complaints are showed and complaints with a zero-timestamp have been excluded.
 
 \includegraphics[scale=0.2]{timeseries}
 
@@ -178,6 +198,8 @@ As can be expected, Illegal Parking and Blocked Driveway complaints peak in the 
 
 Heat/Hot Water complaints remain fairly constant throughout the day. The number of such complaints also suggests that most hot water complaints are recorded with a zero timestamp as these were the most common type of complaints as seen in section \ref{top25}
 
+\section{Conclusion}
+The data shows the different types of complaints filed by the residents from various parts of New York City at different times of the day. "Heat/Hot Water" is the most common type of complaint whereas the residents of Brooklyn register the maximum number of complaints.
 
 % Bibliography:
 \begin{thebibliography}{9}
