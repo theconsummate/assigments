@@ -1,0 +1,84 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                                                             %%%
+%%%      File: talk.tex                                         %%%
+%%%    Author: Sabine Schulte im Walde                          %%%
+%%%   Purpose: Research Seminar                                 %%%
+%%%                                                             %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[10pt]{beamer}
+
+
+\usepackage{beamerthemesplit}
+\usepackage[utf8]{inputenc}
+
+
+\usetheme{Malmoe}
+\usecolortheme{crane}
+\useinnertheme{circles}
+
+\title{Research Seminar}
+\subtitle{An analysis of the NYC 311 Calls Dataset}
+
+\author{Dhruv Mishra}
+\institute{Master of Science \textit{Computational Linguistics}\\
+  Institut für Maschinelle Sprachverarbeitung\\
+  Universität Stuttgart}
+
+\date{13/12/2018}
+
+
+\begin{document}
+
+
+\frame{\titlepage}
+
+
+\begin{frame} \frametitle{Introduction}
+
+  \begin{itemize}
+    \item This report explores a small subset (about 250 MB+, as of 2015) of the database of complaints filed by residents of New York City since 2010 via 311 calls.
+    \item The full dataset is available at the NYC open data portal \cite{nycdatafull}.
+    \item Agency: Acronym of responding City Government Agency.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame} \frametitle{Column Description}
+The complete dataset has 41 columns but the subset considers only 6 of those columns, as described in \cite{nycdatafull}:
+
+  \begin{itemize}
+    \item Created Date: Date and Time when the complaint was created.
+    \item Closed Date: Date and Time when the complaint was closed by responding agency.
+    \item Agency: Acronym of responding City Government Agency.
+    \item Complaint Type: This is the first level of a hierarchy identifying the topic of the incident or condition. Complaint Type may have a corresponding Descriptor or may stand alone.
+    \item Descriptor: This is associated with the Complaint Type, and provides further detail on the incident or condition. Descriptor values are dependent on the Complaint Type and are not always required in a complaint.
+    \item City: City of the incident location provided by geovalidation. These cities are actually the different neighbourhoods in NYC (for example Manhattan, Upper East Side, Brooklyn etc.) and should not be confused by the conventional definition of a city.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame} \frametitle{References}
+% Bibliography:
+\begin{thebibliography}{9}
+\bibitem{nycdatafull}
+NYC Open Data
+\\\texttt{https://nycopendata.socrata.com/Social-Services/311-Service\\-Requests-from-2010-to-Present/erm2-nwe9}
+
+\bibitem{subset}
+NYC Open Data Subset used in this report
+\\\texttt{https://onedrive.live.com/download?cid=FD520DDC6BE92730\&\\resid=FD520DDC6BE92730\%21616\&authkey=AEeP\_4E1uh-vyDE}
+
+\bibitem{plotly}
+Big data analytics using python and sqlite on NYC's 311 complaints since 2003.
+\\\texttt{https://plot.ly/ipython-notebooks/big-data-\\analytics-with-pandas-and-sqlite/}
+
+\end{thebibliography}
+
+\end{frame}
+
+\end{document}
+
+
+%% --- END OF FILE
