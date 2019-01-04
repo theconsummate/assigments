@@ -10,6 +10,7 @@ rprogramming/data/*
 *.bbl
 *.blg
 *.dvi
+*.toc
 
 __pycache__/
 pickle/
