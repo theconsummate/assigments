@@ -1,0 +1,163 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% a0poster Landscape Poster
+% LaTeX Template
+% Version 1.0 (22/06/13)
+%
+% The a0poster class was created by:
+% Gerlinde Kettl and Matthias Weiser (tex@kettl.de)
+% 
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[a0,landscape]{a0poster}
+
+\usepackage{multicol} % This is so we can have multiple columns of text side-by-side
+\columnsep=100pt % This is the amount of white space between the columns in the poster
+\columnseprule=3pt % This is the thickness of the black line between the columns in the poster
+
+\usepackage[svgnames]{xcolor} % Specify colors by their 'svgnames', for a full list of all colors available see here: http://www.latextemplates.com/svgnames-colors
+
+\usepackage{times} % Use the times font
+
+\usepackage{graphicx} % Required for including images
+\graphicspath{{figures/}} % Location of the graphics files
+\usepackage{booktabs} % Top and bottom rules for table
+\usepackage[font=small,labelfont=bf]{caption} % Caption provides ways to customise the captions in floating environments like figure and table, e.g., rotating captions, side­ways cap­tions, etc.
+\usepackage{amsfonts, amsmath, amsthm, amssymb} % For math fonts, symbols and environments
+\usepackage{wrapfig} % Allows wrapping text around tables and figures
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	POSTER HEADER 
+%----------------------------------------------------------------------------------------
+
+% The header is divided into three boxes:
+% The first is 55% wide and houses the title, subtitle, names and university/organization
+% The second is 25% wide and houses contact information
+% The third is 19% wide and houses a logo for your university/organization or a photo of you
+% The widths of these boxes can be easily edited to accommodate your content as you see fit
+
+% \linewidth refers to the width of text in the current environment
+
+\begin{minipage}[b]{0.55\linewidth}
+  \veryHuge \color{NavyBlue} \textbf{Outta Control: Laws of Semantic Change and Inherent Biases in Word Representation Models} \color{Black}\\ % Title
+  \Huge \textit{Dubossarsky et al. (2017)}\\[1cm] % Subtitle
+  \huge \textbf{John Smith \& James Smith}\\ % Author(s)
+  \huge University and Department Name\\ % University/organization
+\end{minipage}
+%
+\begin{minipage}[b]{0.25\linewidth}
+  \color{DarkSlateGray}\Large \textbf{Contact Information:}\\
+  Department Name\\ % Address
+  University Name\\
+  123 Broadway, State, Country\\\\
+  Phone: +1 (000) 111 1111\\ % Phone number
+  Email: \texttt{john@LaTeXTemplates.com}\\ % Email address
+\end{minipage}
+%
+\begin{minipage}[b]{0.19\linewidth}
+  \includegraphics[width=20cm]{logo.png} % Logo or a photo of you, adjust its dimensions here
+\end{minipage}
+
+\vspace{1cm} % A bit of extra whitespace between the header and poster content
+
+%----------------------------------------------------------------------------------------
+
+\begin{multicols}{4} % This is how many columns your poster will be broken into, a poster with many figures may benefit from less columns whereas a text-heavy poster benefits from more
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT
+%----------------------------------------------------------------------------------------
+
+\color{Navy} % Navy color for the abstract
+
+\begin{abstract}
+
+This paper evaluates the validity of previously stated laws of semantic change in literature by applying them on a randomized controlled data set. The claim is that if semantic change can indeed be represented by the theoretical laws as reported in previous literature, their effect should not be seen on a randomized data set, or at least get significantly diminished.
+
+The goal is to specifically analyze these three laws:
+
+\begin{itemize}
+  \item The Law of Conformity: Frequency is negatively correlated with semantic change.
+  \item The Law of Innovation: Polysemy is positively correlated with semantic change.
+  \item The Law of Prototypicality: Prototypicality is negatively correlated with semantic change.
+\end{itemize}
+
+\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	INTRODUCTION
+%----------------------------------------------------------------------------------------
+
+\color{SaddleBrown} % SaddleBrown color for the introduction
+
+\section*{Introduction}
+
+
+%----------------------------------------------------------------------------------------
+%	OBJECTIVES
+%----------------------------------------------------------------------------------------
+
+\color{DarkSlateGray} % DarkSlateGray color for the rest of the content
+
+%  motivation, related work, materials and methods, experiments, conclusions
+
+\section*{Motivation}
+
+%----------------------------------------------------------------------------------------
+%	MATERIALS AND METHODS
+%----------------------------------------------------------------------------------------
+
+\section*{MATERIALS AND METHODS}
+
+%------------------------------------------------
+
+\subsection*{Datasets}
+
+%----------------------------------------------------------------------------------------
+%	RESULTS 
+%----------------------------------------------------------------------------------------
+
+\section*{Results}
+
+
+%----------------------------------------------------------------------------------------
+%	CONCLUSIONS
+%----------------------------------------------------------------------------------------
+
+\color{SaddleBrown} % SaddleBrown color for the conclusions to make them stand out
+
+\section*{Conclusions}
+
+\begin{itemize}
+\item Pellentesque eget orci eros. Fusce ultricies, tellus et pellentesque fringilla, ante massa luctus libero, quis tristique purus urna nec nibh. Phasellus fermentum rutrum elementum. Nam quis justo lectus.
+\item Vestibulum sem ante, hendrerit a gravida ac, blandit quis magna.
+\item Donec sem metus, facilisis at condimentum eget, vehicula ut massa. Morbi consequat, diam sed convallis tincidunt, arcu nunc.
+\item Nunc at convallis urna. isus ante. Pellentesque condimentum dui. Etiam sagittis purus non tellus tempor volutpat. Donec et dui non massa tristique adipiscing.
+\end{itemize}
+
+\color{DarkSlateGray} % Set the color back to DarkSlateGray for the rest of the content
+
+%----------------------------------------------------------------------------------------
+%	REFERENCES
+%----------------------------------------------------------------------------------------
+
+\nocite{*} % Print all references regardless of whether they were cited in the poster or not
+\bibliographystyle{plain} % Plain referencing style
+\bibliography{sample} % Use the example bibliography file sample.bib
+
+%----------------------------------------------------------------------------------------
+
+\end{multicols}
+
+\end{document}
